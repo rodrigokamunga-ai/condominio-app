@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+  <title>Amigos do Maui - Mural de Ocorrências</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="public-page">
+<header class="topbar public-topbar">
+  <div class="brand">
+    <span class="brand-icon">📋</span>
+    <div>
+      <strong>Amigos do Maui</strong>
+      <small>Mural de ocorrências</small>
+    </div>
+  </div>
+  <div class="top-actions">
+    <a href="index.html" class="link-button">Área do morador</a>
+    <button id="btnLogout" class="link-button hidden" type="button">Sair</button>
+  </div>
+</header>
+
+<main class="container">
+  <section id="loadingView" class="card public-hero">
+    <h1>Carregando mural...</h1>
+    <p class="muted">Verificando sua sessão.</p>
+  </section>
+
+  <section id="loginRequired" class="card auth-card hidden">
+    <h1>Acesso necessário</h1>
+    <p class="muted">Você precisa estar autenticado para consultar as ocorrências do condomínio.</p>
+    <a href="index.html" class="primary-button button-link">Ir para o portal do morador</a>
+  </section>
+
+  <section id="publicView" class="hidden">
+    <section class="public-hero">
+      <div>
+        <span class="eyebrow">MURAL DA COMUNIDADE</span>
+        <h1>Ocorrências do condomínio</h1>
+        <p class="muted">Consulte os registros compartilhados pelos moradores e acompanhe seus status.</p>
+      </div>
+      <div class="public-user">
+        <span>Usuário autenticado</span>
+        <strong id="publicUserName">Morador</strong>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="section-heading">
+        <div>
+          <h2>Lista de ocorrências</h2>
+          <p class="muted">Para preservar a privacidade, dados pessoais dos moradores não são exibidos.</p>
+        </div>
+        <select id="publicStatusFilter" class="compact-select">
+          <option value="Todos">Todos</option>
+          <option value="Aberto">Abertos</option>
+          <option value="Em análise">Em análise</option>
+          <option value="Em execução">Em execução</option>
+          <option value="Resolvido">Resolvidos</option>
+        </select>
+      </div>
+
+      <div id="publicReportsList" class="reports-list">
+        <div class="empty-state">Carregando ocorrências...</div>
+      </div>
+      <div id="publicPagination" class="pagination"></div>
+    </section>
+  </section>
+</main>
+
+<div id="publicDetailModal" class="modal hidden">
+  <div class="modal-card">
+    <button id="btnClosePublicDetail" class="modal-close" type="button">×</button>
+    <div id="publicDetailContent"></div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+<script type="module" src="./public.js"></script>
+</body>
+</html>
