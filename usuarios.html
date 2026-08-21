@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta name="theme-color" content="#172554" />
+
+  <title>Controle de Usuários - Amigos do Maui</title>
+
+  <link rel="stylesheet" href="./styles.css" />
+
+  <link rel="stylesheet" href="./users.css" />
+</head>
+
+<body class="admin-page">
+
+  <header class="topbar admin-topbar">
+    <div class="brand">
+      <span class="brand-icon">👥</span>
+
+      <div>
+        <strong>Amigos do Maui</strong>
+        <small>Controle de usuários</small>
+      </div>
+    </div>
+
+    <div class="top-actions admin-navigation">
+  <a href="./admin.html" class="link-button" >
+    Painel administrativo
+  </a>
+
+  <a href="./index.html" class="link-button" >
+    Portal do morador
+  </a>
+
+  <a href="./admin-home.html" class="link-button" >
+  ← Voltar ao menu administrativo
+</a>
+
+  <button id="btnUsersLogout" class="link-button" type="button" >
+    Sair
+  </button>
+</div>
+  </header>
+
+
+  <main class="container">
+
+    <!-- CARREGANDO -->
+    <section id="usersLoadingView" class="card auth-card" >
+      <h1>Carregando...</h1>
+
+      <p class="muted">
+        Verificando as permissões de acesso.
+      </p>
+    </section>
+
+
+    <!-- ACESSO NEGADO -->
+    <section id="usersDeniedView" class="card auth-card hidden" >
+      <h1>Acesso restrito</h1>
+
+      <p class="muted">
+        Somente o administrador pode acessar o controle de usuários.
+      </p>
+
+      <a href="./index.html" class="primary-button button-link" >
+        Voltar ao portal
+      </a>
+    </section>
+
+
+    <!-- ÁREA DE USUÁRIOS -->
+    <section id="usersView" class="hidden" >
+
+      <section class="users-hero">
+        <div>
+          <span class="eyebrow">
+            ADMINISTRAÇÃO
+          </span>
+
+          <h1>Controle de usuários</h1>
+
+          <p class="muted">
+            Consulte, aprove e exclua moradores cadastrados.
+          </p>
+        </div>
+
+        <div class="users-admin-box">
+          <span>Administrador</span>
+
+          <strong id="usersAdminName">
+            Administrador
+          </strong>
+        </div>
+      </section>
+
+
+      <!-- AVISO DE PENDENTES -->
+      <div id="pendingNotice" class="pending-notice hidden" >
+        <strong>
+          Existem novos cadastros aguardando aprovação.
+        </strong>
+
+        <span id="pendingNoticeText">
+          Verifique a lista abaixo.
+        </span>
+      </div>
+
+
+      <!-- INDICADORES -->
+      <section class="users-stats-grid">
+        <div class="users-stat-card">
+          <span id="usersTotal">0</span>
+          <small>Total de usuários</small>
+        </div>
+
+        <div class="users-stat-card">
+          <span id="usersPending">0</span>
+          <small>Aguardando aprovação</small>
+        </div>
+
+        <div class="users-stat-card">
+          <span id="usersApproved">0</span>
+          <small>Aprovados</small>
+        </div>
+
+        <div class="users-stat-card">
+          <span id="usersRejected">0</span>
+          <small>Rejeitados</small>
+        </div>
+      </section>
+
+
+      <!-- FILTROS -->
+      <section class="card">
+        <div class="users-filter-area">
+          <div>
+            <h2>Moradores cadastrados</h2>
+
+            <p class="muted">
+              Novos moradores precisam ser aprovados antes de utilizar o sistema.
+            </p>
+          </div>
+
+          <div class="users-filters">
+            <input id="userSearch" type="search" placeholder="Pesquisar por nome ou e-mail" />
+
+            <select id="userStatusFilter" class="compact-select" >
+              <option value="Todos">Todos</option>
+              <option value="Pendente">Pendentes</option>
+              <option value="Aprovado">Aprovados</option>
+              <option value="Rejeitado">Rejeitados</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="usersList" class="users-list" >
+          <div class="empty-state">
+            Carregando usuários...
+          </div>
+        </div>
+
+        <div id="usersPagination" class="pagination" ></div>
+      </section>
+
+    </section>
+  </main>
+
+
+  <!-- MODAL DE DETALHAMENTO -->
+  <div id="userDetailModal" class="modal hidden" >
+    <div class="modal-card">
+      <button id="btnCloseUserDetail" class="modal-close" type="button" aria-label="Fechar detalhamento" >
+        ×
+      </button>
+
+      <div id="userDetailContent"></div>
+    </div>
+  </div>
+
+
+  <!-- MENSAGEM -->
+  <div id="usersToast" class="toast" ></div>
+
+
+  <script type="module" src="./usuarios.js" ></script>
+</body>
+</html>
