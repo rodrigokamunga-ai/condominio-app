@@ -1,0 +1,333 @@
+/* ===================================================== TELA INICIAL DO ADMINISTRADOR ===================================================== */
+
+.admin-home-page {
+  min-height: 100vh;
+  background:
+    linear-gradient(
+      135deg,
+      #eff6ff 0%,
+      #f8fafc 48%,
+      #ecfeff 100%
+    );
+}
+
+.admin-home-topbar {
+  background: #172554;
+  border-bottom-color: #1e3a8a;
+}
+
+.admin-home-topbar .brand strong,
+.admin-home-topbar .brand small {
+  color: #ffffff;
+}
+
+.admin-home-topbar .brand small {
+  opacity: 0.75;
+}
+
+.admin-home-topbar .brand-icon {
+  background: #dbeafe;
+}
+
+.admin-home-logout {
+  min-height: 42px;
+  padding: 9px 16px;
+
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 10px;
+
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.admin-home-logout:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+
+/* ===================================================== CONTEÚDO ===================================================== */
+
+.admin-home-container {
+  width: min(1080px, calc(100% - 32px));
+  margin: 45px auto 70px;
+}
+
+.admin-home-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+
+  margin-bottom: 34px;
+  padding: 30px;
+
+  background: linear-gradient(
+    135deg,
+    #172554,
+    #1d4ed8
+  );
+
+  border-radius: 22px;
+  box-shadow:
+    0 18px 40px rgba(23, 37, 84, 0.2);
+}
+
+.admin-home-header h1,
+.admin-home-header p {
+  color: #ffffff;
+}
+
+.admin-home-header h1 {
+  margin-top: 6px;
+  margin-bottom: 10px;
+}
+
+.admin-home-header p {
+  margin: 0;
+  color: #dbeafe;
+  font-size: 17px;
+}
+
+.admin-home-eyebrow {
+  color: #bfdbfe;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.admin-home-user {
+  min-width: 230px;
+  padding: 16px;
+
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 14px;
+}
+
+.admin-home-user span,
+.admin-home-user strong {
+  display: block;
+}
+
+.admin-home-user span {
+  color: #bfdbfe;
+  font-size: 12px;
+}
+
+.admin-home-user strong {
+  margin-top: 6px;
+  color: #ffffff;
+  font-size: 14px;
+  word-break: break-word;
+}
+
+
+/* ===================================================== MENU COM BOTÕES QUADRADOS ===================================================== */
+
+.admin-home-content {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.admin-menu-card {
+  aspect-ratio: 1 / 1;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  padding: 24px;
+
+  border-radius: 20px;
+
+  color: #ffffff;
+  text-align: center;
+  text-decoration: none;
+
+  box-shadow:
+    0 12px 25px rgba(15, 23, 42, 0.12);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+}
+
+.admin-menu-card:hover {
+  transform: translateY(-7px);
+  filter: brightness(1.04);
+
+  box-shadow:
+    0 18px 32px rgba(15, 23, 42, 0.2);
+}
+
+.admin-menu-card:active {
+  transform: translateY(-2px);
+}
+
+.admin-menu-icon {
+  width: 76px;
+  height: 76px;
+
+  display: grid;
+  place-items: center;
+
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+
+  font-size: 40px;
+}
+
+.admin-menu-card strong {
+  font-size: 21px;
+  font-weight: 800;
+}
+
+.admin-menu-card small {
+  max-width: 150px;
+
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+
+/* CORES DOS BOTÕES */
+
+.records-card {
+  background: linear-gradient(
+    145deg,
+    #0f766e,
+    #14b8a6
+  );
+}
+
+.dashboard-card {
+  background: linear-gradient(
+    145deg,
+    #1d4ed8,
+    #3b82f6
+  );
+}
+
+.users-card {
+  background: linear-gradient(
+    145deg,
+    #7c3aed,
+    #a855f7
+  );
+}
+
+.public-card {
+  background: linear-gradient(
+    145deg,
+    #c2410c,
+    #f97316
+  );
+}
+
+
+/* ===================================================== CARREGAMENTO E ACESSO NEGADO ===================================================== */
+
+.admin-home-loading {
+  padding: 30px;
+
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+
+  color: var(--muted);
+  text-align: center;
+}
+
+.admin-home-denied {
+  width: min(100%, 520px);
+  margin: 40px auto;
+  padding: 28px;
+
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.admin-home-denied h2 {
+  margin-bottom: 10px;
+}
+
+.admin-home-denied p {
+  color: var(--muted);
+}
+
+
+/* ===================================================== RESPONSIVIDADE ===================================================== */
+
+@media (max-width: 950px) {
+  .admin-home-content {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 650px) {
+  .admin-home-container {
+    width: min(100% - 22px, 1080px);
+    margin-top: 22px;
+  }
+
+  .admin-home-header {
+    align-items: stretch;
+    flex-direction: column;
+    padding: 23px;
+  }
+
+  .admin-home-user {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .admin-home-content {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .admin-menu-card {
+    min-height: 170px;
+    padding: 14px;
+    border-radius: 16px;
+  }
+
+  .admin-menu-icon {
+    width: 58px;
+    height: 58px;
+    border-radius: 15px;
+    font-size: 30px;
+  }
+
+  .admin-menu-card strong {
+    font-size: 17px;
+  }
+
+  .admin-menu-card small {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 400px) {
+  .admin-home-content {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-menu-card {
+    aspect-ratio: auto;
+    min-height: 150px;
+  }
+}
