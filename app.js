@@ -15,6 +15,7 @@ import {
   addDoc,
   query,
   where,
+  orderBy,
   onSnapshot,
   doc,
   getDoc,
@@ -25,7 +26,10 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
+// =====================================================
 // CONFIGURAÇÃO DO FIREBASE
+// =====================================================
+
 const firebaseConfig = {
   apiKey: "AIzaSyCmep_wIOuM3TF4yTUIaoU83oSTFydI8Ig",
   authDomain: "condominiomaui-5ecd0.firebaseapp.com",
@@ -35,15 +39,25 @@ const firebaseConfig = {
   appId: "1:298051508693:web:cc5af84aaceb7856e7055c"
 };
 
+const ADMIN_EMAIL =
+  "rodrigokamunga@gmail.com";
 
+
+// =====================================================
 // INICIALIZAÇÃO
+// =====================================================
+
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
 
+// =====================================================
 // VARIÁVEIS
-const $ = (id) => document.getElementById(id);
+// =====================================================
+
+const $ = (id) =>
+  document.getElementById(id);
 
 let unsubscribeReports = null;
 let allReports = [];
@@ -52,7 +66,10 @@ let currentPage = 1;
 const pageSize = 10;
 
 
+// =====================================================
 // FUNÇÕES AUXILIARES
+// =====================================================
+
 function show(id) {
   const element = $(id);
 
@@ -176,7 +193,7 @@ function friendlyError(error) {
       "Falha de conexão com a internet.",
 
     "permission-denied":
-      "Permissão negada pelo Firebase.",
+      "Permissão negada pelas regras do Firebase.",
 
     "failed-precondition":
       "O Firebase solicitou a criação de um índice."
@@ -197,8 +214,20 @@ function friendlyError(error) {
     "Não foi possível concluir a operação.";
 }
 
+function isAdmin(user) {
+  return Boolean(
+    user &&
+    user.email &&
+    user.email.toLowerCase() ===
+      ADMIN_EMAIL.toLowerCase()
+  );
+}
 
+
+// =====================================================
 // COMPACTAÇÃO DA IMAGEM
+// =====================================================
+
 function compressImage( file, maxWidth = 640, maxHeight = 480, quality = 0.6 ) {
   return new Promise((resolve, reject) => {
     if (!file || !file.type.startsWith("image/")) {
@@ -267,7 +296,7 @@ function compressImage( file, maxWidth = 640, maxHeight = 480, quality = 0.6 ) {
       if (approximateSize > 350000) {
         reject(
           new Error(
-            "A imagem ficou muito grande. Escolha uma foto menor."
+            "A imagem ficou muito grande. Escolha outra foto."
           )
         );
         return;
@@ -287,7 +316,10 @@ function compressImage( file, maxWidth = 640, maxHeight = 480, quality = 0.6 ) {
 }
 
 
-// FILTRO DOS REGISTROS
+// =====================================================
+// FILTRO
+// =====================================================
+
 function getFilteredReports() {
   const selectedStatus =
     $("statusFilter")?.value || "Todos";
@@ -303,7 +335,10 @@ function getFilteredReports() {
 }
 
 
-// RENDERIZA A LISTA
+// =====================================================
+// LISTAGEM
+// =====================================================
+
 function renderReports() {
   const list = $("reportsList");
 
@@ -311,39 +346,38 @@ function renderReports() {
     return;
   }
 
-  const filteredReports = getFilteredReports();
+  const filteredReports =
+    getFilteredReports();
 
   const totalPages = Math.max(
     1,
-    Math.ceil(filteredReports.length / pageSize)
+    Math.ceil(
+      filteredReports.length / pageSize
+    )
   );
 
   if (currentPage > totalPages) {
     currentPage = totalPages;
   }
 
-  const startIndex =
+  const start =
     (currentPage - 1) * pageSize;
 
-  const visibleReports = filteredReports.slice(
-    startIndex,
-    startIndex + pageSize
-  );
+  const visibleReports =
+    filteredReports.slice(
+      start,
+      start + pageSize
+    );
 
   if (visibleReports.length === 0) {
     list.innerHTML = ` <div class="empty-state"> Nenhum registro encontrado. </div> `;
   } else {
     list.innerHTML = visibleReports
       .map((report) => {
-        const status = report.status || "Aberto";
+        const status =
+          report.status || "Aberto";
 
-        return ` <article class="report-item compact-report"> <div> <div class="report-title"> ${escapeHtml( report.titulo || "Sem título" )} </div> <div class="report-meta"> Protocolo: ${escapeHtml( report.protocolo || "Não informado" )} </div> <div class="report-meta"> Início: ${formatDate( report.inicioEm || report.criadoEm )} </div> ${ report.fimEm ? ` <div class="report-meta"> Fim: ${formatDate(report.fimEm)} </div> ` : "" } <span class="badge ${statusClass(status)}"> ${escapeHtml(status)} </span> </div> <div class="report-actions">
-  <button class="action-icon-button detail-button" data-id="${report.id}" type="button" title="Detalhar" aria-label="Detalhar ocorrência" > <span>🔍</span> </button>
-
-  <button class="action-icon-button edit-button" data-id="${report.id}" type="button" title="Editar" aria-label="Editar ocorrência" > <span>✏️</span> </button>
-
-  <button class="action-icon-button delete-button" data-id="${report.id}" type="button" title="Excluir" aria-label="Excluir ocorrência" > <span>🗑️</span> </button>
-</div> </article> `;
+        return ` <article class="report-item compact-report"> <div> <div class="report-title"> ${escapeHtml( report.titulo || "Sem título" )} </div> <div class="report-meta"> Protocolo: ${escapeHtml( report.protocolo || "Não informado" )} </div> <div class="report-meta"> Início: ${formatDate( report.inicioEm || report.criadoEm )} </div> ${ report.fimEm ? ` <div class="report-meta"> Fim: ${formatDate(report.fimEm)} </div> ` : "" } <span class="badge ${statusClass(status)}"> ${escapeHtml(status)} </span> </div> <div class="report-actions"> <button class="action-icon-button detail-button" data-id="${report.id}" type="button" title="Detalhar" aria-label="Detalhar ocorrência" > 🔍 </button> <button class="action-icon-button edit-button" data-id="${report.id}" type="button" title="Editar" aria-label="Editar ocorrência" > ✏️ </button> <button class="action-icon-button delete-button" data-id="${report.id}" type="button" title="Excluir" aria-label="Excluir ocorrência" > 🗑️ </button> </div> </article> `;
       })
       .join("");
   }
@@ -353,27 +387,37 @@ function renderReports() {
     totalPages
   );
 
-  setText("statTotal", allReports.length);
+  setText(
+    "statTotal",
+    allReports.length
+  );
 
   setText(
     "statOpen",
     allReports.filter(
-      (report) => report.status !== "Resolvido"
+      (report) =>
+        (report.status || "Aberto") !==
+        "Resolvido"
     ).length
   );
 
   setText(
     "statResolved",
     allReports.filter(
-      (report) => report.status === "Resolvido"
+      (report) =>
+        report.status === "Resolvido"
     ).length
   );
 }
 
 
+// =====================================================
 // PAGINAÇÃO
-function renderPagination(totalItems, totalPages) {
-  const pagination = $("pagination");
+// =====================================================
+
+function renderPagination( totalItems, totalPages ) {
+  const pagination =
+    $("pagination");
 
   if (!pagination) {
     return;
@@ -388,7 +432,10 @@ function renderPagination(totalItems, totalPages) {
 }
 
 
+// =====================================================
 // DETALHAMENTO
+// =====================================================
+
 function openDetails(reportId) {
   const report = allReports.find(
     (item) => item.id === reportId
@@ -398,21 +445,26 @@ function openDetails(reportId) {
     return;
   }
 
-  const status = report.status || "Aberto";
-
-  const detailContent = $("detailContent");
+  const detailContent =
+    $("detailContent");
 
   if (!detailContent) {
     return;
   }
 
-  detailContent.innerHTML = ` <span class="eyebrow"> DETALHAMENTO DA OCORRÊNCIA </span> <h2> ${escapeHtml(report.titulo || "Sem título")} </h2> <p> <b>Protocolo:</b> ${escapeHtml( report.protocolo || "Não informado" )} </p> <p> <b>Status:</b> <span class="badge ${statusClass(status)}"> ${escapeHtml(status)} </span> </p> <p> <b>Categoria:</b> ${escapeHtml( report.categoria || "Não informada" )} </p> <p> <b>Prioridade:</b> ${escapeHtml( report.prioridade || "Não informada" )} </p> <p> <b>Local:</b> ${escapeHtml( report.local || "Não informado" )} </p> <p> <b>Referência:</b> ${escapeHtml( report.referenciaLocal || "Não informada" )} </p> <p> <b>Data de início:</b> ${formatDate( report.inicioEm || report.criadoEm )} </p> <p> <b>Data de fim:</b> ${formatDate(report.fimEm)} </p> <p> <b>Descrição:</b><br> ${escapeHtml( report.descricao || "Sem descrição" )} </p> <p> <b>Oferece risco:</b> ${report.ofereceRisco ? "Sim" : "Não"} </p> ${ report.fotoData ? ` <div class="report-photo-container"> <img class="detail-photo" src="${report.fotoData}" alt="Foto da ocorrência" /> </div> ` : "" } `;
+  const status =
+    report.status || "Aberto";
+
+  detailContent.innerHTML = ` <span class="eyebrow"> DETALHAMENTO DA OCORRÊNCIA </span> <h2> ${escapeHtml( report.titulo || "Sem título" )} </h2> <p> <b>Protocolo:</b> ${escapeHtml( report.protocolo || "Não informado" )} </p> <p> <b>Status:</b> <span class="badge ${statusClass(status)}"> ${escapeHtml(status)} </span> </p> <p> <b>Categoria:</b> ${escapeHtml( report.categoria || "Não informada" )} </p> <p> <b>Prioridade:</b> ${escapeHtml( report.prioridade || "Não informada" )} </p> <p> <b>Local:</b> ${escapeHtml( report.local || "Não informado" )} </p> <p> <b>Referência:</b> ${escapeHtml( report.referenciaLocal || "Não informada" )} </p> <p> <b>Data de início:</b> ${formatDate( report.inicioEm || report.criadoEm )} </p> <p> <b>Data de fim:</b> ${formatDate(report.fimEm)} </p> <p> <b>Descrição:</b><br> ${escapeHtml( report.descricao || "Sem descrição" )} </p> <p> <b>Oferece risco:</b> ${report.ofereceRisco ? "Sim" : "Não"} </p> ${ report.fotoData ? ` <div class="report-photo-container"> <img class="detail-photo" src="${report.fotoData}" alt="Foto da ocorrência" /> </div> ` : "" } `;
 
   show("detailModal");
 }
 
 
+// =====================================================
 // ABRIR MODAL DE EDIÇÃO
+// =====================================================
+
 function openEditModal(reportId) {
   const report = allReports.find(
     (item) => item.id === reportId
@@ -422,21 +474,70 @@ function openEditModal(reportId) {
     return;
   }
 
-  $("editReportId").value = report.id;
-  $("editTitle").value = report.titulo || "";
-  $("editCategory").value = report.categoria || "";
-  $("editPriority").value = report.prioridade || "Normal";
-  $("editLocation").value = report.local || "";
-  $("editReference").value = report.referenciaLocal || "";
-  $("editDescription").value = report.descricao || "";
-  $("editStatus").value = report.status || "Aberto";
+  const editReportId =
+    $("editReportId");
+
+  const editTitle =
+    $("editTitle");
+
+  const editCategory =
+    $("editCategory");
+
+  const editPriority =
+    $("editPriority");
+
+  const editLocation =
+    $("editLocation");
+
+  const editReference =
+    $("editReference");
+
+  const editDescription =
+    $("editDescription");
+
+  const editStatus =
+    $("editStatus");
+
+  if (
+    !editReportId ||
+    !editTitle ||
+    !editCategory ||
+    !editPriority ||
+    !editLocation ||
+    !editReference ||
+    !editDescription ||
+    !editStatus
+  ) {
+    alert(
+      "Os campos do formulário de edição não foram encontrados."
+    );
+    return;
+  }
+
+  editReportId.value = report.id;
+  editTitle.value = report.titulo || "";
+  editCategory.value =
+    report.categoria || "";
+  editPriority.value =
+    report.prioridade || "Normal";
+  editLocation.value =
+    report.local || "";
+  editReference.value =
+    report.referenciaLocal || "";
+  editDescription.value =
+    report.descricao || "";
+  editStatus.value =
+    report.status || "Aberto";
 
   message("editMessage", "");
   show("editModal");
 }
 
 
+// =====================================================
 // SALVAR EDIÇÃO
+// =====================================================
+
 async function saveEdit(event) {
   event.preventDefault();
 
@@ -450,7 +551,8 @@ async function saveEdit(event) {
     return;
   }
 
-  const reportId = $("editReportId")?.value;
+  const reportId =
+    $("editReportId")?.value;
 
   if (!reportId) {
     message(
@@ -472,32 +574,68 @@ async function saveEdit(event) {
     return;
   }
 
-  if (report.moradorId !== user.uid) {
+  const title =
+    $("editTitle")?.value.trim();
+
+  const category =
+    $("editCategory")?.value;
+
+  const priority =
+    $("editPriority")?.value;
+
+  const location =
+    $("editLocation")?.value;
+
+  const reference =
+    $("editReference")?.value.trim();
+
+  const description =
+    $("editDescription")?.value.trim();
+
+  const status =
+    $("editStatus")?.value;
+
+  if (!title || title.length < 3) {
     message(
       "editMessage",
-      "Você só pode editar suas próprias ocorrências."
+      "Informe um título válido."
     );
     return;
   }
 
-  const saveButton = $("btnSaveEdit");
+  if (!category || !priority || !location) {
+    message(
+      "editMessage",
+      "Preencha os campos obrigatórios."
+    );
+    return;
+  }
+
+  if (!description || description.length < 10) {
+    message(
+      "editMessage",
+      "A descrição deve ter pelo menos 10 caracteres."
+    );
+    return;
+  }
+
+  const saveButton =
+    $("btnSaveEdit");
 
   if (saveButton) {
     saveButton.disabled = true;
   }
 
   try {
-    const status = $("editStatus").value;
-
     await updateDoc(
       doc(db, "reports", reportId),
       {
-        titulo: $("editTitle").value.trim(),
-        categoria: $("editCategory").value,
-        prioridade: $("editPriority").value,
-        local: $("editLocation").value,
-        referenciaLocal: $("editReference").value.trim(),
-        descricao: $("editDescription").value.trim(),
+        titulo: title,
+        categoria: category,
+        prioridade: priority,
+        local: location,
+        referenciaLocal: reference,
+        descricao: description,
         status,
 
         fimEm:
@@ -505,12 +643,15 @@ async function saveEdit(event) {
             ? serverTimestamp()
             : null,
 
-        atualizadoEm: serverTimestamp()
+        atualizadoEm:
+          serverTimestamp()
       }
     );
 
     hide("editModal");
-    toast("Ocorrência atualizada com sucesso.");
+    toast(
+      "Ocorrência atualizada com sucesso."
+    );
   } catch (error) {
     message(
       "editMessage",
@@ -524,12 +665,17 @@ async function saveEdit(event) {
 }
 
 
+// =====================================================
 // EXCLUIR OCORRÊNCIA
+// =====================================================
+
 async function deleteReport(reportId) {
   const user = auth.currentUser;
 
   if (!user) {
-    alert("Você precisa estar autenticado.");
+    alert(
+      "Você precisa estar autenticado."
+    );
     return;
   }
 
@@ -538,13 +684,8 @@ async function deleteReport(reportId) {
   );
 
   if (!report) {
-    alert("Ocorrência não encontrada.");
-    return;
-  }
-
-  if (report.moradorId !== user.uid) {
     alert(
-      "Você só pode excluir ocorrências criadas por você."
+      "Ocorrência não encontrada."
     );
     return;
   }
@@ -562,73 +703,96 @@ async function deleteReport(reportId) {
       doc(db, "reports", reportId)
     );
 
-    toast("Ocorrência excluída com sucesso.");
+    toast(
+      "Ocorrência excluída com sucesso."
+    );
   } catch (error) {
     console.error(
       "Erro ao excluir ocorrência:",
       error
     );
 
-    alert(friendlyError(error));
+    alert(
+      friendlyError(error)
+    );
   }
 }
 
 
-// EVENTOS DE CLIQUE
-document.addEventListener("click", (event) => {
-  const detailButton = event.target.closest(
-    ".detail-button"
-  );
+// =====================================================
+// EVENTOS DOS BOTÕES
+// =====================================================
 
-  if (detailButton) {
-    openDetails(detailButton.dataset.id);
-    return;
-  }
+document.addEventListener(
+  "click",
+  (event) => {
+    const detailButton =
+      event.target.closest(
+        ".detail-button"
+      );
 
-  const editButton = event.target.closest(
-    ".edit-button"
-  );
-
-  if (editButton) {
-    openEditModal(editButton.dataset.id);
-    return;
-  }
-
-  const deleteButton = event.target.closest(
-    ".delete-button"
-  );
-
-  if (deleteButton) {
-    deleteReport(deleteButton.dataset.id);
-    return;
-  }
-
-  if (event.target.id === "prevPage") {
-    if (currentPage > 1) {
-      currentPage--;
-      renderReports();
+    if (detailButton) {
+      openDetails(
+        detailButton.dataset.id
+      );
+      return;
     }
 
-    return;
-  }
+    const editButton =
+      event.target.closest(
+        ".edit-button"
+      );
 
-  if (event.target.id === "nextPage") {
-    const totalPages = Math.max(
-      1,
-      Math.ceil(
-        getFilteredReports().length / pageSize
-      )
-    );
+    if (editButton) {
+      openEditModal(
+        editButton.dataset.id
+      );
+      return;
+    }
 
-    if (currentPage < totalPages) {
-      currentPage++;
-      renderReports();
+    const deleteButton =
+      event.target.closest(
+        ".delete-button"
+      );
+
+    if (deleteButton) {
+      deleteReport(
+        deleteButton.dataset.id
+      );
+      return;
+    }
+
+    if (event.target.id === "prevPage") {
+      if (currentPage > 1) {
+        currentPage--;
+        renderReports();
+      }
+
+      return;
+    }
+
+    if (event.target.id === "nextPage") {
+      const totalPages = Math.max(
+        1,
+        Math.ceil(
+          getFilteredReports().length /
+          pageSize
+        )
+      );
+
+      if (currentPage < totalPages) {
+        currentPage++;
+        renderReports();
+      }
     }
   }
-});
+);
 
 
-// FECHAR MODAL DE DETALHAMENTO
+// =====================================================
+// FECHAMENTO DOS MODAIS
+// =====================================================
+
 $("btnCloseDetail")?.addEventListener(
   "click",
   () => hide("detailModal")
@@ -637,14 +801,14 @@ $("btnCloseDetail")?.addEventListener(
 $("detailModal")?.addEventListener(
   "click",
   (event) => {
-    if (event.target.id === "detailModal") {
+    if (
+      event.target.id === "detailModal"
+    ) {
       hide("detailModal");
     }
   }
 );
 
-
-// FECHAR MODAL DE EDIÇÃO
 $("btnCloseEdit")?.addEventListener(
   "click",
   () => hide("editModal")
@@ -653,14 +817,19 @@ $("btnCloseEdit")?.addEventListener(
 $("editModal")?.addEventListener(
   "click",
   (event) => {
-    if (event.target.id === "editModal") {
+    if (
+      event.target.id === "editModal"
+    ) {
       hide("editModal");
     }
   }
 );
 
 
-// NAVEGAÇÃO DE LOGIN E CADASTRO
+// =====================================================
+// NAVEGAÇÃO
+// =====================================================
+
 $("btnShowRegister")?.addEventListener(
   "click",
   () => {
@@ -677,8 +846,6 @@ $("btnBackLogin")?.addEventListener(
   }
 );
 
-
-// NOVO REGISTRO
 $("btnNewReport")?.addEventListener(
   "click",
   () => {
@@ -687,8 +854,6 @@ $("btnNewReport")?.addEventListener(
   }
 );
 
-
-// CANCELAR NOVO REGISTRO
 $("btnCancelReport")?.addEventListener(
   "click",
   () => {
@@ -698,8 +863,6 @@ $("btnCancelReport")?.addEventListener(
   }
 );
 
-
-// FILTRO
 $("statusFilter")?.addEventListener(
   "change",
   () => {
@@ -708,17 +871,31 @@ $("statusFilter")?.addEventListener(
   }
 );
 
+$("btnLogout")?.addEventListener(
+  "click",
+  () => signOut(auth)
+);
 
-// FORMULÁRIO DE LOGIN
+
+// =====================================================
+// LOGIN
+// =====================================================
+
 $("loginForm")?.addEventListener(
   "submit",
   async (event) => {
     event.preventDefault();
 
-    message("loginMessage", "Entrando...");
+    message(
+      "loginMessage",
+      "Entrando..."
+    );
 
-    const email = $("loginEmail")?.value.trim();
-    const password = $("loginPassword")?.value;
+    const email =
+      $("loginEmail")?.value.trim();
+
+    const password =
+      $("loginPassword")?.value;
 
     if (!email || !password) {
       message(
@@ -734,6 +911,40 @@ $("loginForm")?.addEventListener(
         email,
         password
       );
+
+      const user = auth.currentUser;
+
+      if (
+        user &&
+        !isAdmin(user)
+      ) {
+        const userSnapshot =
+          await getDoc(
+            doc(db, "users", user.uid)
+          );
+
+        const userData =
+          userSnapshot.exists()
+            ? userSnapshot.data()
+            : {};
+
+        const status =
+          userData.status || "Pendente";
+
+        if (status !== "Aprovado") {
+          await signOut(auth);
+
+          if (status === "Pendente") {
+            throw new Error(
+              "Seu cadastro ainda aguarda aprovação do administrador."
+            );
+          }
+
+          throw new Error(
+            "Seu cadastro não está autorizado a acessar o sistema."
+          );
+        }
+      }
     } catch (error) {
       message(
         "loginMessage",
@@ -744,7 +955,10 @@ $("loginForm")?.addEventListener(
 );
 
 
-// FORMULÁRIO DE CADASTRO
+// =====================================================
+// CADASTRO
+// =====================================================
+
 $("registerForm")?.addEventListener(
   "submit",
   async (event) => {
@@ -755,12 +969,23 @@ $("registerForm")?.addEventListener(
       "Criando cadastro..."
     );
 
-    const name = $("registerName")?.value.trim();
-    const unit = $("registerUnit")?.value.trim();
-    const block = $("registerBlock")?.value.trim();
-    const phone = $("registerPhone")?.value.trim();
-    const email = $("registerEmail")?.value.trim();
-    const password = $("registerPassword")?.value;
+    const name =
+      $("registerName")?.value.trim();
+
+    const unit =
+      $("registerUnit")?.value.trim();
+
+    const block =
+      $("registerBlock")?.value.trim();
+
+    const phone =
+      $("registerPhone")?.value.trim();
+
+    const email =
+      $("registerEmail")?.value.trim();
+
+    const password =
+      $("registerPassword")?.value;
 
     if (!name || !unit || !email || !password) {
       message(
@@ -778,12 +1003,19 @@ $("registerForm")?.addEventListener(
           password
         );
 
-      await updateProfile(credential.user, {
-        displayName: name
-      });
+      await updateProfile(
+        credential.user,
+        {
+          displayName: name
+        }
+      );
 
       await setDoc(
-        doc(db, "users", credential.user.uid),
+        doc(
+          db,
+          "users",
+          credential.user.uid
+        ),
         {
           uid: credential.user.uid,
           nome: name,
@@ -791,13 +1023,24 @@ $("registerForm")?.addEventListener(
           bloco: block || "",
           telefone: phone || "",
           email,
-          criadoEm: serverTimestamp()
+
+          status: "Pendente",
+
+          criadoEm: serverTimestamp(),
+          aprovadoEm: null,
+          rejeitadoEm: null,
+          atualizadoEm: serverTimestamp()
         }
       );
 
+      await signOut(auth);
+
+      hide("registerView");
+      show("loginView");
+
       message(
-        "registerMessage",
-        "Cadastro criado com sucesso.",
+        "loginMessage",
+        "Cadastro realizado. Aguarde a aprovação do administrador.",
         true
       );
     } catch (error) {
@@ -810,14 +1053,10 @@ $("registerForm")?.addEventListener(
 );
 
 
-// LOGOUT
-$("btnLogout")?.addEventListener(
-  "click",
-  () => signOut(auth)
-);
+// =====================================================
+// ENVIO DE OCORRÊNCIA
+// =====================================================
 
-
-// ENVIO DE NOVA OCORRÊNCIA
 $("reportForm")?.addEventListener(
   "submit",
   async (event) => {
@@ -833,7 +1072,8 @@ $("reportForm")?.addEventListener(
       return;
     }
 
-    const submitButton = $("btnSubmitReport");
+    const submitButton =
+      $("btnSubmitReport");
 
     if (submitButton) {
       submitButton.disabled = true;
@@ -845,15 +1085,32 @@ $("reportForm")?.addEventListener(
     );
 
     try {
-      const title = $("reportTitle")?.value.trim();
-      const category = $("reportCategory")?.value;
-      const priority = $("reportPriority")?.value;
-      const location = $("reportLocation")?.value;
-      const reference = $("reportReference")?.value.trim();
-      const description = $("reportDescription")?.value.trim();
-      const risk = $("reportRisk")?.checked || false;
-      const updates = $("reportUpdates")?.checked || false;
-      const file = $("reportPhoto")?.files?.[0];
+      const title =
+        $("reportTitle")?.value.trim();
+
+      const category =
+        $("reportCategory")?.value;
+
+      const priority =
+        $("reportPriority")?.value;
+
+      const location =
+        $("reportLocation")?.value;
+
+      const reference =
+        $("reportReference")?.value.trim();
+
+      const description =
+        $("reportDescription")?.value.trim();
+
+      const risk =
+        $("reportRisk")?.checked || false;
+
+      const updates =
+        $("reportUpdates")?.checked || false;
+
+      const file =
+        $("reportPhoto")?.files?.[0];
 
       if (
         !title ||
@@ -882,16 +1139,24 @@ $("reportForm")?.addEventListener(
           );
         }
 
-        fotoData = await compressImage(file);
+        message(
+          "reportMessage",
+          "Reduzindo o tamanho da foto..."
+        );
+
+        fotoData =
+          await compressImage(file);
       }
 
-      const userSnapshot = await getDoc(
-        doc(db, "users", user.uid)
-      );
+      const userSnapshot =
+        await getDoc(
+          doc(db, "users", user.uid)
+        );
 
-      const profile = userSnapshot.exists()
-        ? userSnapshot.data()
-        : {};
+      const profile =
+        userSnapshot.exists()
+          ? userSnapshot.data()
+          : {};
 
       const now = new Date();
 
@@ -904,7 +1169,8 @@ $("reportForm")?.addEventListener(
           protocolo: protocol,
           moradorId: user.uid,
 
-          nome: profile.nome ||
+          nome:
+            profile.nome ||
             user.displayName ||
             "",
 
@@ -935,11 +1201,16 @@ $("reportForm")?.addEventListener(
       );
 
       $("reportForm")?.reset();
+
       hide("reportFormCard");
-      message("reportMessage", "");
+
+      message(
+        "reportMessage",
+        ""
+      );
 
       toast(
-        `Registro enviado. Protocolo: ${protocol}`
+        `Registro enviado com sucesso. Protocolo: ${protocol}`
       );
     } catch (error) {
       message(
@@ -955,107 +1226,142 @@ $("reportForm")?.addEventListener(
 );
 
 
-// AUTENTICAÇÃO E CARREGAMENTO DOS REGISTROS
-onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    hide("appView");
+// =====================================================
+// CARREGAMENTO DO USUÁRIO E REGISTROS
+// =====================================================
+
+onAuthStateChanged(
+  auth,
+  async (user) => {
+    if (!user) {
+      hide("appView");
+      hide("registerView");
+      show("loginView");
+
+      $("btnLogout")?.classList.add(
+        "hidden"
+      );
+
+      if (unsubscribeReports) {
+        unsubscribeReports();
+        unsubscribeReports = null;
+      }
+
+      return;
+    }
+
+    hide("loginView");
     hide("registerView");
-    show("loginView");
+    show("appView");
 
-    $("btnLogout")?.classList.add("hidden");
-
-    if (unsubscribeReports) {
-      unsubscribeReports();
-      unsubscribeReports = null;
-    }
-
-    return;
-  }
-
-  hide("loginView");
-  hide("registerView");
-  show("appView");
-
-  $("btnLogout")?.classList.remove("hidden");
-
-  try {
-    const userSnapshot = await getDoc(
-      doc(db, "users", user.uid)
+    $("btnLogout")?.classList.remove(
+      "hidden"
     );
 
-    const userData = userSnapshot.exists()
-      ? userSnapshot.data()
-      : {};
-
-    setText(
-      "userName",
-      userData.nome ||
-        user.displayName ||
-        "Morador"
-    );
-
-    // Carrega somente as ocorrências do morador logado
-    const reportsQuery = query(
-      collection(db, "reports"),
-      where("moradorId", "==", user.uid)
-    );
-
-    if (unsubscribeReports) {
-      unsubscribeReports();
-    }
-
-    unsubscribeReports = onSnapshot(
-      reportsQuery,
-      (snapshot) => {
-        allReports = snapshot.docs
-          .map((item) => ({
-            id: item.id,
-            ...item.data()
-          }))
-          .sort((a, b) => {
-            const dateA =
-              a.criadoEm?.toMillis?.() || 0;
-
-            const dateB =
-              b.criadoEm?.toMillis?.() || 0;
-
-            return dateB - dateA;
-          });
-
-        currentPage = 1;
-        renderReports();
-      },
-      (error) => {
-        console.error(
-          "Erro ao carregar registros:",
-          error
+    try {
+      const userSnapshot =
+        await getDoc(
+          doc(db, "users", user.uid)
         );
 
-        const list = $("reportsList");
+      const userData =
+        userSnapshot.exists()
+          ? userSnapshot.data()
+          : {};
 
-        if (list) {
-          list.innerHTML = ` <div class="empty-state"> ${escapeHtml( friendlyError(error) )} </div> `;
-        }
+      setText(
+        "userName",
+        userData.nome ||
+          user.displayName ||
+          "Morador"
+      );
+
+      let reportsQuery;
+
+      if (isAdmin(user)) {
+        // Administrador vê todos os registros
+        reportsQuery = query(
+          collection(db, "reports"),
+          orderBy("criadoEm", "desc")
+        );
+
+        setText(
+          "statTotal",
+          "Todos"
+        );
+      } else {
+        // Morador vê apenas seus registros
+        reportsQuery = query(
+          collection(db, "reports"),
+          where(
+            "moradorId",
+            "==",
+            user.uid
+          )
+        );
       }
-    );
-  } catch (error) {
-    console.error(
-      "Erro ao carregar usuário:",
-      error
-    );
 
-    message(
-      "reportMessage",
-      friendlyError(error)
-    );
+      if (unsubscribeReports) {
+        unsubscribeReports();
+      }
+
+      unsubscribeReports =
+        onSnapshot(
+          reportsQuery,
+          (snapshot) => {
+            allReports =
+              snapshot.docs
+                .map((item) => ({
+                  id: item.id,
+                  ...item.data()
+                }))
+                .sort((a, b) => {
+                  const dateA =
+                    a.criadoEm?.toMillis?.() || 0;
+
+                  const dateB =
+                    b.criadoEm?.toMillis?.() || 0;
+
+                  return dateB - dateA;
+                });
+
+            currentPage = 1;
+            renderReports();
+          },
+          (error) => {
+            console.error(
+              "Erro ao carregar registros:",
+              error
+            );
+
+            const list =
+              $("reportsList");
+
+            if (list) {
+              list.innerHTML = ` <div class="empty-state"> ${escapeHtml( friendlyError(error) )} </div> `;
+            }
+          }
+        );
+    } catch (error) {
+      console.error(
+        "Erro ao carregar dados do usuário:",
+        error
+      );
+
+      message(
+        "reportMessage",
+        friendlyError(error)
+      );
+    }
   }
-});
+);
 
 
+// =====================================================
 // FORMULÁRIO DE EDIÇÃO
+// =====================================================
+
 $("editForm")?.addEventListener(
   "submit",
   saveEdit
 );
-
-
