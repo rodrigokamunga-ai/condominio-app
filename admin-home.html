@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta name="theme-color" content="#172554" />
+
+  <title>Área Administrativa - Amigos do Maui</title>
+
+  <link rel="stylesheet" href="./styles.css" />
+
+  <link rel="stylesheet" href="./admin-home.css" />
+</head>
+
+<body class="admin-home-page">
+
+  <header class="topbar admin-home-topbar">
+    <div class="brand">
+      <span class="brand-icon">🏢</span>
+
+      <div>
+        <strong>Amigos do Maui</strong>
+        <small>Área administrativa</small>
+      </div>
+    </div>
+
+    <button id="btnAdminHomeLogout" class="admin-home-logout" type="button" >
+      Sair
+    </button>
+  </header>
+
+
+  <main class="admin-home-container">
+
+    <section class="admin-home-header">
+      <div>
+        <span class="admin-home-eyebrow">
+          PAINEL PRINCIPAL
+        </span>
+
+        <h1>
+          Olá,
+          <span id="adminHomeName">
+            Administrador
+          </span>!
+        </h1>
+
+        <p>
+          Selecione uma opção para continuar.
+        </p>
+      </div>
+
+      <div class="admin-home-user">
+        <span>Administrador conectado</span>
+
+        <strong id="adminHomeEmail">
+          —
+        </strong>
+      </div>
+    </section>
+
+
+    <section id="adminHomeLoading" class="admin-home-loading" >
+      Verificando acesso...
+    </section>
+
+
+    <section id="adminHomeContent" class="admin-home-content hidden" >
+
+      <a href="./index.html" class="admin-menu-card records-card" >
+        <span class="admin-menu-icon">📋</span>
+
+        <strong>Registros</strong>
+
+        <small>
+          Consultar e gerenciar ocorrências
+        </small>
+      </a>
+
+
+      <a href="./admin.html" class="admin-menu-card dashboard-card" >
+        <span class="admin-menu-icon">📊</span>
+
+        <strong>Admin</strong>
+
+        <small>
+          Dashboard, indicadores e relatórios
+        </small>
+      </a>
+
+
+      <a href="./usuarios.html" class="admin-menu-card users-card" >
+        <span class="admin-menu-icon">👥</span>
+
+        <strong>Usuários</strong>
+
+        <small>
+          Aprovar e gerenciar moradores
+        </small>
+      </a>
+
+
+      <a href="./public.html" class="admin-menu-card public-card" >
+        <span class="admin-menu-icon">🌐</span>
+
+        <strong>Tela Pública</strong>
+
+        <small>
+          Consultar mural de ocorrências
+        </small>
+      </a>
+
+    </section>
+
+
+    <section id="adminHomeDenied" class="admin-home-denied hidden" >
+      <h2>Acesso restrito</h2>
+
+      <p>
+        Esta área está disponível somente para o administrador.
+      </p>
+
+      <a href="./index.html" class="primary-button button-link" >
+        Voltar para o portal
+      </a>
+    </section>
+
+  </main>
+
+
+  <script type="module" src="./admin-home.js" ></script>
+</body>
+</html>
