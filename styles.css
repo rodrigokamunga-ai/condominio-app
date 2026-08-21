@@ -854,3 +854,404 @@ button:disabled {
     flex-wrap: wrap;
   }
 }
+
+/* ===================================================== INDICADORES DA PÁGINA PÚBLICA ===================================================== */
+
+.public-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+
+  margin-bottom: 28px;
+}
+
+.public-stat-card {
+  min-height: 100px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+
+  padding: 15px;
+
+  background: #f8fffe;
+  border: 1px solid #b7e4df;
+  border-radius: 14px;
+
+  text-align: center;
+}
+
+.public-stat-card span {
+  display: block;
+
+  color: var(--primary);
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.public-stat-card small {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+
+/* RESPONSIVIDADE DOS INDICADORES PÚBLICOS */
+
+@media (max-width: 950px) {
+  .public-stats-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 650px) {
+  .public-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .public-stat-card {
+    min-height: 85px;
+    padding: 12px 8px;
+  }
+
+  .public-stat-card span {
+    font-size: 24px;
+  }
+
+  .public-stat-card small {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 400px) {
+  .public-stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===================================================== CARDS ADMINISTRATIVOS DE OCORRÊNCIAS ===================================================== */
+
+.admin-report-item {
+  position: relative;
+
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+
+  min-height: 220px;
+
+  padding: 22px 22px 78px;
+
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+
+  box-shadow: 0 5px 16px rgba(15, 23, 42, 0.04);
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.admin-report-item:hover {
+  border-color: #b8c9dc;
+
+  box-shadow:
+    0 8px 20px rgba(15, 23, 42, 0.08);
+}
+
+
+/* ===================================================== DADOS DA OCORRÊNCIA ===================================================== */
+
+.admin-report-main {
+  width: 100%;
+  padding-right: 145px;
+}
+
+.admin-report-main .report-title {
+  margin-bottom: 8px;
+
+  color: var(--text);
+  font-size: 19px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.admin-report-main .report-meta {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+
+/* ===================================================== SITUAÇÃO NO CANTO SUPERIOR DIREITO ===================================================== */
+
+.admin-report-status {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+
+  margin: 0;
+
+  min-width: 90px;
+
+  justify-content: center;
+}
+
+
+/* ===================================================== BOTÕES NO CANTO INFERIOR ESQUERDO ===================================================== */
+
+.admin-report-actions {
+  position: absolute;
+  bottom: 18px;
+  left: 22px;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.admin-report-actions .action-icon-button {
+  width: 42px;
+  height: 42px;
+  min-height: 42px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border-radius: 10px;
+
+  font-size: 19px;
+  line-height: 1;
+}
+
+.admin-report-actions .detail-button {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.admin-report-actions .detail-button:hover {
+  background: #bae6fd;
+}
+
+.admin-report-actions .edit-button {
+  background: #fef3c7;
+  color: #a16207;
+}
+
+.admin-report-actions .edit-button:hover {
+  background: #fde68a;
+}
+
+.admin-report-actions .delete-button {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.admin-report-actions .delete-button:hover {
+  background: #fecaca;
+}
+
+@media (max-width: 650px) {
+  .admin-report-item {
+    min-height: 230px;
+    padding: 64px 16px 78px;
+  }
+
+  .admin-report-main {
+    padding-right: 0;
+  }
+
+  .admin-report-status {
+    top: 20px;
+    right: 16px;
+  }
+
+  .admin-report-actions {
+    bottom: 16px;
+    left: 16px;
+  }
+
+  .admin-report-main .report-title {
+    font-size: 17px;
+  }
+
+  .admin-report-main .report-meta {
+    font-size: 14px;
+  }
+}
+
+/* ===================================================== CARD ADMINISTRATIVO DE OCORRÊNCIA ===================================================== */
+
+.admin-report-item {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+
+  min-height: 220px;
+
+  padding: 20px 22px 78px;
+
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+
+  box-shadow:
+    0 5px 16px rgba(15, 23, 42, 0.04);
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.admin-report-item:hover {
+  border-color: #b8c9dc;
+
+  box-shadow:
+    0 8px 20px rgba(15, 23, 42, 0.08);
+}
+
+
+/* ===================================================== TÍTULO E SITUAÇÃO NA MESMA LINHA ===================================================== */
+
+.admin-report-header {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+
+  min-height: 38px;
+  margin-bottom: 12px;
+}
+
+.admin-report-header .report-title {
+  flex: 1;
+  min-width: 0;
+
+  margin: 0;
+
+  color: var(--text);
+  font-size: 19px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.admin-report-status {
+  position: static;
+
+  flex: 0 0 auto;
+
+  margin: 0;
+}
+
+
+/* ===================================================== DADOS DA OCORRÊNCIA ===================================================== */
+
+.admin-report-main {
+  width: 100%;
+  padding: 0;
+}
+
+.admin-report-main .report-meta {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+
+/* ===================================================== BOTÕES NO CANTO INFERIOR ESQUERDO ===================================================== */
+
+.admin-report-actions {
+  position: absolute;
+  bottom: 18px;
+  left: 22px;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.admin-report-actions .action-icon-button {
+  width: 42px;
+  height: 42px;
+  min-height: 42px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border-radius: 10px;
+
+  font-size: 19px;
+  line-height: 1;
+}
+
+.admin-report-actions .detail-button {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.admin-report-actions .detail-button:hover {
+  background: #bae6fd;
+}
+
+.admin-report-actions .edit-button {
+  background: #fef3c7;
+  color: #a16207;
+}
+
+.admin-report-actions .edit-button:hover {
+  background: #fde68a;
+}
+
+.admin-report-actions .delete-button {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.admin-report-actions .delete-button:hover {
+  background: #fecaca;
+}
+
+@media (max-width: 650px) {
+  .admin-report-item {
+    min-height: 230px;
+    padding: 18px 16px 78px;
+  }
+
+  .admin-report-header {
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .admin-report-header .report-title {
+    font-size: 17px;
+  }
+
+  .admin-report-status {
+    font-size: 11px;
+  }
+
+  .admin-report-main .report-meta {
+    font-size: 14px;
+  }
+
+  .admin-report-actions {
+    bottom: 16px;
+    left: 16px;
+  }
+}
