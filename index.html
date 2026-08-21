@@ -1,32 +1,508 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#2563eb">
-<title>Amigos do Maui - Portal do Morador</title>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#2563eb" />
+
+  <title>Amigos do Maui - Portal do Morador</title>
+
+  <link rel="stylesheet" href="./styles.css" />
 </head>
+
 <body>
-<header class="topbar">
-<div class="brand"><span class="brand-icon">🏢</span><div><strong>Amigos do Maui</strong><small>Portal do morador</small></div></div>
-<div class="top-actions"><a href="public.html" class="link-button">Registros públicos</a><button id="btnLogout" class="link-button hidden" type="button">Sair</button></div>
-</header>
-<main class="container">
-<section id="loginView" class="card auth-card"><h1>Acesse o sistema</h1><p class="muted">Entre para registrar e acompanhar ocorrências.</p>
-<form id="loginForm" class="form"><label>E-mail<input id="loginEmail" type="email" required></label><label>Senha<input id="loginPassword" type="password" required minlength="6"></label><button class="primary-button">Entrar</button><button id="btnShowRegister" class="secondary-button" type="button">Criar cadastro</button></form><p id="loginMessage" class="message"></p></section>
-<section id="registerView" class="card auth-card hidden"><h1>Criar cadastro</h1><form id="registerForm" class="form"><label>Nome completo<input id="registerName" required minlength="3"></label><label>Unidade / apartamento<input id="registerUnit" required></label><label>Bloco / torre<input id="registerBlock"></label><label>Telefone<input id="registerPhone"></label><label>E-mail<input id="registerEmail" type="email" required></label><label>Senha<input id="registerPassword" type="password" required minlength="6"></label><button class="primary-button">Cadastrar</button><button id="btnBackLogin" class="secondary-button" type="button">Voltar para login</button></form><p id="registerMessage" class="message"></p></section>
-<section id="appView" class="hidden">
-<div class="welcome-row"><div><h1>Olá, <span id="userName">morador</span>!</h1><p class="muted">Esta é sua área do condomínio.</p></div><div class="button-row"><a href="public.html" class="secondary-button button-link">Ver registros públicos</a><button id="btnNewReport" class="primary-button" type="button">+ Novo registro</button></div></div>
-<div class="stats-grid"><div class="stat-card"><span id="statTotal">0</span><small>Meus registros</small></div><div class="stat-card"><span id="statOpen">0</span><small>Em aberto</small></div><div class="stat-card"><span id="statResolved">0</span><small>Resolvidos</small></div></div>
-<section id="reportFormCard" class="card hidden"><div class="section-heading"><div><h2>Novo registro</h2><p class="muted">Descreva o problema encontrado.</p></div><button id="btnCancelReport" class="icon-button" type="button">×</button></div>
-<form id="reportForm" class="form"><label>Título do problema *<input id="reportTitle" required maxlength="100"></label>
-<div class="two-columns"><label>Categoria *<select id="reportCategory" required><option value="">Selecione</option><option>Elétrica</option><option>Hidráulica</option><option>Limpeza</option><option>Segurança</option><option>Elevador</option><option>Garagem</option><option>Áreas comuns</option><option>Barulho</option><option>Estrutura</option><option>Outros</option></select></label><label>Prioridade *<select id="reportPriority" required><option>Normal</option><option>Baixa</option><option>Alta</option><option>Emergência</option></select></label></div>
-<div class="two-columns"><label>Local *<select id="reportLocation" required><option value="">Selecione</option><option>Bloco 1</option><option>Bloco 2</option><option>Bloco 3</option><option>Bloco 4</option><option>Bloco 5</option><option>Bloco 6</option><option>Bloco 7</option><option>Bloco 8</option><option>Garagem</option><option>Garagem subsolo</option><option>Piscina</option><option>Quadra Poliesportiva</option><option>Quadra de Tênis</option><option>Churrasqueira 1</option><option>Churrasqueira 2</option><option>Churrasqueira 3</option><option>Churrasqueira 4</option><option>Salão de Festas</option><option>Salão Gourmet</option><option>Espaço do Conhecimento</option><option>Spinning</option><option>Academia</option><option>Sala de Lutas</option><option>Sala de Jogos Infantil</option><option>SPA</option><option>Salão de Jogos Adulto</option><option>Salão Teen</option><option>Brinquedoteca</option><option>Parquinho</option><option>Portaria</option><option>Área Externa</option></select></label><label>Referência do local<input id="reportReference"></label></div>
-<label>Descrição detalhada *<textarea id="reportDescription" required minlength="10" maxlength="2000"></textarea></label><label>Foto<input id="reportPhoto" type="file" accept="image/jpeg,image/png,image/webp"><small class="helper">A foto será reduzida automaticamente.</small></label><label class="checkbox-label"><input id="reportRisk" type="checkbox"> O problema oferece risco?</label><label class="checkbox-label"><input id="reportUpdates" type="checkbox" checked> Quero receber atualizações.</label><button id="btnSubmitReport" class="primary-button">Enviar registro</button><p id="reportMessage" class="message"></p></form></section>
-<section class="card"><div class="section-heading"><div><h2>Meus registros</h2><p class="muted">Apenas ocorrências abertas por você.</p></div><select id="statusFilter" class="compact-select"><option>Todos</option><option>Aberto</option><option>Em análise</option><option>Em execução</option><option>Resolvido</option></select></div><div id="reportsList" class="reports-list"></div><div id="pagination" class="pagination"></div></section>
-</section></main>
-<div id="detailModal" class="modal hidden"><div class="modal-card"><button id="btnCloseDetail" class="modal-close">×</button><div id="detailContent"></div></div></div><div id="toast" class="toast"></div>
-<script type="module" src="./app.js"></script>
+  <!-- CABEÇALHO -->
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-icon">🏢</span>
+
+      <div>
+        <strong>Amigos do Maui</strong>
+        <small>Portal do morador</small>
+      </div>
+    </div>
+
+    <div class="top-actions">
+      <a href="./public.html" class="link-button" >
+        Registros públicos
+      </a>
+
+      <button id="btnLogout" class="link-button hidden" type="button" >
+        Sair
+      </button>
+    </div>
+  </header>
+
+
+  <main class="container">
+
+    <!-- LOGIN -->
+    <section id="loginView" class="card auth-card" >
+      <h1>Acesse o sistema</h1>
+
+      <p class="muted">
+        Entre para registrar e acompanhar ocorrências.
+      </p>
+
+      <form id="loginForm" class="form" >
+        <label>
+          E-mail
+
+          <input id="loginEmail" type="email" required autocomplete="email" placeholder="voce@email.com" />
+        </label>
+
+        <label>
+          Senha
+
+          <input id="loginPassword" type="password" required minlength="6" autocomplete="current-password" placeholder="Mínimo de 6 caracteres" />
+        </label>
+
+        <button class="primary-button" type="submit" >
+          Entrar
+        </button>
+
+        <button id="btnShowRegister" class="secondary-button" type="button" >
+          Criar cadastro
+        </button>
+      </form>
+
+      <p id="loginMessage" class="message" ></p>
+    </section>
+
+
+    <!-- CADASTRO -->
+    <section id="registerView" class="card auth-card hidden" >
+      <h1>Criar cadastro</h1>
+
+      <p class="muted">
+        Informe seus dados para abrir chamados no condomínio.
+      </p>
+
+      <form id="registerForm" class="form" >
+        <label>
+          Nome completo
+
+          <input id="registerName" type="text" required minlength="3" autocomplete="name" placeholder="Digite seu nome completo" />
+        </label>
+
+        <label>
+          Unidade / apartamento
+
+          <input id="registerUnit" type="text" required placeholder="Ex.: Apto 204" />
+        </label>
+
+        <label>
+          Bloco / torre
+
+          <input id="registerBlock" type="text" placeholder="Ex.: Bloco A" />
+        </label>
+
+        <label>
+          Telefone
+
+          <input id="registerPhone" type="tel" autocomplete="tel" placeholder="(00) 00000-0000" />
+        </label>
+
+        <label>
+          E-mail
+
+          <input id="registerEmail" type="email" required autocomplete="email" placeholder="voce@email.com" />
+        </label>
+
+        <label>
+          Senha
+
+          <input id="registerPassword" type="password" required minlength="6" autocomplete="new-password" placeholder="Mínimo de 6 caracteres" />
+        </label>
+
+        <button class="primary-button" type="submit" >
+          Cadastrar
+        </button>
+
+        <button id="btnBackLogin" class="secondary-button" type="button" >
+          Voltar para login
+        </button>
+      </form>
+
+      <p id="registerMessage" class="message" ></p>
+    </section>
+
+
+    <!-- ÁREA DO MORADOR -->
+    <section id="appView" class="hidden" >
+
+      <!-- BOAS-VINDAS -->
+      <div class="welcome-row">
+        <div>
+          <h1>
+            Olá,
+            <span id="userName">morador</span>!
+          </h1>
+
+          <p class="muted">
+            Esta é sua área do condomínio.
+          </p>
+        </div>
+
+        <div class="button-row">
+          <a href="./public.html" class="secondary-button button-link" >
+            Ver registros públicos
+          </a>
+
+          <button id="btnNewReport" class="primary-button" type="button" >
+            + Novo registro
+          </button>
+        </div>
+      </div>
+
+
+      <!-- INDICADORES -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span id="statTotal">0</span>
+          <small>Meus registros</small>
+        </div>
+
+        <div class="stat-card">
+          <span id="statOpen">0</span>
+          <small>Em aberto</small>
+        </div>
+
+        <div class="stat-card">
+          <span id="statResolved">0</span>
+          <small>Resolvidos</small>
+        </div>
+      </div>
+
+
+      <!-- NOVA OCORRÊNCIA -->
+      <section id="reportFormCard" class="card hidden" >
+        <div class="section-heading">
+          <div>
+            <h2>Novo registro</h2>
+
+            <p class="muted">
+              Descreva o problema encontrado.
+            </p>
+          </div>
+
+          <button id="btnCancelReport" class="icon-button" type="button" aria-label="Fechar formulário" >
+            ×
+          </button>
+        </div>
+
+        <form id="reportForm" class="form" >
+          <label>
+            Título do problema *
+
+            <input id="reportTitle" type="text" required maxlength="100" placeholder="Ex.: Lâmpada queimada" />
+          </label>
+
+
+          <div class="two-columns">
+            <label>
+              Categoria *
+
+              <select id="reportCategory" required >
+                <option value="">Selecione</option>
+                <option value="Elétrica">Elétrica</option>
+                <option value="Hidráulica">Hidráulica</option>
+                <option value="Limpeza">Limpeza</option>
+                <option value="Segurança">Segurança</option>
+                <option value="Elevador">Elevador</option>
+                <option value="Garagem">Garagem</option>
+                <option value="Áreas comuns">Áreas comuns</option>
+                <option value="Barulho">Barulho</option>
+                <option value="Estrutura">Estrutura</option>
+                <option value="Outros">Outros</option>
+              </select>
+            </label>
+
+            <label>
+              Prioridade *
+
+              <select id="reportPriority" required >
+                <option value="Normal">Normal</option>
+                <option value="Baixa">Baixa</option>
+                <option value="Alta">Alta</option>
+                <option value="Emergência">Emergência</option>
+              </select>
+            </label>
+          </div>
+
+
+          <div class="two-columns">
+            <label>
+              Local *
+
+              <select id="reportLocation" required >
+                <option value="">Selecione o local</option>
+
+                <option value="Bloco 1">Bloco 1</option>
+                <option value="Bloco 2">Bloco 2</option>
+                <option value="Bloco 3">Bloco 3</option>
+                <option value="Bloco 4">Bloco 4</option>
+                <option value="Bloco 5">Bloco 5</option>
+                <option value="Bloco 6">Bloco 6</option>
+                <option value="Bloco 7">Bloco 7</option>
+                <option value="Bloco 8">Bloco 8</option>
+
+                <option value="Garagem">Garagem</option>
+                <option value="Garagem subsolo">Garagem subsolo</option>
+                <option value="Piscina">Piscina</option>
+                <option value="Quadra Poliesportiva">Quadra Poliesportiva</option>
+                <option value="Quadra de Tênis">Quadra de Tênis</option>
+
+                <option value="Churrasqueira 1">Churrasqueira 1</option>
+                <option value="Churrasqueira 2">Churrasqueira 2</option>
+                <option value="Churrasqueira 3">Churrasqueira 3</option>
+                <option value="Churrasqueira 4">Churrasqueira 4</option>
+
+                <option value="Salão de Festas">Salão de Festas</option>
+                <option value="Salão Gourmet">Salão Gourmet</option>
+                <option value="Espaço do Conhecimento">Espaço do Conhecimento</option>
+                <option value="Spinning">Spinning</option>
+                <option value="Academia">Academia</option>
+                <option value="Sala de Lutas">Sala de Lutas</option>
+                <option value="Sala de Jogos Infantil">Sala de Jogos Infantil</option>
+                <option value="SPA">SPA</option>
+                <option value="Salão de Jogos Adulto">Salão de Jogos Adulto</option>
+                <option value="Salão Teen">Salão Teen</option>
+                <option value="Brinquedoteca">Brinquedoteca</option>
+                <option value="Parquinho">Parquinho</option>
+                <option value="Portaria">Portaria</option>
+                <option value="Área Externa">Área Externa</option>
+              </select>
+            </label>
+
+            <label>
+              Referência do local
+
+              <input id="reportReference" type="text" placeholder="Ex.: vaga 32, 2º andar" />
+            </label>
+          </div>
+
+
+          <label>
+            Descrição detalhada *
+
+            <textarea id="reportDescription" required minlength="10" maxlength="2000" rows="5" placeholder="Explique o que aconteceu." ></textarea>
+          </label>
+
+
+          <label>
+            Foto
+
+            <input id="reportPhoto" type="file" accept="image/jpeg,image/png,image/webp" />
+
+            <small class="helper">
+              A foto será reduzida automaticamente.
+            </small>
+          </label>
+
+
+          <label class="checkbox-label">
+            <input id="reportRisk" type="checkbox" />
+
+            O problema oferece risco?
+          </label>
+
+
+          <label class="checkbox-label">
+            <input id="reportUpdates" type="checkbox" checked />
+
+            Quero receber atualizações.
+          </label>
+
+
+          <button id="btnSubmitReport" class="primary-button" type="submit" >
+            Enviar registro
+          </button>
+
+          <p id="reportMessage" class="message" ></p>
+        </form>
+      </section>
+
+
+      <!-- MEUS REGISTROS -->
+      <section class="card">
+        <div class="section-heading">
+          <div>
+            <h2>Meus registros</h2>
+
+            <p class="muted">
+              Apenas ocorrências abertas por você.
+            </p>
+          </div>
+
+          <select id="statusFilter" class="compact-select" >
+            <option value="Todos">Todos</option>
+            <option value="Aberto">Aberto</option>
+            <option value="Em análise">Em análise</option>
+            <option value="Em execução">Em execução</option>
+            <option value="Resolvido">Resolvido</option>
+          </select>
+        </div>
+
+        <div id="reportsList" class="reports-list" >
+          <div class="empty-state">
+            Nenhum registro encontrado.
+          </div>
+        </div>
+
+        <div id="pagination" class="pagination" ></div>
+      </section>
+
+    </section>
+  </main>
+
+
+  <!-- MODAL DE DETALHAMENTO -->
+  <div id="detailModal" class="modal hidden" >
+    <div class="modal-card">
+      <button id="btnCloseDetail" class="modal-close" type="button" aria-label="Fechar detalhamento" >
+        ×
+      </button>
+
+      <div id="detailContent"></div>
+    </div>
+  </div>
+
+
+  <!-- MODAL DE EDIÇÃO -->
+  <div id="editModal" class="modal hidden" >
+    <div class="modal-card">
+      <button id="btnCloseEdit" class="modal-close" type="button" aria-label="Fechar edição" >
+        ×
+      </button>
+
+      <h2>Editar ocorrência</h2>
+
+      <p class="muted">
+        Atualize os dados da ocorrência selecionada.
+      </p>
+
+      <form id="editForm" class="form" >
+        <input id="editReportId" type="hidden" />
+
+        <label>
+          Título do problema *
+
+          <input id="editTitle" type="text" required maxlength="100" />
+        </label>
+
+
+        <div class="two-columns">
+          <label>
+            Categoria *
+
+            <select id="editCategory" required >
+              <option value="Elétrica">Elétrica</option>
+              <option value="Hidráulica">Hidráulica</option>
+              <option value="Limpeza">Limpeza</option>
+              <option value="Segurança">Segurança</option>
+              <option value="Elevador">Elevador</option>
+              <option value="Garagem">Garagem</option>
+              <option value="Áreas comuns">Áreas comuns</option>
+              <option value="Barulho">Barulho</option>
+              <option value="Estrutura">Estrutura</option>
+              <option value="Outros">Outros</option>
+            </select>
+          </label>
+
+          <label>
+            Prioridade *
+
+            <select id="editPriority" required >
+              <option value="Normal">Normal</option>
+              <option value="Baixa">Baixa</option>
+              <option value="Alta">Alta</option>
+              <option value="Emergência">Emergência</option>
+            </select>
+          </label>
+        </div>
+
+
+        <div class="two-columns">
+          <label>
+            Local *
+
+            <select id="editLocation" required >
+              <option value="Bloco 1">Bloco 1</option>
+              <option value="Bloco 2">Bloco 2</option>
+              <option value="Bloco 3">Bloco 3</option>
+              <option value="Bloco 4">Bloco 4</option>
+              <option value="Bloco 5">Bloco 5</option>
+              <option value="Bloco 6">Bloco 6</option>
+              <option value="Bloco 7">Bloco 7</option>
+              <option value="Bloco 8">Bloco 8</option>
+              <option value="Garagem">Garagem</option>
+              <option value="Garagem subsolo">Garagem subsolo</option>
+              <option value="Piscina">Piscina</option>
+              <option value="Quadra Poliesportiva">Quadra Poliesportiva</option>
+              <option value="Quadra de Tênis">Quadra de Tênis</option>
+              <option value="Churrasqueira 1">Churrasqueira 1</option>
+              <option value="Churrasqueira 2">Churrasqueira 2</option>
+              <option value="Churrasqueira 3">Churrasqueira 3</option>
+              <option value="Churrasqueira 4">Churrasqueira 4</option>
+              <option value="Salão de Festas">Salão de Festas</option>
+              <option value="Salão Gourmet">Salão Gourmet</option>
+              <option value="Espaço do Conhecimento">Espaço do Conhecimento</option>
+              <option value="Spinning">Spinning</option>
+              <option value="Academia">Academia</option>
+              <option value="Sala de Lutas">Sala de Lutas</option>
+              <option value="Sala de Jogos Infantil">Sala de Jogos Infantil</option>
+              <option value="SPA">SPA</option>
+              <option value="Salão de Jogos Adulto">Salão de Jogos Adulto</option>
+              <option value="Salão Teen">Salão Teen</option>
+              <option value="Brinquedoteca">Brinquedoteca</option>
+              <option value="Parquinho">Parquinho</option>
+              <option value="Portaria">Portaria</option>
+              <option value="Área Externa">Área Externa</option>
+            </select>
+          </label>
+
+          <label>
+            Referência do local
+
+            <input id="editReference" type="text" />
+          </label>
+        </div>
+
+
+        <label>
+          Descrição detalhada *
+
+          <textarea id="editDescription" required minlength="10" maxlength="2000" rows="5" ></textarea>
+        </label>
+
+
+        <label>
+          Situação *
+
+          <select id="editStatus" required >
+            <option value="Aberto">Aberto</option>
+            <option value="Em análise">Em análise</option>
+            <option value="Em execução">Em execução</option>
+            <option value="Resolvido">Resolvido</option>
+          </select>
+        </label>
+
+
+        <button id="btnSaveEdit" class="primary-button" type="submit" >
+          Salvar alterações
+        </button>
+
+        <p id="editMessage" class="message" ></p>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- NOTIFICAÇÃO -->
+  <div id="toast" class="toast" ></div>
+
+
+  <script type="module" src="./app.js" ></script>
 </body>
 </html>
