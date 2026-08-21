@@ -138,9 +138,64 @@ function getFilteredReports() {
   );
 }
 
+function updatePublicCounters() {
+  const total = reports.length;
+
+  const open = reports.filter(
+    (report) =>
+      (report.status || "Aberto") === "Aberto"
+  ).length;
+
+  const analysis = reports.filter(
+    (report) =>
+      (report.status || "Aberto") === "Em análise"
+  ).length;
+
+  const execution = reports.filter(
+    (report) =>
+      (report.status || "Aberto") === "Em execução"
+  ).length;
+
+  const resolved = reports.filter(
+    (report) =>
+      (report.status || "Aberto") === "Resolvido"
+  ).length;
+
+  const totalElement = $("publicTotal");
+  const openElement = $("publicOpen");
+  const analysisElement = $("publicAnalysis");
+  const executionElement = $("publicExecution");
+  const resolvedElement = $("publicResolved");
+
+  if (totalElement) {
+    totalElement.textContent = total;
+  }
+
+  if (openElement) {
+    openElement.textContent = open;
+  }
+
+  if (analysisElement) {
+    analysisElement.textContent = analysis;
+  }
+
+  if (executionElement) {
+    executionElement.textContent = execution;
+  }
+
+  if (resolvedElement) {
+    resolvedElement.textContent = resolved;
+  }
+}
+
 
 // RENDERIZA A LISTA PÚBLICA
+// RENDERIZA A LISTA PÚBLICA E ATUALIZA OS INDICADORES
 function renderReports() {
+  // Atualiza os cartões:
+  // Total, Abertos, Em análise, Em execução e Resolvidos
+  updatePublicCounters();
+
   const list = $("publicReportsList");
 
   if (!list) {
@@ -174,7 +229,8 @@ function renderReports() {
   } else {
     list.innerHTML = visibleReports
       .map((report) => {
-        const status = report.status || "Aberto";
+        const status =
+          report.status || "Aberto";
 
         return ` <article class="report-item public-report"> <div> <div class="report-title"> ${escapeHtml( report.titulo || "Sem título" )} </div> <div class="report-meta"> Protocolo: ${escapeHtml( report.protocolo || "Não informado" )} </div> <div class="report-meta"> Início: ${formatDate( report.inicioEm || report.criadoEm )} </div> ${ report.fimEm ? ` <div class="report-meta"> Fim: ${formatDate(report.fimEm)} </div> ` : "" } <span class="badge ${statusClass(status)}"> ${escapeHtml(status)} </span> </div> <button class="secondary-button public-detail-button" data-id="${report.id}" type="button" > Detalhar </button> </article> `;
       })
@@ -186,7 +242,6 @@ function renderReports() {
     totalPages
   );
 }
-
 
 // PAGINAÇÃO
 function renderPagination( totalItems, totalPages ) {
