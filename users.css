@@ -1,0 +1,747 @@
+/* ===================================================== ÁREA ADMINISTRATIVA DE USUÁRIOS ===================================================== */
+
+.users-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+
+  padding: 30px;
+
+  background: linear-gradient(
+    135deg,
+    #172554,
+    #1e40af
+  );
+
+  border-radius: 20px;
+
+  box-shadow:
+    0 12px 30px rgba(23, 37, 84, 0.2);
+}
+
+.users-hero h1,
+.users-hero p {
+  color: #ffffff;
+}
+
+.users-hero .muted {
+  color: #dbeafe;
+}
+
+.users-admin-box {
+  min-width: 220px;
+  padding: 16px;
+
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 14px;
+}
+
+.users-admin-box span,
+.users-admin-box strong {
+  display: block;
+}
+
+.users-admin-box span {
+  color: #bfdbfe;
+  font-size: 12px;
+}
+
+.users-admin-box strong {
+  margin-top: 5px;
+  color: #ffffff;
+}
+
+
+/* ===================================================== AVISO DE NOVOS CADASTROS ===================================================== */
+
+.pending-notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  margin: 20px 0;
+  padding: 16px 18px;
+
+  background: #fef3c7;
+  border: 1px solid #f59e0b;
+  border-radius: 14px;
+
+  color: #78350f;
+}
+
+.pending-notice strong {
+  font-weight: 800;
+}
+
+.pending-notice span {
+  font-size: 14px;
+}
+
+
+/* ===================================================== INDICADORES Primeira linha: Total de usuários | Aguardando aprovação Segunda linha: Aprovados | Rejeitados ===================================================== */
+
+.users-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+
+  width: 100%;
+  margin: 22px 0;
+}
+
+.users-stat-card {
+  min-height: 110px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+
+  padding: 18px;
+
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+
+  box-shadow:
+    0 5px 16px rgba(15, 23, 42, 0.04);
+}
+
+.users-stat-card span {
+  color: #1d4ed8;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.users-stat-card small {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+
+/* ===================================================== ÁREA DA LISTA E FILTROS ===================================================== */
+
+.users-filter-area {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+
+  width: 100%;
+}
+
+.users-filter-area > div:first-child {
+  flex: 1;
+  min-width: 0;
+}
+
+.users-filters {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+
+  margin-left: auto;
+}
+
+.users-filters input {
+  width: 260px;
+  min-height: 46px;
+
+  padding: 11px 13px;
+
+  border: 1px solid var(--border);
+  border-radius: 10px;
+
+  background: #ffffff;
+  color: var(--text);
+
+  font: inherit;
+  font-size: 14px;
+}
+
+.users-filters input::placeholder {
+  color: #94a3b8;
+}
+
+.users-filters input:focus {
+  outline: none;
+
+  border-color: var(--primary);
+
+  box-shadow:
+    0 0 0 4px rgba(17, 127, 117, 0.13);
+}
+
+.users-filters select {
+  min-height: 46px;
+}
+
+
+/* ===================================================== LISTA DE USUÁRIOS ===================================================== */
+
+.users-list {
+  display: grid;
+  gap: 12px;
+
+  margin-top: 22px;
+}
+
+.user-item {
+  position: relative;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+
+  min-height: 150px;
+
+  padding: 24px 18px 18px;
+
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.user-item:hover {
+  border-color: #b8c9dc;
+
+  box-shadow:
+    0 5px 15px rgba(15, 23, 42, 0.05);
+}
+
+.user-main {
+  min-width: 0;
+  padding-right: 135px;
+}
+
+.user-name {
+  margin-bottom: 6px;
+
+  color: var(--text);
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.user-meta {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+
+/* ===================================================== SITUAÇÃO NO CANTO SUPERIOR DIREITO DO CARD ===================================================== */
+
+.user-status {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 28px;
+  padding: 6px 14px;
+
+  border-radius: 999px;
+
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.user-status.pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.user-status.approved {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.user-status.rejected {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+
+/* ===================================================== BOTÕES DE AÇÃO COM ÍCONES ===================================================== */
+
+.user-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+
+  padding-top: 72px;
+
+  flex-shrink: 0;
+}
+
+.user-icon-button {
+  width: 42px;
+  height: 42px;
+  min-height: 42px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: 0;
+  border-radius: 10px;
+
+  font-size: 19px;
+  line-height: 1;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    filter 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.user-icon-button:hover {
+  transform: translateY(-1px);
+  filter: brightness(0.96);
+}
+
+.user-icon-button:active {
+  transform: translateY(0);
+}
+
+.user-icon-button span {
+  display: block;
+}
+
+
+/* DETALHAR */
+
+.user-icon-button.detail-user-button {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.user-icon-button.detail-user-button:hover {
+  background: #bae6fd;
+}
+
+
+/* APROVAR */
+
+.user-icon-button.approve-button {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.user-icon-button.approve-button:hover {
+  background: #bbf7d0;
+}
+
+
+/* REJEITAR */
+
+.user-icon-button.reject-button {
+  background: #ffedd5;
+  color: #c2410c;
+}
+
+.user-icon-button.reject-button:hover {
+  background: #fed7aa;
+}
+
+
+/* EXCLUIR */
+
+.user-icon-button.delete-user-button {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.user-icon-button.delete-user-button:hover {
+  background: #fecaca;
+}
+
+
+/* ===================================================== PAGINAÇÃO ===================================================== */
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+
+  margin-top: 22px;
+
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.pagination button {
+  min-height: 42px;
+  padding: 9px 14px;
+}
+
+
+/* ===================================================== MODAL DE DETALHAMENTO ===================================================== */
+
+.admin-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 18px;
+
+  margin: 20px 0;
+}
+
+.admin-detail-field {
+  padding: 12px;
+
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.admin-detail-field strong {
+  display: block;
+  margin-bottom: 4px;
+
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.admin-detail-field span {
+  color: var(--text);
+  font-size: 14px;
+}
+
+
+/* ===================================================== RESPONSIVIDADE TABLET ===================================================== */
+
+@media (max-width: 900px) {
+  .users-filter-area {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .users-filters {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .users-filters input {
+    flex: 1;
+    width: auto;
+  }
+
+  .users-filters select {
+    width: auto;
+  }
+
+  .user-item {
+    min-height: 160px;
+  }
+}
+
+
+/* ===================================================== RESPONSIVIDADE CELULAR ===================================================== */
+
+@media (max-width: 650px) {
+  .users-hero {
+    align-items: stretch;
+    flex-direction: column;
+    padding: 22px;
+  }
+
+  .users-admin-box {
+    width: 100%;
+    min-width: 0;
+  }
+
+  /* Mantém duas colunas no celular: Total | Aguardando Aprovados | Rejeitados */
+  .users-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .users-stat-card {
+    min-height: 92px;
+    padding: 14px 10px;
+  }
+
+  .users-stat-card span {
+    font-size: 25px;
+  }
+
+  .users-stat-card small {
+    font-size: 11px;
+  }
+
+  .users-filters {
+    align-items: stretch;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .users-filters input,
+  .users-filters select {
+    width: 100%;
+  }
+
+  .user-item {
+    align-items: stretch;
+    flex-direction: column;
+
+    min-height: 0;
+    padding: 64px 16px 16px;
+  }
+
+  .user-main {
+    padding-right: 0;
+  }
+
+  .user-status {
+    top: 18px;
+    right: 16px;
+  }
+
+  .user-actions {
+    justify-content: flex-end;
+    padding-top: 0;
+  }
+
+  .admin-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pending-notice {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+
+/* ===================================================== CELULARES PEQUENOS ===================================================== */
+
+@media (max-width: 430px) {
+  .users-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .users-stat-card {
+    min-height: 86px;
+    padding: 12px 6px;
+    text-align: center;
+  }
+
+  .users-stat-card span {
+    font-size: 22px;
+  }
+
+  .users-stat-card small {
+    font-size: 10px;
+  }
+
+  .user-actions {
+    justify-content: center;
+  }
+
+  .user-icon-button {
+    width: 40px;
+    height: 40px;
+    min-height: 40px;
+
+    font-size: 18px;
+  }
+
+  .pagination {
+    flex-wrap: wrap;
+  }
+}
+
+.user-item {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+
+  min-height: 190px;
+  padding: 24px 18px 18px;
+
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.user-item:hover {
+  border-color: #b8c9dc;
+
+  box-shadow:
+    0 5px 15px rgba(15, 23, 42, 0.05);
+}
+
+.user-main {
+  width: 100%;
+  min-width: 0;
+  padding-right: 145px;
+}
+
+.user-name {
+  margin-bottom: 6px;
+
+  color: var(--text);
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.user-meta {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.user-status {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 28px;
+  padding: 6px 14px;
+
+  border-radius: 999px;
+
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.user-status.pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.user-status.approved {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.user-status.rejected {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.user-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+
+  width: 100%;
+  margin-top: 20px;
+  padding-top: 0;
+}
+
+.user-icon-button {
+  width: 42px;
+  height: 42px;
+  min-height: 42px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: 0;
+  border-radius: 10px;
+
+  font-size: 19px;
+  line-height: 1;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    filter 0.2s ease;
+}
+
+.user-icon-button:hover {
+  transform: translateY(-1px);
+  filter: brightness(0.96);
+}
+
+.user-icon-button:active {
+  transform: translateY(0);
+}
+
+.user-icon-button.detail-user-button {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.user-icon-button.approve-button {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.user-icon-button.reject-button {
+  background: #ffedd5;
+  color: #c2410c;
+}
+
+.user-icon-button.delete-user-button {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.admin-navigation {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+.admin-navigation .link-button {
+  width: 100%;
+  text-align: right;
+}
+
+
+
+@media (max-width: 650px) {
+  .admin-navigation {
+    width: 100%;
+    align-items: stretch;
+  }
+
+  .admin-navigation .link-button {
+    width: 100%;
+    text-align: right;
+  }
+}
