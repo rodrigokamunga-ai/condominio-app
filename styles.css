@@ -1908,3 +1908,141 @@ body:has(#loginView:not(.hidden)) .auth-card {
     padding: 20px 16px;
   }
 }
+
+/* ===================================================== FILTROS ADMINISTRATIVOS ===================================================== */
+
+.admin-filters {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.admin-filter-field {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 6px !important;
+
+  min-width: 145px;
+
+  color: var(--text);
+  font-size: 12px !important;
+  font-weight: 700 !important;
+}
+
+.admin-filter-field input,
+.admin-filter-field select {
+  min-height: 44px;
+  padding: 9px 11px;
+  font-size: 14px;
+}
+
+.admin-clear-filter {
+  min-height: 44px;
+  white-space: nowrap;
+}
+
+.report-filter-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+
+  margin: 18px 0;
+  padding: 13px 15px;
+
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.report-filter-summary p {
+  margin: 0;
+}
+
+.report-filter-summary strong {
+  color: var(--text);
+}
+
+@media (max-width: 800px) {
+  .admin-filter-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-filters {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .admin-filter-field {
+    min-width: 0;
+  }
+
+  .admin-clear-filter {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .report-filter-summary {
+    flex-direction: column;
+    gap: 7px;
+  }
+}
+/* ===================================================== BOTÕES DESABILITADOS NOS CARDS ===================================================== */
+
+.admin-report-actions button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+  filter: grayscale(0.6);
+  transform: none;
+}
+
+.admin-report-actions button:disabled:hover {
+  transform: none;
+  filter: grayscale(0.6);
+}
+
+
+/* Cores dos botões desabilitados */
+
+.admin-report-actions .detail-button:disabled {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.admin-report-actions .timeline-button:disabled {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+
+.admin-report-actions .edit-button:disabled {
+  background: #fef3c7;
+  color: #a16207;
+}
+
+.admin-report-actions .whatsapp-button:disabled {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.admin-report-actions .email-button:disabled {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+}
+
+.admin-report-actions .delete-button:disabled {
+  background: #fee2e2;
+  color: #b91c1c;
+}
