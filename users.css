@@ -745,3 +745,238 @@
     text-align: right;
   }
 }
+
+/* ===================================================== CARD DO MORADOR ===================================================== */
+
+.user-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+
+  padding: 20px 18px 18px;
+
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+
+  overflow: hidden;
+}
+
+.user-card-header {
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.user-card-header .user-name {
+  margin: 0;
+
+  color: var(--text);
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.user-main {
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+}
+
+.user-meta {
+  width: 100%;
+
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.65;
+
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+
+/* ===================================================== SITUAÇÃO ACIMA DOS BOTÕES ===================================================== */
+
+.user-card-status {
+  width: 100%;
+  margin-top: 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.user-card-status .user-status {
+  position: static;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 28px;
+  margin: 0;
+  padding: 6px 14px;
+
+  border-radius: 999px;
+
+  font-size: 13px;
+  font-weight: 800;
+}
+
+
+/* ===================================================== BOTÕES ===================================================== */
+
+.user-actions {
+  width: 100%;
+  margin-top: 14px;
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.user-icon-button {
+  width: 42px;
+  height: 42px;
+  min-height: 42px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  flex: 0 0 auto;
+
+  padding: 0;
+
+  border: 0;
+  border-radius: 10px;
+
+  font-size: 19px;
+  line-height: 1;
+}
+
+
+/* ===================================================== MODAL DE DETALHAMENTO ===================================================== */
+
+.admin-detail-field .user-status {
+  position: static;
+  margin: 0;
+}
+
+
+/* ===================================================== MOBILE ===================================================== */
+
+@media (max-width: 650px) {
+  .user-item {
+    width: 100%;
+    min-width: 0;
+    padding: 18px 14px 16px;
+  }
+
+  .user-card-header .user-name {
+    font-size: 16px;
+  }
+
+  .user-main {
+    width: 100%;
+  }
+
+  .user-meta {
+    font-size: 13px;
+  }
+
+  .user-card-status {
+    margin-top: 15px;
+  }
+
+  .user-actions {
+    margin-top: 12px;
+    gap: 8px;
+  }
+
+  .user-icon-button {
+    width: 40px;
+    height: 40px;
+    min-height: 40px;
+    font-size: 18px;
+  }
+}
+
+/* ===================================================== AJUSTE FINAL DO CARD DO MORADOR ===================================================== */
+
+.user-item {
+  padding-top: 18px !important;
+  padding-bottom: 14px !important;
+}
+
+.user-card-header {
+  width: 100%;
+  margin-bottom: 2px !important;
+  padding: 0 !important;
+}
+
+.user-card-header .user-name {
+  margin: 0 !important;
+  line-height: 1.25 !important;
+}
+
+.user-main {
+  width: 100%;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+.user-meta {
+  line-height: 1.55 !important;
+}
+
+/* Aprovação mais próxima do último campo */
+.user-card-status {
+  width: 100%;
+  margin-top: 8px !important;
+  padding: 0 !important;
+}
+
+/* Botões mais próximos da situação */
+.user-actions {
+  width: 100%;
+  margin-top: 8px !important;
+  padding: 0 !important;
+}
+
+
+/* ===================================================== AJUSTE NO CELULAR ===================================================== */
+
+@media (max-width: 650px) {
+  .user-item {
+    padding-top: 16px !important;
+    padding-bottom: 12px !important;
+  }
+
+  .user-card-header {
+    margin-bottom: 2px !important;
+  }
+
+  .user-main {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+
+  .user-meta {
+    line-height: 1.5 !important;
+  }
+
+  .user-card-status {
+    margin-top: 7px !important;
+  }
+
+  .user-actions {
+    margin-top: 7px !important;
+  }
+}
