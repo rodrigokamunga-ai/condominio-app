@@ -94,8 +94,17 @@ function formatDate(value) {
     return "Não informada";
   }
 
-  if (typeof value.toDate === "function") {
-    return value.toDate().toLocaleString("pt-BR");
+  if (
+    typeof value.toDate ===
+    "function"
+  ) {
+    return value
+      .toDate()
+      .toLocaleString("pt-BR");
+  }
+
+  if (value instanceof Date) {
+    return value.toLocaleString("pt-BR");
   }
 
   return "Não informada";
@@ -114,7 +123,8 @@ function userStatusClass(status) {
 }
 
 function toast(text) {
-  const element = $("usersToast");
+  const element =
+    $("usersToast");
 
   if (!element) {
     alert(text);
@@ -129,11 +139,38 @@ function toast(text) {
   }, 3500);
 }
 
-function friendlyError(error) {
-  console.error("Erro:", error);
+function showEditMessage( text, success = false ) {
+  const element =
+    $("userEditMessage");
 
-  if (error?.code === "permission-denied") {
+  if (!element) {
+    return;
+  }
+
+  element.textContent = text;
+  element.className = success
+    ? "message success"
+    : "message";
+}
+
+function friendlyError(error) {
+  console.error(
+    "Erro completo:",
+    error
+  );
+
+  if (
+    error?.code ===
+    "permission-denied"
+  ) {
     return "Permissão negada pelas regras do Firebase.";
+  }
+
+  if (
+    error?.code ===
+    "failed-precondition"
+  ) {
+    return "O Firebase solicitou a criação de um índice.";
   }
 
   return error?.message ||
@@ -146,35 +183,40 @@ function friendlyError(error) {
 // =====================================================
 
 function getFilteredUsers() {
-  const status =
-    $("userStatusFilter")?.value || "Todos";
+  const selectedStatus =
+    $("userStatusFilter")?.value ||
+    "Todos";
 
   const search =
     $("userSearch")?.value
       .trim()
-      .toLowerCase() || "";
+      .toLowerCase() ||
+    "";
 
   return users.filter((user) => {
-    const userStatus =
+    const status =
       user.status || "Pendente";
 
-    const matchesStatus =
-      status === "Todos" ||
-      userStatus === status;
+    const statusMatches =
+      selectedStatus === "Todos" ||
+      status === selectedStatus;
 
-    const text = [
+    const searchText = [
       user.nome,
       user.email,
       user.unidade,
-      user.bloco
+      user.bloco,
+      user.telefone
     ]
       .join(" ")
       .toLowerCase();
 
-    const matchesSearch =
-      !search || text.includes(search);
+    const searchMatches =
+      !search ||
+      searchText.includes(search);
 
-    return matchesStatus && matchesSearch;
+    return statusMatches &&
+      searchMatches;
   });
 }
 
@@ -184,45 +226,62 @@ function getFilteredUsers() {
 // =====================================================
 
 function renderCounters() {
-  const pending = users.filter(
-    (user) =>
-      (user.status || "Pendente") ===
-      "Pendente"
-  ).length;
+  const total =
+    users.length;
 
-  const approved = users.filter(
-    (user) =>
-      user.status === "Aprovado"
-  ).length;
+  const pending =
+    users.filter(
+      (user) =>
+        (user.status || "Pendente") ===
+        "Pendente"
+    ).length;
 
-  const rejected = users.filter(
-    (user) =>
-      user.status === "Rejeitado"
-  ).length;
+  const approved =
+    users.filter(
+      (user) =>
+        user.status === "Aprovado"
+    ).length;
 
-  const total = $("usersTotal");
-  const pendingElement = $("usersPending");
-  const approvedElement = $("usersApproved");
-  const rejectedElement = $("usersRejected");
+  const rejected =
+    users.filter(
+      (user) =>
+        user.status === "Rejeitado"
+    ).length;
 
-  if (total) {
-    total.textContent = users.length;
+  const totalElement =
+    $("usersTotal");
+
+  const pendingElement =
+    $("usersPending");
+
+  const approvedElement =
+    $("usersApproved");
+
+  const rejectedElement =
+    $("usersRejected");
+
+  if (totalElement) {
+    totalElement.textContent =
+      total;
   }
 
   if (pendingElement) {
-    pendingElement.textContent = pending;
+    pendingElement.textContent =
+      pending;
   }
 
   if (approvedElement) {
-    approvedElement.textContent = approved;
+    approvedElement.textContent =
+      approved;
   }
 
   if (rejectedElement) {
-    rejectedElement.textContent = rejected;
+    rejectedElement.textContent =
+      rejected;
   }
 
-  const notice = $("pendingNotice");
-  const noticeText = $("pendingNoticeText");
+  const noticeText =
+    $("pendingNoticeText");
 
   if (pending > 0) {
     show("pendingNotice");
@@ -238,31 +297,36 @@ function renderCounters() {
 
 
 // =====================================================
-// RENDERIZAÇÃO
+// LISTAGEM
 // =====================================================
 
 function renderUsers() {
-  const list = $("usersList");
+  const list =
+    $("usersList");
 
   if (!list) {
     return;
   }
 
-  const filteredUsers = getFilteredUsers();
+  const filteredUsers =
+    getFilteredUsers();
 
-  const totalPages = Math.max(
-    1,
-    Math.ceil(
-      filteredUsers.length / pageSize
-    )
-  );
+  const totalPages =
+    Math.max(
+      1,
+      Math.ceil(
+        filteredUsers.length /
+        pageSize
+      )
+    );
 
   if (currentPage > totalPages) {
     currentPage = totalPages;
   }
 
   const start =
-    (currentPage - 1) * pageSize;
+    (currentPage - 1) *
+    pageSize;
 
   const visibleUsers =
     filteredUsers.slice(
@@ -273,17 +337,17 @@ function renderUsers() {
   if (visibleUsers.length === 0) {
     list.innerHTML = ` <div class="empty-state"> Nenhum usuário encontrado. </div> `;
   } else {
-    list.innerHTML = visibleUsers
-      .map((user) => {
-        const status =
-          user.status || "Pendente";
+    list.innerHTML =
+      visibleUsers
+        .map((user) => {
+          const status =
+            user.status || "Pendente";
 
-        const isPending =
-          status === "Pendente";
+          const isPending =
+            status === "Pendente";
 
-        return ` <article class="user-item"> <div class="user-main"> <div class="user-name"> ${escapeHtml( user.nome || "Nome não informado" )} </div> <div class="user-meta"> E-mail: ${escapeHtml( user.email || "Não informado" )} </div> <div class="user-meta"> Unidade: ${escapeHtml( user.unidade || "Não informada" )} </div> ${ user.bloco ? ` <div class="user-meta"> Bloco: ${escapeHtml(user.bloco)} </div> ` : "" } <div class="user-meta"> Cadastro: ${formatDate(user.criadoEm)} </div> ${ user.aprovadoEm ? ` <div class="user-meta"> Aprovação: ${formatDate(user.aprovadoEm)} </div> ` : "" } </div> <span class="user-status ${userStatusClass(status)}"> ${escapeHtml(status)} </span> <div class="user-actions"> <button class="user-icon-button detail-user-button" data-user-id="${user.id}" type="button" title="Detalhar usuário" aria-label="Detalhar usuário" > <span>🔍</span> </button> ${ isPending ? ` <button class="user-icon-button approve-button" data-user-id="${user.id}" type="button" title="Aprovar usuário" aria-label="Aprovar usuário" > <span>✓</span> </button> <button class="user-icon-button reject-button" data-user-id="${user.id}" type="button" title="Rejeitar usuário" aria-label="Rejeitar usuário" > <span>✕</span> </button> ` : "" } <button class="user-icon-button delete-user-button" data-user-id="${user.id}" type="button" title="Excluir usuário" aria-label="Excluir usuário" > <span>🗑️</span> </button> </div> </article> `;
-      })
-      .join("");
+          return ` <article class="user-item"> <div class="user-card-header"> <div class="user-name"> ${escapeHtml( user.nome || "Nome não informado" )} </div> </div> <div class="user-main"> <div class="user-meta"> E-mail: ${escapeHtml( user.email || "Não informado" )} </div> <div class="user-meta"> Unidade: ${escapeHtml( user.unidade || "Não informada" )} </div> ${ user.bloco ? ` <div class="user-meta"> Bloco: ${escapeHtml(user.bloco)} </div> ` : "" } ${ user.telefone ? ` <div class="user-meta"> Telefone: ${escapeHtml(user.telefone)} </div> ` : "" } <div class="user-meta"> Cadastro: ${formatDate(user.criadoEm)} </div> ${ user.aprovadoEm ? ` <div class="user-meta"> Aprovação: ${formatDate(user.aprovadoEm)} </div> ` : "" } </div> <!-- SITUAÇÃO ACIMA DOS BOTÕES --> <div class="user-card-status"> <span class="user-status ${userStatusClass(status)}"> ${escapeHtml(status)} </span> </div> <!-- BOTÕES ABAIXO DA SITUAÇÃO --> <div class="user-actions"> <button class="user-icon-button detail-user-button" data-user-id="${user.id}" type="button" title="Visualizar usuário" aria-label="Visualizar usuário" > <span>🔍</span> </button> <button class="user-icon-button edit-user-button" data-user-id="${user.id}" type="button" title="Editar usuário" aria-label="Editar usuário" > <span>✏️</span> </button> ${ isPending ? ` <button class="user-icon-button approve-button" data-user-id="${user.id}" type="button" title="Aprovar usuário" aria-label="Aprovar usuário" > <span>✓</span> </button> <button class="user-icon-button reject-button" data-user-id="${user.id}" type="button" title="Rejeitar usuário" aria-label="Rejeitar usuário" > <span>✕</span> </button> ` : "" } <button class="user-icon-button delete-user-button" data-user-id="${user.id}" type="button" title="Excluir usuário" aria-label="Excluir usuário" > <span>🗑️</span> </button> </div> </article> `;        })
+        .join("");
   }
 
   renderPagination(
@@ -294,13 +358,9 @@ function renderUsers() {
   renderCounters();
 }
 
-
-// =====================================================
-// PAGINAÇÃO
-// =====================================================
-
 function renderPagination( totalItems, totalPages ) {
-  const pagination = $("usersPagination");
+  const pagination =
+    $("usersPagination");
 
   if (!pagination) {
     return;
@@ -316,7 +376,7 @@ function renderPagination( totalItems, totalPages ) {
 
 
 // =====================================================
-// DETALHAMENTO DO USUÁRIO
+// DETALHAMENTO
 // =====================================================
 
 function openUserDetails(userId) {
@@ -331,26 +391,203 @@ function openUserDetails(userId) {
   const status =
     user.status || "Pendente";
 
-  const content = $("userDetailContent");
+  const content =
+    $("userDetailContent");
 
   if (!content) {
     return;
   }
 
-  content.innerHTML = ` <span class="eyebrow"> DETALHAMENTO DO MORADOR </span> <h2> ${escapeHtml( user.nome || "Nome não informado" )} </h2> <div class="admin-detail-grid"> <div class="admin-detail-field"> <strong>E-mail</strong> <span> ${escapeHtml( user.email || "Não informado" )} </span> </div> <div class="admin-detail-field"> <strong>Telefone</strong> <span> ${escapeHtml( user.telefone || "Não informado" )} </span> </div> <div class="admin-detail-field"> <strong>Unidade</strong> <span> ${escapeHtml( user.unidade || "Não informada" )} </span> </div> <div class="admin-detail-field"> <strong>Bloco</strong> <span> ${escapeHtml( user.bloco || "Não informado" )} </span> </div> <div class="admin-detail-field"> <strong>Status</strong> <span> <span class="user-status ${userStatusClass(status)}"> ${escapeHtml(status)} </span> </span> </div> <div class="admin-detail-field"> <strong>Data do cadastro</strong> <span> ${formatDate(user.criadoEm)} </span> </div> </div> `;
+  content.innerHTML = ` <span class="eyebrow"> DETALHAMENTO DO MORADOR </span> <h2> ${escapeHtml( user.nome || "Nome não informado" )} </h2> <div class="admin-detail-grid"> <div class="admin-detail-field"> <strong>E-mail</strong> <span> ${escapeHtml( user.email || "Não informado" )} </span> </div> <div class="admin-detail-field"> <strong>Telefone</strong> <span> ${escapeHtml( user.telefone || "Não informado" )} </span> </div> <div class="admin-detail-field"> <strong>Unidade</strong> <span> ${escapeHtml( user.unidade || "Não informada" )} </span> </div> <div class="admin-detail-field"> <strong>Bloco</strong> <span> ${escapeHtml( user.bloco || "Não informado" )} </span> </div> <div class="admin-detail-field"> <strong>Situação</strong> <span> <span class="user-status ${userStatusClass(status)}"> ${escapeHtml(status)} </span> </span> </div> <div class="admin-detail-field"> <strong>Data do cadastro</strong> <span> ${formatDate(user.criadoEm)} </span> </div> ${ user.aprovadoEm ? ` <div class="admin-detail-field"> <strong>Data da aprovação</strong> <span> ${formatDate(user.aprovadoEm)} </span> </div> ` : "" } ${ user.rejeitadoEm ? ` <div class="admin-detail-field"> <strong>Data da rejeição</strong> <span> ${formatDate(user.rejeitadoEm)} </span> </div> ` : "" } </div> `;
 
   show("userDetailModal");
 }
 
 
 // =====================================================
-// APROVAR USUÁRIO
+// EDIÇÃO DO USUÁRIO
+// =====================================================
+
+function openUserEdit(userId) {
+  const user =
+    users.find(
+      (item) => item.id === userId
+    );
+
+  if (!user) {
+    return;
+  }
+
+  const fields = {
+    id: $("editUserId"),
+    name: $("editUserName"),
+    email: $("editUserEmail"),
+    unit: $("editUserUnit"),
+    block: $("editUserBlock"),
+    phone: $("editUserPhone"),
+    status: $("editUserStatus")
+  };
+
+  if (
+    !fields.id ||
+    !fields.name ||
+    !fields.email ||
+    !fields.unit ||
+    !fields.block ||
+    !fields.phone ||
+    !fields.status
+  ) {
+    alert(
+      "Os campos de edição não foram encontrados."
+    );
+    return;
+  }
+
+  fields.id.value =
+    user.id;
+
+  fields.name.value =
+    user.nome || "";
+
+  fields.email.value =
+    user.email || "";
+
+  fields.unit.value =
+    user.unidade || "";
+
+  fields.block.value =
+    user.bloco || "";
+
+  fields.phone.value =
+    user.telefone || "";
+
+  fields.status.value =
+    user.status || "Pendente";
+
+  showEditMessage("");
+  show("userEditModal");
+}
+
+$("userEditForm")?.addEventListener(
+  "submit",
+  async (event) => {
+    event.preventDefault();
+
+    const userId =
+      $("editUserId")?.value;
+
+    const name =
+      $("editUserName")?.value.trim();
+
+    const unit =
+      $("editUserUnit")?.value.trim();
+
+    const block =
+      $("editUserBlock")?.value.trim();
+
+    const phone =
+      $("editUserPhone")?.value.trim();
+
+    const status =
+      $("editUserStatus")?.value;
+
+    if (!userId) {
+      showEditMessage(
+        "Usuário não identificado."
+      );
+      return;
+    }
+
+    if (!name || name.length < 3) {
+      showEditMessage(
+        "Informe um nome válido."
+      );
+      return;
+    }
+
+    if (!unit) {
+      showEditMessage(
+        "Informe a unidade do usuário."
+      );
+      return;
+    }
+
+    if (!status) {
+      showEditMessage(
+        "Selecione uma situação."
+      );
+      return;
+    }
+
+    const saveButton =
+      $("btnSaveUserEdit");
+
+    if (saveButton) {
+      saveButton.disabled = true;
+    }
+
+    try {
+      const data = {
+        nome: name,
+        unidade: unit,
+        bloco: block || "",
+        telefone: phone || "",
+        status,
+        atualizadoEm:
+          serverTimestamp()
+      };
+
+      if (status === "Aprovado") {
+        data.aprovadoEm =
+          serverTimestamp();
+
+        data.rejeitadoEm = null;
+      }
+
+      if (status === "Rejeitado") {
+        data.rejeitadoEm =
+          serverTimestamp();
+
+        data.aprovadoEm = null;
+      }
+
+      if (status === "Pendente") {
+        data.aprovadoEm = null;
+        data.rejeitadoEm = null;
+      }
+
+      await updateDoc(
+        doc(db, "users", userId),
+        data
+      );
+
+      hide("userEditModal");
+
+      toast(
+        "Usuário atualizado com sucesso."
+      );
+    } catch (error) {
+      showEditMessage(
+        friendlyError(error)
+      );
+    } finally {
+      if (saveButton) {
+        saveButton.disabled = false;
+      }
+    }
+  }
+);
+
+
+// =====================================================
+// APROVAÇÃO
 // =====================================================
 
 async function approveUser(userId) {
-  const user = users.find(
-    (item) => item.id === userId
-  );
+  const user =
+    users.find(
+      (item) => item.id === userId
+    );
 
   if (!user) {
     return;
@@ -369,8 +606,11 @@ async function approveUser(userId) {
       doc(db, "users", userId),
       {
         status: "Aprovado",
-        aprovadoEm: serverTimestamp(),
-        atualizadoEm: serverTimestamp()
+        aprovadoEm:
+          serverTimestamp(),
+        rejeitadoEm: null,
+        atualizadoEm:
+          serverTimestamp()
       }
     );
 
@@ -378,19 +618,17 @@ async function approveUser(userId) {
       "Morador aprovado com sucesso."
     );
   } catch (error) {
-    alert(friendlyError(error));
+    alert(
+      friendlyError(error)
+    );
   }
 }
 
-
-// =====================================================
-// REJEITAR USUÁRIO
-// =====================================================
-
 async function rejectUser(userId) {
-  const user = users.find(
-    (item) => item.id === userId
-  );
+  const user =
+    users.find(
+      (item) => item.id === userId
+    );
 
   if (!user) {
     return;
@@ -409,8 +647,11 @@ async function rejectUser(userId) {
       doc(db, "users", userId),
       {
         status: "Rejeitado",
-        rejeitadoEm: serverTimestamp(),
-        atualizadoEm: serverTimestamp()
+        rejeitadoEm:
+          serverTimestamp(),
+        aprovadoEm: null,
+        atualizadoEm:
+          serverTimestamp()
       }
     );
 
@@ -418,19 +659,22 @@ async function rejectUser(userId) {
       "Cadastro rejeitado."
     );
   } catch (error) {
-    alert(friendlyError(error));
+    alert(
+      friendlyError(error)
+    );
   }
 }
 
 
 // =====================================================
-// EXCLUIR USUÁRIO
+// EXCLUSÃO
 // =====================================================
 
 async function deleteUserProfile(userId) {
-  const user = users.find(
-    (item) => item.id === userId
-  );
+  const user =
+    users.find(
+      (item) => item.id === userId
+    );
 
   if (!user) {
     return;
@@ -453,7 +697,9 @@ async function deleteUserProfile(userId) {
       "Cadastro excluído com sucesso."
     );
   } catch (error) {
-    alert(friendlyError(error));
+    alert(
+      friendlyError(error)
+    );
   }
 }
 
@@ -462,95 +708,106 @@ async function deleteUserProfile(userId) {
 // EVENTOS
 // =====================================================
 
-document.addEventListener("click", (event) => {
-  const detailButton =
-    event.target.closest(
-      ".detail-user-button"
-    );
+document.addEventListener(
+  "click",
+  (event) => {
+    const detailButton =
+      event.target.closest(
+        ".detail-user-button"
+      );
 
-  if (detailButton) {
-    openUserDetails(
-      detailButton.dataset.userId
-    );
-    return;
-  }
-
-  const approveButton =
-    event.target.closest(
-      ".approve-button"
-    );
-
-  if (approveButton) {
-    approveUser(
-      approveButton.dataset.userId
-    );
-    return;
-  }
-
-  const rejectButton =
-    event.target.closest(
-      ".reject-button"
-    );
-
-  if (rejectButton) {
-    rejectUser(
-      rejectButton.dataset.userId
-    );
-    return;
-  }
-
-  const deleteButton =
-    event.target.closest(
-      ".delete-user-button"
-    );
-
-  if (deleteButton) {
-    deleteUserProfile(
-      deleteButton.dataset.userId
-    );
-    return;
-  }
-
-  if (event.target.id === "usersPrevPage") {
-    if (currentPage > 1) {
-      currentPage--;
-      renderUsers();
+    if (detailButton) {
+      openUserDetails(
+        detailButton.dataset.userId
+      );
+      return;
     }
 
-    return;
-  }
+    const editButton =
+      event.target.closest(
+        ".edit-user-button"
+      );
 
-  if (event.target.id === "usersNextPage") {
-    const totalPages = Math.max(
-      1,
-      Math.ceil(
-        getFilteredUsers().length /
-        pageSize
-      )
-    );
-
-    if (currentPage < totalPages) {
-      currentPage++;
-      renderUsers();
+    if (editButton) {
+      openUserEdit(
+        editButton.dataset.userId
+      );
+      return;
     }
-  }
-});
 
-$("userSearch")?.addEventListener(
-  "input",
-  () => {
-    currentPage = 1;
-    renderUsers();
+    const approveButton =
+      event.target.closest(
+        ".approve-button"
+      );
+
+    if (approveButton) {
+      approveUser(
+        approveButton.dataset.userId
+      );
+      return;
+    }
+
+    const rejectButton =
+      event.target.closest(
+        ".reject-button"
+      );
+
+    if (rejectButton) {
+      rejectUser(
+        rejectButton.dataset.userId
+      );
+      return;
+    }
+
+    const deleteButton =
+      event.target.closest(
+        ".delete-user-button"
+      );
+
+    if (deleteButton) {
+      deleteUserProfile(
+        deleteButton.dataset.userId
+      );
+      return;
+    }
+
+    if (
+      event.target.id ===
+      "usersPrevPage"
+    ) {
+      if (currentPage > 1) {
+        currentPage--;
+        renderUsers();
+      }
+
+      return;
+    }
+
+    if (
+      event.target.id ===
+      "usersNextPage"
+    ) {
+      const totalPages =
+        Math.max(
+          1,
+          Math.ceil(
+            getFilteredUsers().length /
+            pageSize
+          )
+        );
+
+      if (currentPage < totalPages) {
+        currentPage++;
+        renderUsers();
+      }
+    }
   }
 );
 
-$("userStatusFilter")?.addEventListener(
-  "change",
-  () => {
-    currentPage = 1;
-    renderUsers();
-  }
-);
+
+// =====================================================
+// FECHAMENTO DOS MODAIS
+// =====================================================
 
 $("btnCloseUserDetail")?.addEventListener(
   "click",
@@ -569,11 +826,53 @@ $("userDetailModal")?.addEventListener(
   }
 );
 
+$("btnCloseUserEdit")?.addEventListener(
+  "click",
+  () => hide("userEditModal")
+);
+
+$("userEditModal")?.addEventListener(
+  "click",
+  (event) => {
+    if (
+      event.target.id ===
+      "userEditModal"
+    ) {
+      hide("userEditModal");
+    }
+  }
+);
+
+
+// =====================================================
+// LOGOUT
+// =====================================================
+
 $("btnUsersLogout")?.addEventListener(
   "click",
   async () => {
-    await signOut(auth);
-    window.location.href = "index.html";
+    const confirmed = confirm(
+      "Deseja realmente sair do controle de usuários?"
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      await signOut(auth);
+      window.location.href =
+        "./admin-home.html";
+    } catch (error) {
+      console.error(
+        "Erro ao sair:",
+        error
+      );
+
+      alert(
+        "Não foi possível sair do sistema."
+      );
+    }
   }
 );
 
@@ -582,66 +881,80 @@ $("btnUsersLogout")?.addEventListener(
 // AUTENTICAÇÃO
 // =====================================================
 
-onAuthStateChanged(auth, (user) => {
-  hide("usersLoadingView");
+onAuthStateChanged(
+  auth,
+  (user) => {
+    hide("usersLoadingView");
 
-  if (!user) {
-    show("usersDeniedView");
-    hide("usersView");
-    return;
-  }
+    if (!user) {
+      show("usersDeniedView");
+      hide("usersView");
+      return;
+    }
 
-  if (
-    user.email?.toLowerCase() !==
-    ADMIN_EMAIL.toLowerCase()
-  ) {
-    show("usersDeniedView");
-    hide("usersView");
-    return;
-  }
+    if (
+      user.email?.toLowerCase() !==
+      ADMIN_EMAIL.toLowerCase()
+    ) {
+      show("usersDeniedView");
+      hide("usersView");
+      return;
+    }
 
-  hide("usersDeniedView");
-  show("usersView");
+    hide("usersDeniedView");
+    show("usersView");
 
-  const adminName = $("usersAdminName");
+    const adminName =
+      $("usersAdminName");
 
-  if (adminName) {
-    adminName.textContent =
-      user.displayName ||
-      user.email;
-  }
+    if (adminName) {
+      adminName.textContent =
+        user.displayName ||
+        user.email ||
+        "Administrador";
+    }
 
-  const usersQuery = query(
-    collection(db, "users"),
-    orderBy("criadoEm", "desc")
-  );
-
-  if (unsubscribeUsers) {
-    unsubscribeUsers();
-  }
-
-  unsubscribeUsers = onSnapshot(
-    usersQuery,
-    (snapshot) => {
-      users = snapshot.docs.map((item) => ({
-        id: item.id,
-        ...item.data()
-      }));
-
-      currentPage = 1;
-      renderUsers();
-    },
-    (error) => {
-      console.error(
-        "Erro ao carregar usuários:",
-        error
+    const usersQuery =
+      query(
+        collection(db, "users"),
+        orderBy(
+          "criadoEm",
+          "desc"
+        )
       );
 
-      const list = $("usersList");
-
-      if (list) {
-        list.innerHTML = ` <div class="empty-state"> ${escapeHtml( friendlyError(error) )} </div> `;
-      }
+    if (unsubscribeUsers) {
+      unsubscribeUsers();
     }
-  );
-});
+
+    unsubscribeUsers =
+      onSnapshot(
+        usersQuery,
+        (snapshot) => {
+          users =
+            snapshot.docs.map(
+              (item) => ({
+                id: item.id,
+                ...item.data()
+              })
+            );
+
+          currentPage = 1;
+          renderUsers();
+        },
+        (error) => {
+          console.error(
+            "Erro ao carregar usuários:",
+            error
+          );
+
+          const list =
+            $("usersList");
+
+          if (list) {
+            list.innerHTML = ` <div class="empty-state"> ${escapeHtml( friendlyError(error) )} </div> `;
+          }
+        }
+      );
+  }
+);
