@@ -47,7 +47,7 @@ const EMAIL_DESTINO =
   "rodrigokamunga@gmail.com";
 
 const WHATSAPP_NUMERO =
-  "5511999999999";
+  "5521988386027";
 
 
 // =====================================================
@@ -1228,7 +1228,35 @@ $("editModal")?.addEventListener(
 
 $("btnLogout")?.addEventListener(
   "click",
-  () => signOut(auth)
+  async () => {
+    const confirmed = confirm(
+      "Deseja realmente sair do sistema?"
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      await signOut(auth);
+
+      message(
+        "loginMessage",
+        "Você saiu do sistema.",
+        true
+      );
+    } catch (error) {
+      console.error(
+        "Erro ao sair:",
+        error
+      );
+
+      message(
+        "loginMessage",
+        "Não foi possível sair do sistema."
+      );
+    }
+  }
 );
 
 
