@@ -2,11 +2,14 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <meta name="theme-color" content="#172554" />
 
-  <title>Controle de Usuários - Amigos do Maui</title>
+  <title>
+    Controle de Usuários - Amigos do Maui
+  </title>
 
   <link rel="stylesheet" href="./styles.css" />
 
@@ -15,6 +18,7 @@
 
 <body class="admin-page">
 
+  <!-- CABEÇALHO -->
   <header class="topbar admin-topbar">
     <div class="brand">
       <span class="brand-icon">👥</span>
@@ -26,28 +30,28 @@
     </div>
 
     <div class="top-actions admin-navigation">
-  <a href="./admin.html" class="link-button" >
-    Painel administrativo
-  </a>
+      <a href="./admin.html" class="link-button" >
+        Painel administrativo
+      </a>
 
-  <a href="./index.html" class="link-button" >
-    Portal do morador
-  </a>
+      <a href="./index.html" class="link-button" >
+        Portal do morador
+      </a>
 
-  <a href="./admin-home.html" class="link-button" >
-  ← Voltar ao menu administrativo
-</a>
+      <a href="./admin-home.html" class="link-button" >
+        ← Voltar ao menu administrativo
+      </a>
 
-  <button id="btnUsersLogout" class="link-button" type="button" >
-    Sair
-  </button>
-</div>
+      <button id="btnUsersLogout" class="link-button" type="button" >
+        Sair
+      </button>
+    </div>
   </header>
 
 
   <main class="container">
 
-    <!-- CARREGANDO -->
+    <!-- CARREGAMENTO -->
     <section id="usersLoadingView" class="card auth-card" >
       <h1>Carregando...</h1>
 
@@ -74,21 +78,26 @@
     <!-- ÁREA DE USUÁRIOS -->
     <section id="usersView" class="hidden" >
 
+      <!-- CABEÇALHO -->
       <section class="users-hero">
         <div>
           <span class="eyebrow">
             ADMINISTRAÇÃO
           </span>
 
-          <h1>Controle de usuários</h1>
+          <h1>
+            Controle de usuários
+          </h1>
 
           <p class="muted">
-            Consulte, aprove e exclua moradores cadastrados.
+            Consulte, aprove, edite e exclua moradores cadastrados.
           </p>
         </div>
 
         <div class="users-admin-box">
-          <span>Administrador</span>
+          <span>
+            Administrador
+          </span>
 
           <strong id="usersAdminName">
             Administrador
@@ -111,6 +120,7 @@
 
       <!-- INDICADORES -->
       <section class="users-stats-grid">
+
         <div class="users-stat-card">
           <span id="usersTotal">0</span>
           <small>Total de usuários</small>
@@ -130,14 +140,18 @@
           <span id="usersRejected">0</span>
           <small>Rejeitados</small>
         </div>
+
       </section>
 
 
-      <!-- FILTROS -->
+      <!-- FILTROS E LISTA -->
       <section class="card">
+
         <div class="users-filter-area">
           <div>
-            <h2>Moradores cadastrados</h2>
+            <h2>
+              Moradores cadastrados
+            </h2>
 
             <p class="muted">
               Novos moradores precisam ser aprovados antes de utilizar o sistema.
@@ -148,10 +162,21 @@
             <input id="userSearch" type="search" placeholder="Pesquisar por nome ou e-mail" />
 
             <select id="userStatusFilter" class="compact-select" >
-              <option value="Todos">Todos</option>
-              <option value="Pendente">Pendentes</option>
-              <option value="Aprovado">Aprovados</option>
-              <option value="Rejeitado">Rejeitados</option>
+              <option value="Todos">
+                Todos
+              </option>
+
+              <option value="Pendente">
+                Pendentes
+              </option>
+
+              <option value="Aprovado">
+                Aprovados
+              </option>
+
+              <option value="Rejeitado">
+                Rejeitados
+              </option>
             </select>
           </div>
         </div>
@@ -163,6 +188,7 @@
         </div>
 
         <div id="usersPagination" class="pagination" ></div>
+
       </section>
 
     </section>
@@ -172,16 +198,100 @@
   <!-- MODAL DE DETALHAMENTO -->
   <div id="userDetailModal" class="modal hidden" >
     <div class="modal-card">
+
       <button id="btnCloseUserDetail" class="modal-close" type="button" aria-label="Fechar detalhamento" >
         ×
       </button>
 
-      <div id="userDetailContent"></div>
+      <div id="userDetailContent" ></div>
+
     </div>
   </div>
 
 
-  <!-- MENSAGEM -->
+  <!-- MODAL DE EDIÇÃO -->
+  <div id="userEditModal" class="modal hidden" >
+    <div class="modal-card">
+
+      <button id="btnCloseUserEdit" class="modal-close" type="button" aria-label="Fechar edição" >
+        ×
+      </button>
+
+      <h2>
+        Editar usuário
+      </h2>
+
+      <p class="muted">
+        Altere os dados cadastrais e a situação do morador.
+      </p>
+
+      <form id="userEditForm" class="form" >
+        <input id="editUserId" type="hidden" />
+
+        <label>
+          Nome completo
+
+          <input id="editUserName" type="text" required minlength="3" />
+        </label>
+
+        <label>
+          E-mail
+
+          <input id="editUserEmail" type="email" disabled />
+
+          <small class="helper">
+            O e-mail não pode ser alterado por esta tela.
+          </small>
+        </label>
+
+        <label>
+          Unidade / apartamento
+
+          <input id="editUserUnit" type="text" required />
+        </label>
+
+        <label>
+          Bloco / torre
+
+          <input id="editUserBlock" type="text" />
+        </label>
+
+        <label>
+          Telefone
+
+          <input id="editUserPhone" type="tel" />
+        </label>
+
+        <label>
+          Situação
+
+          <select id="editUserStatus" required >
+            <option value="Pendente">
+              Pendente
+            </option>
+
+            <option value="Aprovado">
+              Aprovado
+            </option>
+
+            <option value="Rejeitado">
+              Rejeitado
+            </option>
+          </select>
+        </label>
+
+        <button id="btnSaveUserEdit" class="primary-button" type="submit" >
+          Salvar alterações
+        </button>
+
+        <p id="userEditMessage" class="message" ></p>
+      </form>
+
+    </div>
+  </div>
+
+
+  <!-- NOTIFICAÇÃO -->
   <div id="usersToast" class="toast" ></div>
 
 
