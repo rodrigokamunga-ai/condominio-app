@@ -467,3 +467,67 @@
     min-height: 150px;
   }
 }
+
+/* ===================================================== AJUSTE FINAL DO MENU ADMINISTRATIVO NO CELULAR ===================================================== */
+
+@media (max-width: 650px) {
+  .admin-home-content {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+    width: 100% !important;
+  }
+
+  .admin-menu-card {
+    width: 100%;
+    min-width: 0;
+    min-height: 170px;
+    aspect-ratio: 1 / 1;
+    padding: 14px;
+  }
+
+  .admin-menu-icon {
+    width: 58px;
+    height: 58px;
+    font-size: 30px;
+  }
+
+  .admin-menu-card strong {
+    font-size: 17px;
+  }
+
+  .admin-menu-card small {
+    max-width: 130px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 400px) {
+  .admin-home-content {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+
+  .admin-menu-card {
+    min-height: 145px;
+    aspect-ratio: 1 / 1;
+    padding: 10px;
+  }
+
+  .admin-menu-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 25px;
+    border-radius: 13px;
+  }
+
+  .admin-menu-card strong {
+    font-size: 15px;
+  }
+
+  .admin-menu-card small {
+    max-width: 105px;
+    font-size: 10px;
+  }
+}
