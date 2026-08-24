@@ -626,8 +626,18 @@ $("publicTimelineModal")?.addEventListener(
 $("btnLogout")?.addEventListener(
   "click",
   async () => {
+    const confirmed = confirm(
+      "Deseja realmente sair do sistema?"
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
     try {
       await signOut(auth);
+      window.location.href =
+        "./index.html";
     } catch (error) {
       console.error(
         "Erro ao sair:",
