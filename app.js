@@ -358,6 +358,98 @@ function compressImage( file, maxWidth = 640, maxHeight = 480, quality = 0.6 ) {
   });
 }
 
+// =====================================================
+// NORMALIZAÇÃO DE TEXTO
+// =====================================================
+
+function normalizeText(value = "") {
+  return String(value)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "");
+}
+
+
+// =====================================================
+// VERIFICAÇÃO DE OCORRÊNCIA SEMELHANTE
+// =====================================================
+
+function findSimilarOpenReport({ category, location, reference }) {
+  const normalizedCategory =
+    normalizeText(category);
+
+  const normalizedLocation =
+    normalizeText(location);
+
+  const normalizedReference =
+    normalizeText(reference);
+
+  return allReports.find((report) => {
+    const status =
+      report.status || "Aberto";
+
+    const isOpen =
+      status !== "Resolvido";
+
+    const sameCategory =
+      normalizeText(
+        report.categoria
+      ) === normalizedCategory;
+
+    const sameLocation =
+      normalizeText(
+        report.local
+      ) === normalizedLocation;
+
+    const sameReference =
+      normalizeText(
+        report.referenciaLocal
+      ) === normalizedReference;
+
+    return (
+      isOpen &&
+      sameCategory &&
+      sameLocation &&
+      sameReference
+    );
+  });
+}
+
+// =====================================================
+// ALERTA DE OCORRÊNCIA SEMELHANTE
+// =====================================================
+
+function confirmSimilarReport(report) {
+  const protocol =
+    report.protocolo ||
+    "Não informado";
+
+  const title =
+    report.titulo ||
+    "Sem título";
+
+  const category =
+    report.categoria ||
+    "Não informada";
+
+  const location =
+    report.local ||
+    "Não informado";
+
+  const reference =
+    report.referenciaLocal ||
+    "Não informada";
+
+  const status =
+    report.status ||
+    "Aberto";
+
+  const messageText = ` Encontramos uma ocorrência semelhante já cadastrada: Título: ${title} Protocolo: ${protocol} Categoria: ${category} Local: ${location} Referência: ${reference} Status: ${status} Deseja continuar registrando uma nova ocorrência? `.trim();
+
+  return confirm(messageText);
+}
+
 
 // =====================================================
 // CATEGORIAS
@@ -523,6 +615,249 @@ function removeUpdatesField() {
     updates.remove();
   }
 }
+
+// =====================================================
+// ENVIO DE NOVA OCORRÊNCIA
+// =====================================================
+
+$("reportForm")?.addEventListener(
+  "submit",
+  async (event) => {
+    event.preventDefault();
+
+    const user = auth.currentUser;
+
+    if (!user) {
+      message(
+        "reportMessage",
+        "Você precisa estar logado para enviar uma ocorrência."
+      );
+      return;
+    }
+
+    const submitButton =
+      $("btnSubmitReport");
+
+    if (submitButton) {
+      submitButton.disabled = true;
+    }
+
+    message(
+      "reportMessage",
+      "Enviando ocorrência..."
+    );
+
+    try {
+      const title =
+        $("reportTitle")?.value.trim() || "";
+
+      const category =
+        $("reportCategory")?.value || "";
+
+      const priority =
+        $("reportPriority")?.value || "Normal";
+
+      const description =
+        $("reportDescription")?.value.trim() || "";
+
+      const file =
+        $("reportPhoto")?.files?.[0] || null;
+
+      const noLocationRequired =
+        category === "Documentação" ||
+        category === "Jardinagem";
+
+      const isDocumentation =
+        category === "Documentação";
+
+      const location =
+        noLocationRequired
+          ? ""
+          : $("reportLocation")?.value || "";
+
+      const reference =
+        isDocumentation
+          ? ""
+          : $("reportReference")?.value.trim() || "";
+
+      if (
+        !title ||
+        !category ||
+        !priority ||
+        !description
+      ) {
+        throw new Error(
+          "Preencha título, categoria, prioridade e descrição."
+        );
+      }
+
+      if (
+        !noLocationRequired &&
+        !location
+      ) {
+        throw new Error(
+          "Selecione o local da ocorrência."
+        );
+      }
+
+      if (description.length < 10) {
+        throw new Error(
+          "A descrição deve ter pelo menos 10 caracteres."
+        );
+      }
+
+      /* Verifica se existe uma ocorrência aberta com a mesma categoria, local e referência. */
+      if (!noLocationRequired) {
+        const similarReport =
+          findSimilarOpenReport({
+            category,
+            location,
+            reference
+          });
+
+        if (similarReport) {
+          const continueSending =
+            confirmSimilarReport(
+              similarReport
+            );
+
+          if (!continueSending) {
+            message(
+              "reportMessage",
+              "Envio cancelado."
+            );
+
+            return;
+          }
+        }
+      }
+
+      let fotoData = "";
+
+      if (file) {
+        if (
+          file.size >
+          10 * 1024 * 1024
+        ) {
+          throw new Error(
+            "A imagem original deve ter no máximo 10 MB."
+          );
+        }
+
+        if (
+          !file.type.startsWith("image/")
+        ) {
+          throw new Error(
+            "Selecione um arquivo de imagem válido."
+          );
+        }
+
+        message(
+          "reportMessage",
+          "Reduzindo o tamanho da foto..."
+        );
+
+        fotoData =
+          await compressImage(file);
+      }
+
+      const userSnapshot =
+        await getDoc(
+          doc(db, "users", user.uid)
+        );
+
+      const profile =
+        userSnapshot.exists()
+          ? userSnapshot.data()
+          : {};
+
+      const now =
+        new Date();
+
+      const protocol =
+        `COND-${now .toISOString() .slice(0, 10) .replaceAll("-", "")}-${String( Date.now() ).slice(-5)}`;
+
+      await addDoc(
+        collection(db, "reports"),
+        {
+          protocolo: protocol,
+
+          moradorId: user.uid,
+
+          nome:
+            profile.nome ||
+            user.displayName ||
+            "",
+
+          email:
+            user.email ||
+            "",
+
+          unidade:
+            profile.unidade ||
+            "",
+
+          bloco:
+            profile.bloco ||
+            "",
+
+          titulo: title,
+          categoria: category,
+          prioridade: priority,
+          local: location,
+          referenciaLocal: reference,
+          descricao: description,
+
+          status: "Aberto",
+
+          dataAbertura:
+            serverTimestamp(),
+
+          dataAnalise: null,
+          dataExecucao: null,
+          dataResolvido: null,
+
+          inicioEm:
+            serverTimestamp(),
+
+          fimEm: null,
+
+          fotoData: fotoData,
+
+          criadoEm:
+            serverTimestamp(),
+
+          atualizadoEm:
+            serverTimestamp()
+        }
+      );
+
+      $("reportForm")?.reset();
+
+      updateLocationFields();
+
+      hide("reportFormCard");
+
+      message(
+        "reportMessage",
+        ""
+      );
+
+      toast(
+        `Ocorrência enviada com sucesso. Protocolo: ${protocol}`
+      );
+    } catch (error) {
+      message(
+        "reportMessage",
+        friendlyError(error)
+      );
+    } finally {
+      if (submitButton) {
+        submitButton.disabled = false;
+      }
+    }
+  }
+);
 
 
 // =====================================================
@@ -965,6 +1300,35 @@ $("editForm")?.addEventListener(
       documentation
         ? ""
         : $("editReference")?.value.trim() || "";
+
+        // Verifica ocorrência semelhante somente quando
+// a categoria não for Documentação ou Jardinagem
+if (!noLocationRequired) {
+  const similarReport =
+    findSimilarOpenReport({
+      category,
+      location,
+      reference
+    });
+
+  if (similarReport) {
+    const continueSending =
+      confirmSimilarReport(similarReport);
+
+    if (!continueSending) {
+      message(
+        "reportMessage",
+        "Envio cancelado. Verifique a ocorrência semelhante."
+      );
+
+      if (submitButton) {
+        submitButton.disabled = false;
+      }
+
+      return;
+    }
+  }
+}
 
     const status =
       $("editStatus")?.value ||
