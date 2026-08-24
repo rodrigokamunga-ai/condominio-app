@@ -1758,3 +1758,45 @@ button:disabled {
     justify-content: flex-start !important;
   }
 }
+
+.action-icon-button.whatsapp-button {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.action-icon-button.whatsapp-button:hover {
+  background: #bbf7d0;
+}
+
+/* ===================================================== TERMOS DE USO E PRIVACIDADE ===================================================== */
+
+.terms-box {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-start !important;
+  gap: 10px !important;
+
+  color: var(--muted) !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  line-height: 1.5;
+}
+
+.terms-box input {
+  flex: 0 0 auto;
+
+  width: 18px !important;
+  min-width: 18px;
+  height: 18px;
+  min-height: 18px !important;
+
+  margin-top: 3px !important;
+}
+
+.terms-box span {
+  display: block;
+}
+
+.terms-box input:focus {
+  outline: 3px solid rgba(17, 127, 117, 0.2);
+}
