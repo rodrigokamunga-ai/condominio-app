@@ -331,3 +331,139 @@
     min-height: 150px;
   }
 }
+
+/* ===================================================== MENU ADMINISTRATIVO ===================================================== */
+
+.admin-home-content {
+  display: grid;
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+
+  width: 100%;
+}
+
+.admin-menu-card {
+  min-height: 220px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  padding: 24px;
+
+  background: #ffffff;
+  color: var(--text);
+
+  border: 1px solid var(--border);
+  border-radius: 18px;
+
+  box-shadow:
+    0 8px 22px rgba(15, 23, 42, 0.06);
+
+  text-align: center;
+  text-decoration: none;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.admin-menu-card:hover {
+  transform: translateY(-5px);
+
+  border-color: #b8c9dc;
+
+  box-shadow:
+    0 14px 30px rgba(15, 23, 42, 0.12);
+}
+
+.admin-menu-card:active {
+  transform: translateY(-1px);
+}
+
+.admin-menu-icon {
+  width: 76px;
+  height: 76px;
+
+  display: grid;
+  place-items: center;
+
+  background: #f1f5f9;
+  color: #334155;
+
+  border: 1px solid var(--border);
+  border-radius: 18px;
+
+  font-size: 40px;
+}
+
+.admin-menu-card strong {
+  color: var(--text);
+  font-size: 21px;
+  font-weight: 800;
+}
+
+.admin-menu-card small {
+  max-width: 190px;
+
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+
+/* Remove as cores específicas antigas */
+.records-card,
+.dashboard-card,
+.users-card,
+.public-card {
+  background: #ffffff;
+  color: var(--text);
+}
+
+
+/* ===================================================== RESPONSIVIDADE ===================================================== */
+
+@media (max-width: 650px) {
+  .admin-home-content {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .admin-menu-card {
+    min-height: 170px;
+    padding: 14px;
+    border-radius: 15px;
+  }
+
+  .admin-menu-icon {
+    width: 58px;
+    height: 58px;
+
+    border-radius: 14px;
+    font-size: 30px;
+  }
+
+  .admin-menu-card strong {
+    font-size: 17px;
+  }
+
+  .admin-menu-card small {
+    max-width: 130px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 400px) {
+  .admin-home-content {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-menu-card {
+    min-height: 150px;
+  }
+}
