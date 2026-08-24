@@ -1800,3 +1800,83 @@ button:disabled {
 .terms-box input:focus {
   outline: 3px solid rgba(17, 127, 117, 0.2);
 }
+
+/* ===================================================== TERMOS DE USO - MOBILE ===================================================== */
+
+@media (max-width: 650px) {
+  .terms-box {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+
+    width: 100%;
+    padding: 12px;
+
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    color: var(--muted) !important;
+    font-size: 12px !important;
+    font-weight: 400 !important;
+    line-height: 1.5;
+
+    text-align: left;
+  }
+
+  .terms-box input {
+    flex: 0 0 auto;
+
+    width: 19px !important;
+    min-width: 19px !important;
+    height: 19px;
+    min-height: 19px !important;
+
+    margin-top: 2px !important;
+  }
+
+  .terms-box span {
+    display: block;
+    flex: 1;
+  }
+
+  .auth-card {
+    width: calc(100% - 20px);
+    margin: 25px auto;
+    padding: 20px 16px;
+  }
+
+  .auth-card .form {
+    gap: 15px;
+  }
+
+  .auth-card .form label {
+    font-size: 14px;
+  }
+
+  .auth-card .form input {
+    min-height: 46px;
+    font-size: 15px;
+  }
+
+  .auth-card .primary-button,
+  .auth-card .secondary-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 400px) {
+  .terms-box {
+    padding: 10px;
+    font-size: 11px !important;
+    line-height: 1.45;
+  }
+
+  .terms-box input {
+    width: 18px !important;
+    min-width: 18px !important;
+    height: 18px;
+    min-height: 18px !important;
+  }
+}
