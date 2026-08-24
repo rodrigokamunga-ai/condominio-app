@@ -32,7 +32,11 @@ const firebaseConfig = {
   appId: "1:298051508693:web:cc5af84aaceb7856e7055c"
 };
 
-const ADMIN_EMAIL = "rodrigokamunga@gmail.com";
+const ADMIN_EMAIL =
+  "rodrigokamunga@gmail.com";
+
+const EMAIL_DESTINO =
+  "rodrigokamunga@gmail.com";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -43,14 +47,15 @@ const db = getFirestore(app);
 // VARIÁVEIS
 // =====================================================
 
-const $ = (id) => document.getElementById(id);
+const $ = (id) =>
+  document.getElementById(id);
 
 let unsubscribeReports = null;
 let reports = [];
 let currentPage = 1;
+let statusChart = null;
 
 const pageSize = 10;
-let statusChart = null;
 
 
 // =====================================================
@@ -100,6 +105,22 @@ function formatDate(value) {
   }
 
   return "Não informada";
+}
+
+function dateObject(value) {
+  if (!value) {
+    return null;
+  }
+
+  if (typeof value.toDate === "function") {
+    return value.toDate();
+  }
+
+  if (value instanceof Date) {
+    return value;
+  }
+
+  return null;
 }
 
 function statusClass(status) {
@@ -174,6 +195,42 @@ function friendlyError(error) {
     "Não foi possível concluir a operação.";
 }
 
+function daysBetween(startValue, endValue = null) {
+  const start = dateObject(startValue);
+
+  if (!start) {
+    return "Não informado";
+  }
+
+  const end =
+    dateObject(endValue) ||
+    new Date();
+
+  const difference =
+    end.getTime() - start.getTime();
+
+  const days = Math.floor(
+    difference / (1000 * 60 * 60 * 24)
+  );
+
+  if (days <= 0) {
+    return "menos de 1 dia";
+  }
+
+  return `${days} dia${days === 1 ? "" : "s"}`;
+}
+
+function getOpeningDate(report) {
+  return report.dataAbertura ||
+    report.inicioEm ||
+    report.criadoEm;
+}
+
+function getResolvedDate(report) {
+  return report.dataResolvido ||
+    report.fimEm;
+}
+
 
 // =====================================================
 // FILTRO
@@ -216,7 +273,8 @@ function updateCounters() {
   }
 
   if (open) {
-    open.textContent = countStatus("Aberto");
+    open.textContent =
+      countStatus("Aberto");
   }
 
   if (analysis) {
@@ -316,7 +374,7 @@ function updateChart() {
 
 
 // =====================================================
-// RENDERIZAÇÃO DA LISTA
+// LISTAGEM
 // =====================================================
 
 function renderReports() {
@@ -326,7 +384,8 @@ function renderReports() {
     return;
   }
 
-  const filteredReports = getFilteredReports();
+  const filteredReports =
+    getFilteredReports();
 
   const totalPages = Math.max(
     1,
@@ -339,25 +398,26 @@ function renderReports() {
     currentPage = totalPages;
   }
 
-  const startIndex =
+  const start =
     (currentPage - 1) * pageSize;
 
   const visibleReports =
     filteredReports.slice(
-      startIndex,
-      startIndex + pageSize
+      start,
+      start + pageSize
     );
 
   if (visibleReports.length === 0) {
     list.innerHTML = ` <div class="empty-state"> Nenhuma ocorrência encontrada. </div> `;
   } else {
     list.innerHTML = visibleReports
-  .map((report) => {
-    const status = report.status || "Aberto";
+      .map((report) => {
+        const status =
+          report.status || "Aberto";
 
-    return ` <article class="report-item admin-report-item"> <div class="admin-report-header"> <div class="report-title"> ${escapeHtml( report.titulo || "Sem título" )} </div> <span class="badge admin-report-status ${statusClass(status)}"> ${escapeHtml(status)} </span> </div> <div class="admin-report-main"> <div class="report-meta"> Protocolo: ${escapeHtml( report.protocolo || "Não informado" )} </div> <div class="report-meta"> Morador: ${escapeHtml( report.nome || "Não informado" )} </div> <div class="report-meta"> Unidade: ${escapeHtml( report.unidade || "Não informada" )} </div> <div class="report-meta"> Início: ${formatDate( report.inicioEm || report.criadoEm )} </div> ${ report.fimEm ? ` <div class="report-meta"> Fim: ${formatDate(report.fimEm)} </div> ` : "" } </div> <div class="admin-report-actions"> <button class="action-icon-button detail-button" data-id="${report.id}" type="button" title="Detalhar" aria-label="Detalhar ocorrência" > 🔍 </button> <button class="action-icon-button edit-button" data-id="${report.id}" type="button" title="Editar" aria-label="Editar ocorrência" > ✏️ </button> <button class="action-icon-button admin-danger delete-button" data-id="${report.id}" type="button" title="Excluir" aria-label="Excluir ocorrência" > 🗑️ </button> </div> </article> `;
-  })
-  .join("");
+        return ` <article class="report-item admin-report-item"> <div class="admin-report-header"> <div class="report-title"> ${escapeHtml( report.titulo || "Sem título" )} </div> <span class="badge admin-report-status ${statusClass(status)}"> ${escapeHtml(status)} </span> </div> <div class="admin-report-main"> <div class="report-meta"> Protocolo: ${escapeHtml( report.protocolo || "Não informado" )} </div> <div class="report-meta"> Morador: ${escapeHtml( report.nome || "Não informado" )} </div> <div class="report-meta"> Unidade: ${escapeHtml( report.unidade || "Não informada" )} </div> <div class="report-meta"> Categoria: ${escapeHtml( report.categoria || "Não informada" )} </div> <div class="report-meta"> Início: ${formatDate( getOpeningDate(report) )} </div> ${ getResolvedDate(report) ? ` <div class="report-meta"> Fim: ${formatDate( getResolvedDate(report) )} </div> ` : "" } </div> <div class="admin-report-actions"> <button class="action-icon-button detail-button" data-id="${report.id}" type="button" title="Detalhar" aria-label="Detalhar ocorrência" > 🔍 </button> <button class="action-icon-button timeline-button" data-id="${report.id}" type="button" title="Linha do tempo" aria-label="Linha do tempo da ocorrência" > 🕒 </button> <button class="action-icon-button edit-button" data-id="${report.id}" type="button" title="Editar" aria-label="Editar ocorrência" > ✏️ </button> <button class="action-icon-button email-button" data-id="${report.id}" type="button" title="Enviar e-mail" aria-label="Enviar ocorrência por e-mail" > ✉️ </button> <button class="action-icon-button admin-danger delete-button" data-id="${report.id}" type="button" title="Excluir" aria-label="Excluir ocorrência" > 🗑️ </button> </div> </article> `;
+      })
+      .join("");
   }
 
   renderPagination(
@@ -375,7 +435,8 @@ function renderReports() {
 // =====================================================
 
 function renderPagination( totalItems, totalPages ) {
-  const pagination = $("adminPagination");
+  const pagination =
+    $("adminPagination");
 
   if (!pagination) {
     return;
@@ -403,23 +464,222 @@ function openDetails(reportId) {
     return;
   }
 
-  const content = $("adminDetailContent");
+  const content =
+    $("adminDetailContent");
 
   if (!content) {
     return;
   }
 
-  const status = report.status || "Aberto";
+  const status =
+    report.status || "Aberto";
 
-  content.innerHTML = ` <span class="eyebrow"> DETALHAMENTO ADMINISTRATIVO </span> <h2> ${escapeHtml( report.titulo || "Sem título" )} </h2> <div class="admin-detail-grid"> <div class="admin-detail-field"> <strong>Protocolo</strong> <span> ${escapeHtml( report.protocolo || "Não informado" )} </span> </div> <div class="admin-detail-field"> <strong>Status</strong> <span> <span class="badge ${statusClass(status)}"> ${escapeHtml(status)} </span> </span> </div> <div class="admin-detail-field"> <strong>Morador</strong> <span> ${escapeHtml( report.nome || "Não informado" )} </span> </div> <div class="admin-detail-field"> <strong>E-mail</strong> <span> ${escapeHtml( report.email || "Não informado" )} </span> </div> <div class="admin-detail-field"> <strong>Unidade</strong> <span> ${escapeHtml( report.unidade || "Não informada" )} </span> </div> <div class="admin-detail-field"> <strong>Bloco</strong> <span> ${escapeHtml( report.bloco || "Não informado" )} </span> </div> <div class="admin-detail-field"> <strong>Categoria</strong> <span> ${escapeHtml( report.categoria || "Não informada" )} </span> </div> <div class="admin-detail-field"> <strong>Prioridade</strong> <span> ${escapeHtml( report.prioridade || "Não informada" )} </span> </div> <div class="admin-detail-field"> <strong>Local</strong> <span> ${escapeHtml( report.local || "Não informado" )} </span> </div> <div class="admin-detail-field"> <strong>Referência</strong> <span> ${escapeHtml( report.referenciaLocal || "Não informada" )} </span> </div> <div class="admin-detail-field"> <strong>Data de início</strong> <span> ${formatDate( report.inicioEm || report.criadoEm )} </span> </div> <div class="admin-detail-field"> <strong>Data de fim</strong> <span> ${formatDate(report.fimEm)} </span> </div> </div> <p> <strong>Descrição:</strong> </p> <p class="report-description"> ${escapeHtml( report.descricao || "Sem descrição" )} </p> <p> <strong>Oferece risco:</strong> ${report.ofereceRisco ? "Sim" : "Não"} </p> ${ report.fotoData ? ` <div class="report-photo-container"> <img class="detail-photo" src="${report.fotoData}" alt="Foto da ocorrência" /> </div> ` : "" } `;
+  content.innerHTML = ` <span class="eyebrow"> DETALHAMENTO ADMINISTRATIVO </span> <h2> ${escapeHtml( report.titulo || "Sem título" )} </h2> <div class="admin-detail-grid"> <div class="admin-detail-field"> <strong>Protocolo</strong> <span> ${escapeHtml( report.protocolo || "Não informado" )} </span> </div> <div class="admin-detail-field"> <strong>Status</strong> <span> <span class="badge ${statusClass(status)}"> ${escapeHtml(status)} </span> </span> </div> <div class="admin-detail-field"> <strong>Morador</strong> <span> ${escapeHtml( report.nome || "Não informado" )} </span> </div> <div class="admin-detail-field"> <strong>E-mail</strong> <span> ${escapeHtml( report.email || "Não informado" )} </span> </div> <div class="admin-detail-field"> <strong>Unidade</strong> <span> ${escapeHtml( report.unidade || "Não informada" )} </span> </div> <div class="admin-detail-field"> <strong>Bloco</strong> <span> ${escapeHtml( report.bloco || "Não informado" )} </span> </div> <div class="admin-detail-field"> <strong>Categoria</strong> <span> ${escapeHtml( report.categoria || "Não informada" )} </span> </div> <div class="admin-detail-field"> <strong>Prioridade</strong> <span> ${escapeHtml( report.prioridade || "Não informada" )} </span> </div> <div class="admin-detail-field"> <strong>Local</strong> <span> ${escapeHtml( report.local || "Não informado" )} </span> </div> <div class="admin-detail-field"> <strong>Referência</strong> <span> ${escapeHtml( report.referenciaLocal || "Não informada" )} </span> </div> <div class="admin-detail-field"> <strong>Data de abertura</strong> <span> ${formatDate( getOpeningDate(report) )} </span> </div> <div class="admin-detail-field"> <strong>Data em análise</strong> <span> ${formatDate( report.dataAnalise )} </span> </div> <div class="admin-detail-field"> <strong>Data em execução</strong> <span> ${formatDate( report.dataExecucao )} </span> </div> <div class="admin-detail-field"> <strong>Data de resolução</strong> <span> ${formatDate( getResolvedDate(report) )} </span> </div> </div> <p> <strong>Descrição:</strong> </p> <p class="report-description"> ${escapeHtml( report.descricao || "Sem descrição" )} </p>  ${ report.fotoData ? ` <div class="report-photo-container"> <img class="detail-photo" src="${report.fotoData}" alt="Foto da ocorrência" /> </div> ` : "" } `;
 
   show("adminDetailModal");
 }
 
 
 // =====================================================
+// LINHA DO TEMPO
+// =====================================================
+
+function openTimeline(reportId) {
+  const report = reports.find(
+    (item) => item.id === reportId
+  );
+
+  if (!report) {
+    return;
+  }
+
+  const modal =
+    getOrCreateTimelineModal();
+
+  const content =
+    modal.querySelector(
+      "#adminTimelineContent"
+    );
+
+  if (!content) {
+    return;
+  }
+
+  const opening =
+    getOpeningDate(report);
+
+  const analysis =
+    report.dataAnalise;
+
+  const execution =
+    report.dataExecucao;
+
+  const resolved =
+    getResolvedDate(report);
+
+  content.innerHTML = ` <span class="eyebrow"> LINHA DO TEMPO DA OCORRÊNCIA </span> <h2> ${escapeHtml( report.titulo || "Sem título" )} </h2> <p class="timeline-protocol"> Protocolo: ${escapeHtml( report.protocolo || "Não informado" )} </p> <div class="timeline"> <div class="timeline-item completed"> <div class="timeline-dot">1</div> <div class="timeline-content"> <strong>Abertura</strong> <span> ${formatDate(opening)} </span> <small> ${ analysis ? `Aberto por ${daysBetween( opening, analysis )}` : `Aberto há ${daysBetween( opening )}` } </small> </div> </div> <div class="timeline-item ${analysis ? "completed" : "pending"}"> <div class="timeline-dot">2</div> <div class="timeline-content"> <strong>Em análise</strong> <span> ${formatDate(analysis)} </span> <small> ${ analysis ? execution ? `Em análise por ${daysBetween( analysis, execution )}` : resolved ? `Em análise por ${daysBetween( analysis, resolved )}` : `Em análise há ${daysBetween( analysis )}` : "Ainda não entrou em análise" } </small> </div> </div> <div class="timeline-item ${execution ? "completed" : "pending"}"> <div class="timeline-dot">3</div> <div class="timeline-content"> <strong>Em execução</strong> <span> ${formatDate(execution)} </span> <small> ${ execution ? resolved ? `Em execução por ${daysBetween( execution, resolved )}` : `Em execução há ${daysBetween( execution )}` : "Ainda não entrou em execução" } </small> </div> </div> <div class="timeline-item ${resolved ? "completed" : "pending"}"> <div class="timeline-dot">4</div> <div class="timeline-content"> <strong>Resolvido</strong> <span> ${formatDate(resolved)} </span> <small> ${ resolved ? "Ocorrência finalizada" : "Ainda não resolvido" } </small> </div> </div> </div> `;
+
+  show("adminTimelineModal");
+}
+
+function getOrCreateTimelineModal() {
+  let modal =
+    $("adminTimelineModal");
+
+  if (modal) {
+    return modal;
+  }
+
+  modal =
+    document.createElement("div");
+
+  modal.id = "adminTimelineModal";
+  modal.className = "modal hidden";
+
+  modal.innerHTML = ` <div class="modal-card"> <button id="btnCloseAdminTimeline" class="modal-close" type="button" aria-label="Fechar linha do tempo" > × </button> <div id="adminTimelineContent"></div> </div> `;
+
+  document.body.appendChild(modal);
+
+  modal.addEventListener(
+    "click",
+    (event) => {
+      if (
+        event.target.id ===
+        "adminTimelineModal"
+      ) {
+        hide("adminTimelineModal");
+      }
+    }
+  );
+
+  modal.querySelector(
+    "#btnCloseAdminTimeline"
+  )?.addEventListener(
+    "click",
+    () => hide("adminTimelineModal")
+  );
+
+  return modal;
+}
+
+
+// =====================================================
+// E-MAIL
+// =====================================================
+
+function sendEmail(reportId) {
+  const report = reports.find(
+    (item) => item.id === reportId
+  );
+
+  if (!report) {
+    return;
+  }
+
+  const subject =
+    `Ocorrência ${report.protocolo || ""} - ${report.titulo || ""}`;
+
+  const body = ` Detalhamento da ocorrência Protocolo: ${report.protocolo || "Não informado"} Título: ${report.titulo || "Não informado"} Status: ${report.status || "Aberto"} Categoria: ${report.categoria || "Não informada"} Prioridade: ${report.prioridade || "Não informada"} Local: ${report.local || "Não informado"} Referência: ${report.referenciaLocal || "Não informada"} Morador: ${report.nome || "Não informado"} Unidade: ${report.unidade || "Não informada"} E-mail do morador: ${report.email || "Não informado"} Data de abertura: ${formatDate( getOpeningDate(report) )} Data em análise: ${formatDate( report.dataAnalise )} Data em execução: ${formatDate( report.dataExecucao )} Data de resolução: ${formatDate( getResolvedDate(report) )}  Descrição: ${report.descricao || "Sem descrição"} `.trim();
+
+  const mailto =
+    `mailto:${EMAIL_DESTINO}` +
+    `?subject=${encodeURIComponent(subject)}` +
+    `&body=${encodeURIComponent(body)}`;
+
+  window.location.href = mailto;
+}
+
+
+// =====================================================
 // EDIÇÃO
 // =====================================================
+
+function addDocumentationOption() {
+  const category =
+    $("adminEditCategory");
+
+  if (!category) {
+    return;
+  }
+
+  const exists =
+    Array.from(category.options)
+      .some(
+        (option) =>
+          option.value === "Documentação"
+      );
+
+  if (!exists) {
+    const option =
+      document.createElement("option");
+
+    option.value = "Documentação";
+    option.textContent = "Documentação";
+
+    category.appendChild(option);
+  }
+}
+
+function updateAdminEditLocationFields() {
+  const category =
+    $("adminEditCategory")?.value;
+
+  const documentation =
+    category === "Documentação";
+
+  const location =
+    $("adminEditLocation");
+
+  const reference =
+    $("adminEditReference");
+
+  if (location) {
+    location.disabled =
+      documentation;
+
+    if (documentation) {
+      location.value = "";
+    }
+  }
+
+  if (reference) {
+    reference.disabled =
+      documentation;
+
+    if (documentation) {
+      reference.value = "";
+    }
+  }
+}
+
+function addRiskFieldIfMissing() {
+  const form =
+    $("adminEditForm");
+
+  if (!form || $("adminEditRisk")) {
+    return;
+  }
+
+  const label =
+    document.createElement("label");
+
+  label.className =
+    "checkbox-label";
+
+  label.innerHTML = ` <input id="adminEditRisk" type="checkbox" /> O problema oferece risco? `;
+
+  const status =
+    $("adminEditStatus");
+
+  if (status) {
+    status.parentElement.insertAdjacentElement(
+      "afterend",
+      label
+    );
+  } else {
+    form.appendChild(label);
+  }
+}
 
 function openEditModal(reportId) {
   const report = reports.find(
@@ -430,106 +690,315 @@ function openEditModal(reportId) {
     return;
   }
 
-  $("adminEditReportId").value = report.id;
-  $("adminEditTitle").value = report.titulo || "";
+  addDocumentationOption();
+  addRiskFieldIfMissing();
+
+  $("adminEditReportId").value =
+    report.id;
+
+  $("adminEditTitle").value =
+    report.titulo || "";
+
   $("adminEditCategory").value =
     report.categoria || "";
+
   $("adminEditPriority").value =
     report.prioridade || "Normal";
+
   $("adminEditLocation").value =
     report.local || "";
+
   $("adminEditReference").value =
     report.referenciaLocal || "";
+
   $("adminEditDescription").value =
     report.descricao || "";
+
   $("adminEditStatus").value =
     report.status || "Aberto";
 
+  const risk =
+    $("adminEditRisk");
+
+  if (risk) {
+    risk.checked =
+      Boolean(report.ofereceRisco);
+  }
+
+  updateAdminEditLocationFields();
   showEditMessage("");
   show("adminEditModal");
 }
 
-async function saveEdit(event) {
-  event.preventDefault();
+$("adminEditCategory")?.addEventListener(
+  "change",
+  updateAdminEditLocationFields
+);
 
-  const reportId =
-    $("adminEditReportId")?.value;
+$("adminEditForm")?.addEventListener(
+  "submit",
+  async (event) => {
+    event.preventDefault();
 
-  if (!reportId) {
-    showEditMessage(
-      "Ocorrência não identificada."
+    const reportId =
+      $("adminEditReportId")?.value;
+
+    if (!reportId) {
+      showEditMessage(
+        "Ocorrência não identificada."
+      );
+      return;
+    }
+
+    const report = reports.find(
+      (item) => item.id === reportId
     );
-    return;
-  }
 
-  const title =
-    $("adminEditTitle")?.value.trim();
+    if (!report) {
+      showEditMessage(
+        "Ocorrência não encontrada."
+      );
+      return;
+    }
 
-  const description =
-    $("adminEditDescription")?.value.trim();
+    const title =
+      $("adminEditTitle")?.value.trim();
 
-  if (!title || title.length < 3) {
-    showEditMessage(
-      "Informe um título válido."
-    );
-    return;
-  }
+    const category =
+      $("adminEditCategory")?.value;
 
-  if (!description || description.length < 10) {
-    showEditMessage(
-      "A descrição deve ter pelo menos 10 caracteres."
-    );
-    return;
-  }
-
-  const saveButton = $("btnSaveAdminEdit");
-
-  if (saveButton) {
-    saveButton.disabled = true;
-  }
-
-  try {
     const status =
-      $("adminEditStatus").value;
+      $("adminEditStatus")?.value;
 
-    await updateDoc(
-      doc(db, "reports", reportId),
-      {
+    const description =
+      $("adminEditDescription")?.value.trim();
+
+    if (!title || title.length < 3) {
+      showEditMessage(
+        "Informe um título válido."
+      );
+      return;
+    }
+
+    if (!category) {
+      showEditMessage(
+        "Informe uma categoria."
+      );
+      return;
+    }
+
+    if (!description || description.length < 10) {
+      showEditMessage(
+        "A descrição deve ter pelo menos 10 caracteres."
+      );
+      return;
+    }
+
+    const documentation =
+      category === "Documentação";
+
+    const location =
+      documentation
+        ? ""
+        : $("adminEditLocation")?.value;
+
+    const reference =
+      documentation
+        ? ""
+        : $("adminEditReference")?.value.trim();
+
+    if (
+  !noLocationRequired &&
+  !location
+) {
+  showEditMessage(
+    "Informe o local da ocorrência."
+  );
+  return;
+}
+
+    const saveButton =
+      $("btnSaveAdminEdit");
+
+    if (saveButton) {
+      saveButton.disabled = true;
+    }
+
+    try {
+      const updateData = {
         titulo: title,
-        categoria:
-          $("adminEditCategory").value,
+        categoria: category,
         prioridade:
-          $("adminEditPriority").value,
-        local:
-          $("adminEditLocation").value,
-        referenciaLocal:
-          $("adminEditReference").value.trim(),
+          $("adminEditPriority")?.value ||
+          "Normal",
+        local: location || "",
+        referenciaLocal: reference || "",
         descricao: description,
         status,
 
-        fimEm:
-          status === "Resolvido"
-            ? serverTimestamp()
-            : null,
+        
 
-        atualizadoEm: serverTimestamp()
+        atualizadoEm:
+          serverTimestamp()
+      };
+
+      // Registra a primeira data de entrada em análise
+      if (
+        status === "Em análise" &&
+        !report.dataAnalise
+      ) {
+        updateData.dataAnalise =
+          serverTimestamp();
       }
-    );
 
-    hide("adminEditModal");
-    toast(
-      "Ocorrência atualizada com sucesso."
-    );
-  } catch (error) {
-    showEditMessage(
-      friendlyError(error)
-    );
-  } finally {
-    if (saveButton) {
-      saveButton.disabled = false;
+      // Registra a primeira data de entrada em execução
+      if (
+        status === "Em execução" &&
+        !report.dataExecucao
+      ) {
+        updateData.dataExecucao =
+          serverTimestamp();
+      }
+
+      // Registra a primeira data de resolução
+      if (
+        status === "Resolvido" &&
+        !report.dataResolvido
+      ) {
+        updateData.dataResolvido =
+          serverTimestamp();
+      }
+
+      // Mantém compatibilidade com o campo antigo
+      if (
+        status === "Resolvido" &&
+        !report.fimEm
+      ) {
+        updateData.fimEm =
+          serverTimestamp();
+      }
+
+      await updateDoc(
+        doc(db, "reports", reportId),
+        updateData
+      );
+
+      hide("adminEditModal");
+
+      toast(
+        "Ocorrência atualizada com sucesso."
+      );
+    } catch (error) {
+      showEditMessage(
+        friendlyError(error)
+      );
+    } finally {
+      if (saveButton) {
+        saveButton.disabled = false;
+      }
     }
   }
-}
+);
+
+
+// =====================================================
+// EVENTOS DA PÁGINA
+// =====================================================
+
+document.addEventListener(
+  "click",
+  (event) => {
+    const detailButton =
+      event.target.closest(
+        ".detail-button"
+      );
+
+    if (detailButton) {
+      openDetails(
+        detailButton.dataset.id
+      );
+      return;
+    }
+
+    const timelineButton =
+      event.target.closest(
+        ".timeline-button"
+      );
+
+    if (timelineButton) {
+      openTimeline(
+        timelineButton.dataset.id
+      );
+      return;
+    }
+
+    const editButton =
+      event.target.closest(
+        ".edit-button"
+      );
+
+    if (editButton) {
+      openEditModal(
+        editButton.dataset.id
+      );
+      return;
+    }
+
+    const emailButton =
+      event.target.closest(
+        ".email-button"
+      );
+
+    if (emailButton) {
+      sendEmail(
+        emailButton.dataset.id
+      );
+      return;
+    }
+
+    const deleteButton =
+      event.target.closest(
+        ".delete-button"
+      );
+
+    if (deleteButton) {
+      deleteReport(
+        deleteButton.dataset.id
+      );
+      return;
+    }
+
+    if (
+      event.target.id ===
+      "adminPrevPage"
+    ) {
+      if (currentPage > 1) {
+        currentPage--;
+        renderReports();
+      }
+
+      return;
+    }
+
+    if (
+      event.target.id ===
+      "adminNextPage"
+    ) {
+      const totalPages = Math.max(
+        1,
+        Math.ceil(
+          getFilteredReports().length /
+          pageSize
+        )
+      );
+
+      if (currentPage < totalPages) {
+        currentPage++;
+        renderReports();
+      }
+    }
+  }
+);
 
 
 // =====================================================
@@ -542,7 +1011,9 @@ async function deleteReport(reportId) {
   );
 
   if (!report) {
-    alert("Ocorrência não encontrada.");
+    alert(
+      "Ocorrência não encontrada."
+    );
     return;
   }
 
@@ -568,13 +1039,82 @@ async function deleteReport(reportId) {
       error
     );
 
-    alert(friendlyError(error));
+    alert(
+      friendlyError(error)
+    );
   }
 }
 
 
 // =====================================================
-// GERAÇÃO DO PDF
+// MODAIS
+// =====================================================
+
+$("btnCloseAdminDetail")?.addEventListener(
+  "click",
+  () => hide("adminDetailModal")
+);
+
+$("adminDetailModal")?.addEventListener(
+  "click",
+  (event) => {
+    if (
+      event.target.id ===
+      "adminDetailModal"
+    ) {
+      hide("adminDetailModal");
+    }
+  }
+);
+
+$("btnCloseAdminEdit")?.addEventListener(
+  "click",
+  () => hide("adminEditModal")
+);
+
+$("adminEditModal")?.addEventListener(
+  "click",
+  (event) => {
+    if (
+      event.target.id ===
+      "adminEditModal"
+    ) {
+      hide("adminEditModal");
+    }
+  }
+);
+
+
+// =====================================================
+// BOTÕES GERAIS
+// =====================================================
+
+$("btnGeneratePdf")?.addEventListener(
+  "click",
+  generatePdf
+);
+
+$("btnRefreshAdmin")?.addEventListener(
+  "click",
+  () => {
+    currentPage = 1;
+    renderReports();
+    toast("Dados atualizados.");
+  }
+);
+
+$("btnAdminLogout")?.addEventListener(
+  "click",
+  async () => {
+    await signOut(auth);
+    window.location.href =
+      "admin-home.html";
+  }
+);
+
+
+// =====================================================
+// PDF
 // =====================================================
 
 function generatePdf() {
@@ -599,20 +1139,20 @@ function generatePdf() {
   const pdf = new jsPDF();
 
   const marginLeft = 14;
-  let y = 18;
-
   const lineHeight = 7;
   const pageHeight = 280;
 
-  function addNewPageIfNeeded(extra = 10) {
+  let y = 18;
+
+  function addPageIfNeeded(extra = 10) {
     if (y + extra > pageHeight) {
       pdf.addPage();
       y = 18;
     }
   }
 
-  function addText(text, size = 10, bold = false) {
-    addNewPageIfNeeded(10);
+  function addText( text, size = 10, bold = false ) {
+    addPageIfNeeded(10);
 
     pdf.setFontSize(size);
     pdf.setFont(
@@ -620,17 +1160,29 @@ function generatePdf() {
       bold ? "bold" : "normal"
     );
 
-    const lines = pdf.splitTextToSize(
-      String(text),
-      180
+    const lines =
+      pdf.splitTextToSize(
+        String(text),
+        180
+      );
+
+    pdf.text(
+      lines,
+      marginLeft,
+      y
     );
 
-    pdf.text(lines, marginLeft, y);
-    y += lines.length * lineHeight;
+    y +=
+      lines.length *
+      lineHeight;
   }
 
   pdf.setFontSize(18);
-  pdf.setFont("helvetica", "bold");
+  pdf.setFont(
+    "helvetica",
+    "bold"
+  );
+
   pdf.text(
     "Relatório de Ocorrências",
     marginLeft,
@@ -640,9 +1192,13 @@ function generatePdf() {
   y += 10;
 
   pdf.setFontSize(10);
-  pdf.setFont("helvetica", "normal");
+  pdf.setFont(
+    "helvetica",
+    "normal"
+  );
+
   pdf.text(
-    `Condomínio Amigos do Maui`,
+    "Condomínio Amigos do Maui",
     marginLeft,
     y
   );
@@ -658,7 +1214,7 @@ function generatePdf() {
   y += 12;
 
   addText(
-    `Total de ocorrências: ${reports.length}`,
+    `Total: ${reports.length}`,
     11,
     true
   );
@@ -667,17 +1223,20 @@ function generatePdf() {
     `Abertas: ${countStatus("Aberto")} | ` +
     `Em análise: ${countStatus("Em análise")} | ` +
     `Em execução: ${countStatus("Em execução")} | ` +
-    `Resolvidas: ${countStatus("Resolvido")}`,
-    10,
-    false
+    `Resolvidas: ${countStatus("Resolvido")}`
   );
 
   y += 5;
 
   reports.forEach((report, index) => {
-    addNewPageIfNeeded(45);
+    addPageIfNeeded(45);
 
-    pdf.setDrawColor(210, 210, 210);
+    pdf.setDrawColor(
+      210,
+      210,
+      210
+    );
+
     pdf.line(
       marginLeft,
       y,
@@ -722,14 +1281,20 @@ function generatePdf() {
     );
 
     addText(
-      `Data de início: ${formatDate( report.inicioEm || report.criadoEm )}`
+      `Abertura: ${formatDate( getOpeningDate(report) )}`
     );
 
-    if (report.fimEm) {
-      addText(
-        `Data de fim: ${formatDate( report.fimEm )}`
-      );
-    }
+    addText(
+      `Em análise: ${formatDate( report.dataAnalise )}`
+    );
+
+    addText(
+      `Em execução: ${formatDate( report.dataExecucao )}`
+    );
+
+    addText(
+      `Resolvido: ${formatDate( getResolvedDate(report) )}`
+    );
 
     addText(
       `Descrição: ${report.descricao || "Sem descrição"}`
@@ -758,194 +1323,82 @@ function countStatus(status) {
 
 
 // =====================================================
-// EVENTOS
+// AUTENTICAÇÃO
 // =====================================================
 
-document.addEventListener("click", (event) => {
-  const detailButton = event.target.closest(
-    ".detail-button"
-  );
+onAuthStateChanged(
+  auth,
+  (user) => {
+    hide("adminLoadingView");
 
-  if (detailButton) {
-    openDetails(detailButton.dataset.id);
-    return;
-  }
-
-  const editButton = event.target.closest(
-    ".edit-button"
-  );
-
-  if (editButton) {
-    openEditModal(editButton.dataset.id);
-    return;
-  }
-
-  const deleteButton = event.target.closest(
-    ".delete-button"
-  );
-
-  if (deleteButton) {
-    deleteReport(deleteButton.dataset.id);
-    return;
-  }
-
-  if (event.target.id === "adminPrevPage") {
-    if (currentPage > 1) {
-      currentPage--;
-      renderReports();
+    if (!user) {
+      show("adminDeniedView");
+      hide("adminView");
+      return;
     }
 
-    return;
-  }
+    if (
+      user.email?.toLowerCase() !==
+      ADMIN_EMAIL.toLowerCase()
+    ) {
+      show("adminDeniedView");
+      hide("adminView");
+      return;
+    }
 
-  if (event.target.id === "adminNextPage") {
-    const totalPages = Math.max(
-      1,
-      Math.ceil(
-        getFilteredReports().length / pageSize
-      )
+    hide("adminDeniedView");
+    show("adminView");
+
+    const adminName =
+      $("adminUserName");
+
+    if (adminName) {
+      adminName.textContent =
+        user.displayName ||
+        user.email ||
+        "Administrador";
+    }
+
+    const reportsQuery = query(
+      collection(db, "reports"),
+      orderBy("criadoEm", "desc")
     );
 
-    if (currentPage < totalPages) {
-      currentPage++;
-      renderReports();
+    if (unsubscribeReports) {
+      unsubscribeReports();
     }
-  }
-});
 
-$("adminStatusFilter")?.addEventListener(
-  "change",
-  () => {
-    currentPage = 1;
-    renderReports();
-  }
-);
+    unsubscribeReports =
+      onSnapshot(
+        reportsQuery,
+        (snapshot) => {
+          reports = snapshot.docs.map(
+            (item) => ({
+              id: item.id,
+              ...item.data()
+            })
+          );
 
-$("btnCloseAdminDetail")?.addEventListener(
-  "click",
-  () => hide("adminDetailModal")
-);
+          currentPage = 1;
+          renderReports();
+        },
+        (error) => {
+          console.error(
+            "Erro ao carregar ocorrências:",
+            error
+          );
 
-$("adminDetailModal")?.addEventListener(
-  "click",
-  (event) => {
-    if (event.target.id === "adminDetailModal") {
-      hide("adminDetailModal");
-    }
-  }
-);
+          const list =
+            $("adminReportsList");
 
-$("btnCloseAdminEdit")?.addEventListener(
-  "click",
-  () => hide("adminEditModal")
-);
+          if (list) {
+            list.innerHTML = ` <div class="empty-state"> ${escapeHtml( friendlyError(error) )} </div> `;
+          }
 
-$("adminEditModal")?.addEventListener(
-  "click",
-  (event) => {
-    if (event.target.id === "adminEditModal") {
-      hide("adminEditModal");
-    }
-  }
-);
-
-$("adminEditForm")?.addEventListener(
-  "submit",
-  saveEdit
-);
-
-$("btnGeneratePdf")?.addEventListener(
-  "click",
-  generatePdf
-);
-
-$("btnRefreshAdmin")?.addEventListener(
-  "click",
-  () => {
-    currentPage = 1;
-    renderReports();
-    toast("Dados atualizados.");
-  }
-);
-
-$("btnAdminLogout")?.addEventListener(
-  "click",
-  async () => {
-    await signOut(auth);
-    window.location.href = "index.html";
-  }
-);
-
-
-// =====================================================
-// AUTENTICAÇÃO E CARREGAMENTO
-// =====================================================
-
-onAuthStateChanged(auth, (user) => {
-  hide("adminLoadingView");
-
-  if (!user) {
-    show("adminDeniedView");
-    hide("adminView");
-    return;
-  }
-
-  if (
-    user.email?.toLowerCase() !==
-    ADMIN_EMAIL.toLowerCase()
-  ) {
-    show("adminDeniedView");
-    hide("adminView");
-    return;
-  }
-
-  hide("adminDeniedView");
-  show("adminView");
-
-  const adminName = $("adminUserName");
-
-  if (adminName) {
-    adminName.textContent =
-      user.displayName ||
-      user.email ||
-      "Administrador";
-  }
-
-  const reportsQuery = query(
-    collection(db, "reports"),
-    orderBy("criadoEm", "desc")
-  );
-
-  if (unsubscribeReports) {
-    unsubscribeReports();
-  }
-
-  unsubscribeReports = onSnapshot(
-    reportsQuery,
-    (snapshot) => {
-      reports = snapshot.docs.map((item) => ({
-        id: item.id,
-        ...item.data()
-      }));
-
-      currentPage = 1;
-      renderReports();
-    },
-    (error) => {
-      console.error(
-        "Erro ao carregar ocorrências:",
-        error
+          showMessage(
+            friendlyError(error)
+          );
+        }
       );
-
-      const list = $("adminReportsList");
-
-      if (list) {
-        list.innerHTML = ` <div class="empty-state"> ${escapeHtml( friendlyError(error) )} </div> `;
-      }
-
-      showMessage(
-        friendlyError(error)
-      );
-    }
-  );
-});
+  }
+);
