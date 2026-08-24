@@ -23,11 +23,12 @@ import {
   updateDoc,
   deleteDoc,
   serverTimestamp
+  
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 // =====================================================
-// CONFIGURAÇÃO DO FIREBASE
+// CONFIGURAÇÃO
 // =====================================================
 
 const firebaseConfig = {
@@ -40,6 +41,9 @@ const firebaseConfig = {
 };
 
 const ADMIN_EMAIL =
+  "rodrigokamunga@gmail.com";
+
+const EMAIL_DESTINO =
   "rodrigokamunga@gmail.com";
 
 
@@ -152,6 +156,22 @@ function formatDate(value) {
   return "Não informada";
 }
 
+function getDateFromValue(value) {
+  if (!value) {
+    return null;
+  }
+
+  if (typeof value.toDate === "function") {
+    return value.toDate();
+  }
+
+  if (value instanceof Date) {
+    return value;
+  }
+
+  return null;
+}
+
 function statusClass(status) {
   if (status === "Resolvido") {
     return "done";
@@ -221,6 +241,59 @@ function isAdmin(user) {
     user.email.toLowerCase() ===
       ADMIN_EMAIL.toLowerCase()
   );
+}
+
+function isDocumentationCategory() {
+  return $("reportCategory")?.value ===
+    "Documentação";
+}
+
+function getStatusDate(report, status) {
+  if (status === "Aberto") {
+    return report.dataAbertura ||
+      report.inicioEm ||
+      report.criadoEm;
+  }
+
+  if (status === "Em análise") {
+    return report.dataAnalise;
+  }
+
+  if (status === "Em execução") {
+    return report.dataExecucao;
+  }
+
+  if (status === "Resolvido") {
+    return report.dataResolvido ||
+      report.fimEm;
+  }
+
+  return null;
+}
+
+function calculateDays(startValue, endValue = null) {
+  const start = getDateFromValue(startValue);
+
+  if (!start) {
+    return "Não informado";
+  }
+
+  const end =
+    getDateFromValue(endValue) ||
+    new Date();
+
+  const difference =
+    end.getTime() - start.getTime();
+
+  const days = Math.floor(
+    difference / (1000 * 60 * 60 * 24)
+  );
+
+  if (days <= 0) {
+    return "menos de 1 dia";
+  }
+
+  return `${days} dia${days === 1 ? "" : "s"}`;
 }
 
 
@@ -317,6 +390,117 @@ function compressImage( file, maxWidth = 640, maxHeight = 480, quality = 0.6 ) {
 
 
 // =====================================================
+// CONTROLES DO CAMPO DOCUMENTAÇÃO
+// =====================================================
+
+function addCategoryOptions() {
+  const category =
+    $("reportCategory");
+
+  if (!category) {
+    return;
+  }
+
+  const documentationExists =
+    Array.from(category.options)
+      .some(
+        (option) =>
+          option.value === "Documentação"
+      );
+
+  if (!documentationExists) {
+    const documentationOption =
+      document.createElement("option");
+
+    documentationOption.value =
+      "Documentação";
+
+    documentationOption.textContent =
+      "Documentação";
+
+    category.appendChild(
+      documentationOption
+    );
+  }
+
+  const jardinagemExists =
+    Array.from(category.options)
+      .some(
+        (option) =>
+          option.value === "Jardinagem"
+      );
+
+  if (!jardinagemExists) {
+    const jardinagemOption =
+      document.createElement("option");
+
+    jardinagemOption.value =
+      "Jardinagem";
+
+    jardinagemOption.textContent =
+      "Jardinagem";
+
+    category.appendChild(
+      jardinagemOption
+    );
+  }
+}
+
+function updateLocationFields() {
+  const category =
+    $("reportCategory")?.value || "";
+
+  const disableLocation =
+    category === "Documentação" ||
+    category === "Jardinagem";
+
+  const disableReference =
+    category === "Documentação";
+
+  const location =
+    $("reportLocation");
+
+  const reference =
+    $("reportReference");
+
+  if (location) {
+    location.disabled =
+      disableLocation;
+
+    if (disableLocation) {
+      location.value = "";
+    }
+  }
+
+  if (reference) {
+    reference.disabled =
+      disableReference;
+
+    if (disableReference) {
+      reference.value = "";
+    }
+  }
+}
+
+function removeUpdatesField() {
+  const updates = $("reportUpdates");
+
+  if (!updates) {
+    return;
+  }
+
+  const label =
+    updates.closest("label");
+
+  if (label) {
+    label.remove();
+  } else {
+    updates.remove();
+  }
+}
+
+
+// =====================================================
 // FILTRO
 // =====================================================
 
@@ -377,7 +561,7 @@ function renderReports() {
         const status =
           report.status || "Aberto";
 
-        return ` <article class="report-item compact-report"> <div> <div class="report-title"> ${escapeHtml( report.titulo || "Sem título" )} </div> <div class="report-meta"> Protocolo: ${escapeHtml( report.protocolo || "Não informado" )} </div> <div class="report-meta"> Início: ${formatDate( report.inicioEm || report.criadoEm )} </div> ${ report.fimEm ? ` <div class="report-meta"> Fim: ${formatDate(report.fimEm)} </div> ` : "" } <span class="badge ${statusClass(status)}"> ${escapeHtml(status)} </span> </div> <div class="report-actions"> <button class="action-icon-button detail-button" data-id="${report.id}" type="button" title="Detalhar" aria-label="Detalhar ocorrência" > 🔍 </button> <button class="action-icon-button edit-button" data-id="${report.id}" type="button" title="Editar" aria-label="Editar ocorrência" > ✏️ </button> <button class="action-icon-button delete-button" data-id="${report.id}" type="button" title="Excluir" aria-label="Excluir ocorrência" > 🗑️ </button> </div> </article> `;
+        return ` <article class="report-item compact-report"> <div> <div class="report-title"> ${escapeHtml( report.titulo || "Sem título" )} </div> <div class="report-meta"> Protocolo: ${escapeHtml( report.protocolo || "Não informado" )} </div> <div class="report-meta"> Início: ${formatDate( report.dataAbertura || report.inicioEm || report.criadoEm )} </div> ${ report.fimEm || report.dataResolvido ? ` <div class="report-meta"> Fim: ${formatDate( report.dataResolvido || report.fimEm )} </div> ` : "" } <span class="badge ${statusClass(status)}"> ${escapeHtml(status)} </span> </div> <div class="report-actions"> <button class="action-icon-button detail-button" data-id="${report.id}" type="button" title="Detalhar" aria-label="Detalhar ocorrência" > 🔍 </button> <button class="action-icon-button timeline-button" data-id="${report.id}" type="button" title="Linha do tempo" aria-label="Linha do tempo" > 🕒 </button> <button class="action-icon-button edit-button" data-id="${report.id}" type="button" title="Editar" aria-label="Editar ocorrência" > ✏️ </button> <button class="action-icon-button email-button" data-id="${report.id}" type="button" title="Enviar e-mail" aria-label="Enviar ocorrência por e-mail" > ✉️ </button> <button class="action-icon-button delete-button" data-id="${report.id}" type="button" title="Excluir" aria-label="Excluir ocorrência" > 🗑️ </button> </div> </article> `;
       })
       .join("");
   }
@@ -455,9 +639,209 @@ function openDetails(reportId) {
   const status =
     report.status || "Aberto";
 
-  detailContent.innerHTML = ` <span class="eyebrow"> DETALHAMENTO DA OCORRÊNCIA </span> <h2> ${escapeHtml( report.titulo || "Sem título" )} </h2> <p> <b>Protocolo:</b> ${escapeHtml( report.protocolo || "Não informado" )} </p> <p> <b>Status:</b> <span class="badge ${statusClass(status)}"> ${escapeHtml(status)} </span> </p> <p> <b>Categoria:</b> ${escapeHtml( report.categoria || "Não informada" )} </p> <p> <b>Prioridade:</b> ${escapeHtml( report.prioridade || "Não informada" )} </p> <p> <b>Local:</b> ${escapeHtml( report.local || "Não informado" )} </p> <p> <b>Referência:</b> ${escapeHtml( report.referenciaLocal || "Não informada" )} </p> <p> <b>Data de início:</b> ${formatDate( report.inicioEm || report.criadoEm )} </p> <p> <b>Data de fim:</b> ${formatDate(report.fimEm)} </p> <p> <b>Descrição:</b><br> ${escapeHtml( report.descricao || "Sem descrição" )} </p> <p> <b>Oferece risco:</b> ${report.ofereceRisco ? "Sim" : "Não"} </p> ${ report.fotoData ? ` <div class="report-photo-container"> <img class="detail-photo" src="${report.fotoData}" alt="Foto da ocorrência" /> </div> ` : "" } `;
+  detailContent.innerHTML = ` <span class="eyebrow"> DETALHAMENTO DA OCORRÊNCIA </span> <h2> ${escapeHtml( report.titulo || "Sem título" )} </h2> <p> <b>Protocolo:</b> ${escapeHtml( report.protocolo || "Não informado" )} </p> <p> <b>Status:</b> <span class="badge ${statusClass(status)}"> ${escapeHtml(status)} </span> </p> <p> <b>Categoria:</b> ${escapeHtml( report.categoria || "Não informada" )} </p> <p> <b>Prioridade:</b> ${escapeHtml( report.prioridade || "Não informada" )} </p> <p> <b>Local:</b> ${escapeHtml( report.local || "Não informado" )} </p> <p> <b>Referência:</b> ${escapeHtml( report.referenciaLocal || "Não informada" )} </p> <p> <b>Data de abertura:</b> ${formatDate( report.dataAbertura || report.inicioEm || report.criadoEm )} </p> <p> <b>Data em análise:</b> ${formatDate(report.dataAnalise)} </p> <p> <b>Data em execução:</b> ${formatDate(report.dataExecucao)} </p> <p> <b>Data de resolução:</b> ${formatDate( report.dataResolvido || report.fimEm )} </p> <p> <b>Descrição:</b><br> ${escapeHtml( report.descricao || "Sem descrição" )} </p>  ${ report.fotoData ? ` <div class="report-photo-container"> <img class="detail-photo" src="${report.fotoData}" alt="Foto da ocorrência" /> </div> ` : "" } `;
 
   show("detailModal");
+}
+
+
+// =====================================================
+// LINHA DO TEMPO
+// =====================================================
+
+function openTimeline(reportId) {
+  const report = allReports.find(
+    (item) => item.id === reportId
+  );
+
+  if (!report) {
+    return;
+  }
+
+  const modal = getOrCreateTimelineModal();
+
+  const content =
+    modal.querySelector(
+      "#timelineContent"
+    );
+
+  if (!content) {
+    return;
+  }
+
+  const abertura =
+    report.dataAbertura ||
+    report.inicioEm ||
+    report.criadoEm;
+
+  const analise =
+    report.dataAnalise;
+
+  const execucao =
+    report.dataExecucao;
+
+  const resolvido =
+    report.dataResolvido ||
+    report.fimEm;
+
+  content.innerHTML = ` <span class="eyebrow"> LINHA DO TEMPO </span> <h2> ${escapeHtml( report.titulo || "Ocorrência" )} </h2> <div class="timeline"> <div class="timeline-item completed"> <div class="timeline-dot">1</div> <div class="timeline-content"> <strong>Abertura da ocorrência</strong> <span> ${formatDate(abertura)} </span> <small> ${ analise ? `Aberto por ${calculateDays( abertura, analise )}` : `Em aberto há ${calculateDays( abertura )}` } </small> </div> </div> <div class="timeline-item ${analise ? "completed" : "pending"}"> <div class="timeline-dot">2</div> <div class="timeline-content"> <strong>Em análise</strong> <span> ${formatDate(analise)} </span> <small> ${ analise ? execucao ? `Em análise por ${calculateDays( analise, execucao )}` : resolvido ? `Em análise por ${calculateDays( analise, resolvido )}` : `Em análise há ${calculateDays( analise )}` : "Ainda não entrou em análise" } </small> </div> </div> <div class="timeline-item ${execucao ? "completed" : "pending"}"> <div class="timeline-dot">3</div> <div class="timeline-content"> <strong>Em execução</strong> <span> ${formatDate(execucao)} </span> <small> ${ execucao ? resolvido ? `Em execução por ${calculateDays( execucao, resolvido )}` : `Em execução há ${calculateDays( execucao )}` : "Ainda não entrou em execução" } </small> </div> </div> <div class="timeline-item ${resolvido ? "completed" : "pending"}"> <div class="timeline-dot">4</div> <div class="timeline-content"> <strong>Resolvido</strong> <span> ${formatDate(resolvido)} </span> <small> ${ resolvido ? "Ocorrência finalizada" : "Ainda não resolvido" } </small> </div> </div> </div> `;
+
+  show("timelineModal");
+}
+
+function getOrCreateTimelineModal() {
+  let modal = $("timelineModal");
+
+  if (modal) {
+    return modal;
+  }
+
+  modal =
+    document.createElement("div");
+
+  modal.id = "timelineModal";
+  modal.className = "modal hidden";
+
+  modal.innerHTML = ` <div class="modal-card"> <button id="btnCloseTimeline" class="modal-close" type="button" aria-label="Fechar linha do tempo" > × </button> <div id="timelineContent"></div> </div> `;
+
+  document.body.appendChild(modal);
+
+  modal.addEventListener(
+    "click",
+    (event) => {
+      if (
+        event.target.id ===
+        "timelineModal"
+      ) {
+        hide("timelineModal");
+      }
+    }
+  );
+
+  modal.querySelector(
+    "#btnCloseTimeline"
+  )?.addEventListener(
+    "click",
+    () => hide("timelineModal")
+  );
+
+  return modal;
+}
+
+
+// =====================================================
+// E-MAIL DA OCORRÊNCIA
+// =====================================================
+
+function sendReportByEmail(reportId) {
+  const report = allReports.find(
+    (item) => item.id === reportId
+  );
+
+  if (!report) {
+    alert("Ocorrência não encontrada.");
+    return;
+  }
+
+  const subject =
+    report.titulo ||
+    "Ocorrência do condomínio";
+
+  const dateValue =
+    report.dataAbertura ||
+    report.inicioEm ||
+    report.criadoEm;
+
+  const dateText =
+    formatDate(dateValue);
+
+  const residentName =
+    report.nome ||
+    "Nome não informado";
+
+  const apartment =
+    report.unidade ||
+    "Apartamento não informado";
+
+  const block =
+    report.bloco ||
+    "Bloco não informado";
+
+  const location =
+    report.local ||
+    "Não informado";
+
+  const description =
+    report.descricao ||
+    "Não informada";
+
+  /* O corpo é criado com CRLF. Essa combinação funciona melhor com Outlook, Gmail e outros clientes. */
+  const body = [
+    "Prezados,",
+    "",
+    "Venho, por meio deste, comunicar uma ocorrência no condomínio.",
+    "",
+    `Data e horário: ${dateText}`,
+    "",
+    `Local: ${location}`,
+    "",
+    `Descrição da ocorrência: ${description}`,
+    "",
+    "Solicito, por gentileza, que a administração verifique a situação e tome as providências cabíveis, conforme as normas do condomínio. Caso necessário, coloco-me à disposição para fornecer informações adicionais.",
+    "",
+    "Agradeço a atenção.",
+    "",
+    "Atenciosamente,",
+    "",
+    residentName,
+    `Bloco ${block.replace(/^Bloco\s*/i, "")} / Apartamento ${apartment .replace(/^Apartamento\s*/i, "") .replace(/^Apto\s*/i, "")}`
+  ].join("\r\n");
+
+  const mailto =
+    `mailto:${EMAIL_DESTINO}` +
+    `?subject=${encodeURIComponent(subject)}` +
+    `&body=${encodeURIComponent(body)}`;
+
+  if (report.fotoData) {
+    downloadReportPhoto(report);
+  }
+
+  window.location.href = mailto;
+}
+
+
+// =====================================================
+// DOWNLOAD DA FOTO DA OCORRÊNCIA
+// =====================================================
+
+function downloadReportPhoto(report) {
+  try {
+    const link =
+      document.createElement("a");
+
+    link.href = report.fotoData;
+
+    const protocol =
+      report.protocolo || "ocorrencia";
+
+    link.download =
+      `foto-${protocol}.jpg`;
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    setTimeout(() => {
+      alert(
+        "A foto foi baixada. Anexe o arquivo manualmente no e-mail."
+      );
+    }, 500);
+  } catch (error) {
+    console.error(
+      "Não foi possível baixar a foto:",
+      error
+    );
+  }
 }
 
 
@@ -474,195 +858,277 @@ function openEditModal(reportId) {
     return;
   }
 
-  const editReportId =
-    $("editReportId");
-
-  const editTitle =
-    $("editTitle");
-
-  const editCategory =
-    $("editCategory");
-
-  const editPriority =
-    $("editPriority");
-
-  const editLocation =
-    $("editLocation");
-
-  const editReference =
-    $("editReference");
-
-  const editDescription =
-    $("editDescription");
-
-  const editStatus =
-    $("editStatus");
+  const fields = {
+    id: $("editReportId"),
+    title: $("editTitle"),
+    category: $("editCategory"),
+    priority: $("editPriority"),
+    location: $("editLocation"),
+    reference: $("editReference"),
+    description: $("editDescription"),
+    status: $("editStatus"),
+    risk: $("editRisk")
+  };
 
   if (
-    !editReportId ||
-    !editTitle ||
-    !editCategory ||
-    !editPriority ||
-    !editLocation ||
-    !editReference ||
-    !editDescription ||
-    !editStatus
+    !fields.id ||
+    !fields.title ||
+    !fields.category ||
+    !fields.priority ||
+    !fields.location ||
+    !fields.reference ||
+    !fields.description ||
+    !fields.status
   ) {
     alert(
-      "Os campos do formulário de edição não foram encontrados."
+      "Os campos de edição não foram encontrados."
     );
     return;
   }
 
-  editReportId.value = report.id;
-  editTitle.value = report.titulo || "";
-  editCategory.value =
+  addDocumentationToEditCategory();
+
+  fields.id.value = report.id;
+  fields.title.value = report.titulo || "";
+  fields.category.value =
     report.categoria || "";
-  editPriority.value =
+  fields.priority.value =
     report.prioridade || "Normal";
-  editLocation.value =
+  fields.location.value =
     report.local || "";
-  editReference.value =
+  fields.reference.value =
     report.referenciaLocal || "";
-  editDescription.value =
+  fields.description.value =
     report.descricao || "";
-  editStatus.value =
+  fields.status.value =
     report.status || "Aberto";
+
+  if (fields.risk) {
+    fields.risk.checked =
+      Boolean(report.ofereceRisco);
+  }
+
+  updateEditLocationFields();
 
   message("editMessage", "");
   show("editModal");
 }
 
+function addDocumentationToEditCategory() {
+  const category =
+    $("editCategory");
+
+  if (!category) {
+    return;
+  }
+
+  const exists =
+    Array.from(category.options)
+      .some(
+        (option) =>
+          option.value === "Documentação"
+      );
+
+  if (!exists) {
+    const option =
+      document.createElement("option");
+
+    option.value = "Documentação";
+    option.textContent = "Documentação";
+
+    category.appendChild(option);
+  }
+}
+
+function updateEditLocationFields() {
+  const category =
+    $("editCategory")?.value || "";
+
+  const disableLocation =
+    category === "Documentação" ||
+    category === "Jardinagem";
+
+  const disableReference =
+    category === "Documentação";
+
+  const location =
+    $("editLocation");
+
+  const reference =
+    $("editReference");
+
+  if (location) {
+    location.disabled =
+      disableLocation;
+
+    if (disableLocation) {
+      location.value = "";
+    }
+  }
+
+  if (reference) {
+    reference.disabled =
+      disableReference;
+
+    if (disableReference) {
+      reference.value = "";
+    }
+  }
+}
 
 // =====================================================
 // SALVAR EDIÇÃO
 // =====================================================
 
-async function saveEdit(event) {
-  event.preventDefault();
+$("editForm")?.addEventListener(
+  "submit",
+  async (event) => {
+    event.preventDefault();
 
-  const user = auth.currentUser;
+    const user = auth.currentUser;
 
-  if (!user) {
-    message(
-      "editMessage",
-      "Você precisa estar autenticado."
-    );
-    return;
-  }
+    if (!user) {
+      message(
+        "editMessage",
+        "Você precisa estar autenticado."
+      );
+      return;
+    }
 
-  const reportId =
-    $("editReportId")?.value;
+    const reportId =
+      $("editReportId")?.value;
 
-  if (!reportId) {
-    message(
-      "editMessage",
-      "Ocorrência não identificada."
-    );
-    return;
-  }
-
-  const report = allReports.find(
-    (item) => item.id === reportId
-  );
-
-  if (!report) {
-    message(
-      "editMessage",
-      "Ocorrência não encontrada."
-    );
-    return;
-  }
-
-  const title =
-    $("editTitle")?.value.trim();
-
-  const category =
-    $("editCategory")?.value;
-
-  const priority =
-    $("editPriority")?.value;
-
-  const location =
-    $("editLocation")?.value;
-
-  const reference =
-    $("editReference")?.value.trim();
-
-  const description =
-    $("editDescription")?.value.trim();
-
-  const status =
-    $("editStatus")?.value;
-
-  if (!title || title.length < 3) {
-    message(
-      "editMessage",
-      "Informe um título válido."
-    );
-    return;
-  }
-
-  if (!category || !priority || !location) {
-    message(
-      "editMessage",
-      "Preencha os campos obrigatórios."
-    );
-    return;
-  }
-
-  if (!description || description.length < 10) {
-    message(
-      "editMessage",
-      "A descrição deve ter pelo menos 10 caracteres."
-    );
-    return;
-  }
-
-  const saveButton =
-    $("btnSaveEdit");
-
-  if (saveButton) {
-    saveButton.disabled = true;
-  }
-
-  try {
-    await updateDoc(
-      doc(db, "reports", reportId),
-      {
-        titulo: title,
-        categoria: category,
-        prioridade: priority,
-        local: location,
-        referenciaLocal: reference,
-        descricao: description,
-        status,
-
-        fimEm:
-          status === "Resolvido"
-            ? serverTimestamp()
-            : null,
-
-        atualizadoEm:
-          serverTimestamp()
-      }
+    const report = allReports.find(
+      (item) => item.id === reportId
     );
 
-    hide("editModal");
-    toast(
-      "Ocorrência atualizada com sucesso."
-    );
-  } catch (error) {
-    message(
-      "editMessage",
-      friendlyError(error)
-    );
-  } finally {
+    if (!report) {
+      message(
+        "editMessage",
+        "Ocorrência não encontrada."
+      );
+      return;
+    }
+
+    if (
+      !isAdmin(user) &&
+      report.moradorId !== user.uid
+    ) {
+      message(
+        "editMessage",
+        "Você só pode editar suas próprias ocorrências."
+      );
+      return;
+    }
+
+    const category =
+      $("editCategory")?.value;
+
+    const isDocumentation =
+      category === "Documentação";
+
+    const description =
+      $("editDescription")?.value.trim();
+
+    if (!description || description.length < 10) {
+      message(
+        "editMessage",
+        "A descrição deve ter pelo menos 10 caracteres."
+      );
+      return;
+    }
+
+    const status =
+      $("editStatus")?.value ||
+      report.status ||
+      "Aberto";
+
+    const updateData = {
+      titulo:
+        $("editTitle")?.value.trim() ||
+        report.titulo ||
+        "",
+
+      categoria: category,
+
+      prioridade:
+        $("editPriority")?.value ||
+        "Normal",
+
+      local: isDocumentation
+        ? ""
+        : $("editLocation")?.value || "",
+
+      referenciaLocal: isDocumentation
+        ? ""
+        : $("editReference")?.value.trim() || "",
+
+      descricao: description,
+      status,
+
+      ofereceRisco:
+        $("editRisk")?.checked ??
+        report.ofereceRisco ??
+        false,
+
+      dataAnalise:
+        status === "Em análise"
+          ? report.dataAnalise ||
+            serverTimestamp()
+          : report.dataAnalise || null,
+
+      dataExecucao:
+        status === "Em execução"
+          ? report.dataExecucao ||
+            serverTimestamp()
+          : report.dataExecucao || null,
+
+      dataResolvido:
+        status === "Resolvido"
+          ? report.dataResolvido ||
+            serverTimestamp()
+          : report.dataResolvido || null,
+
+      fimEm:
+        status === "Resolvido"
+          ? report.fimEm ||
+            serverTimestamp()
+          : report.fimEm || null,
+
+      atualizadoEm:
+        serverTimestamp()
+    };
+
+    const saveButton =
+      $("btnSaveEdit");
+
     if (saveButton) {
-      saveButton.disabled = false;
+      saveButton.disabled = true;
+    }
+
+    try {
+      await updateDoc(
+        doc(db, "reports", reportId),
+        updateData
+      );
+
+      hide("editModal");
+
+      toast(
+        "Ocorrência atualizada com sucesso."
+      );
+    } catch (error) {
+      message(
+        "editMessage",
+        friendlyError(error)
+      );
+    } finally {
+      if (saveButton) {
+        saveButton.disabled = false;
+      }
     }
   }
-}
+);
 
 
 // =====================================================
@@ -686,6 +1152,16 @@ async function deleteReport(reportId) {
   if (!report) {
     alert(
       "Ocorrência não encontrada."
+    );
+    return;
+  }
+
+  if (
+    !isAdmin(user) &&
+    report.moradorId !== user.uid
+  ) {
+    alert(
+      "Você só pode excluir suas próprias ocorrências."
     );
     return;
   }
@@ -720,7 +1196,97 @@ async function deleteReport(reportId) {
 
 
 // =====================================================
-// EVENTOS DOS BOTÕES
+// CONTROLES DO FORMULÁRIO
+// =====================================================
+
+$("reportCategory")?.addEventListener(
+  "change",
+  updateLocationFields
+);
+
+$("editCategory")?.addEventListener(
+  "change",
+  updateEditLocationFields
+);
+
+$("btnShowRegister")?.addEventListener(
+  "click",
+  () => {
+    hide("loginView");
+    show("registerView");
+  }
+);
+
+$("btnBackLogin")?.addEventListener(
+  "click",
+  () => {
+    hide("registerView");
+    show("loginView");
+  }
+);
+
+$("btnNewReport")?.addEventListener(
+  "click",
+  () => {
+    show("reportFormCard");
+    $("reportTitle")?.focus();
+  }
+);
+
+$("btnCancelReport")?.addEventListener(
+  "click",
+  () => {
+    hide("reportFormCard");
+    $("reportForm")?.reset();
+    updateLocationFields();
+    message("reportMessage", "");
+  }
+);
+
+$("statusFilter")?.addEventListener(
+  "change",
+  () => {
+    currentPage = 1;
+    renderReports();
+  }
+);
+
+$("btnCloseDetail")?.addEventListener(
+  "click",
+  () => hide("detailModal")
+);
+
+$("detailModal")?.addEventListener(
+  "click",
+  (event) => {
+    if (event.target.id === "detailModal") {
+      hide("detailModal");
+    }
+  }
+);
+
+$("btnCloseEdit")?.addEventListener(
+  "click",
+  () => hide("editModal")
+);
+
+$("editModal")?.addEventListener(
+  "click",
+  (event) => {
+    if (event.target.id === "editModal") {
+      hide("editModal");
+    }
+  }
+);
+
+$("btnLogout")?.addEventListener(
+  "click",
+  () => signOut(auth)
+);
+
+
+// =====================================================
+// EVENTOS DA LISTA
 // =====================================================
 
 document.addEventListener(
@@ -738,6 +1304,18 @@ document.addEventListener(
       return;
     }
 
+    const timelineButton =
+      event.target.closest(
+        ".timeline-button"
+      );
+
+    if (timelineButton) {
+      openTimeline(
+        timelineButton.dataset.id
+      );
+      return;
+    }
+
     const editButton =
       event.target.closest(
         ".edit-button"
@@ -746,6 +1324,18 @@ document.addEventListener(
     if (editButton) {
       openEditModal(
         editButton.dataset.id
+      );
+      return;
+    }
+
+    const emailButton =
+      event.target.closest(
+        ".email-button"
+      );
+
+    if (emailButton) {
+      sendReportByEmail(
+        emailButton.dataset.id
       );
       return;
     }
@@ -790,94 +1380,6 @@ document.addEventListener(
 
 
 // =====================================================
-// FECHAMENTO DOS MODAIS
-// =====================================================
-
-$("btnCloseDetail")?.addEventListener(
-  "click",
-  () => hide("detailModal")
-);
-
-$("detailModal")?.addEventListener(
-  "click",
-  (event) => {
-    if (
-      event.target.id === "detailModal"
-    ) {
-      hide("detailModal");
-    }
-  }
-);
-
-$("btnCloseEdit")?.addEventListener(
-  "click",
-  () => hide("editModal")
-);
-
-$("editModal")?.addEventListener(
-  "click",
-  (event) => {
-    if (
-      event.target.id === "editModal"
-    ) {
-      hide("editModal");
-    }
-  }
-);
-
-
-// =====================================================
-// NAVEGAÇÃO
-// =====================================================
-
-$("btnShowRegister")?.addEventListener(
-  "click",
-  () => {
-    hide("loginView");
-    show("registerView");
-  }
-);
-
-$("btnBackLogin")?.addEventListener(
-  "click",
-  () => {
-    hide("registerView");
-    show("loginView");
-  }
-);
-
-$("btnNewReport")?.addEventListener(
-  "click",
-  () => {
-    show("reportFormCard");
-    $("reportTitle")?.focus();
-  }
-);
-
-$("btnCancelReport")?.addEventListener(
-  "click",
-  () => {
-    hide("reportFormCard");
-    $("reportForm")?.reset();
-    message("reportMessage", "");
-  }
-);
-
-$("statusFilter")?.addEventListener(
-  "change",
-  () => {
-    currentPage = 1;
-    renderReports();
-  }
-);
-
-$("btnLogout")?.addEventListener(
-  "click",
-  () => signOut(auth)
-);
-
-
-// =====================================================
 // LOGIN
 // =====================================================
 
@@ -912,6 +1414,17 @@ $("loginForm")?.addEventListener(
         password
       );
 
+      const loggedUser = auth.currentUser;
+
+if (
+  loggedUser &&
+  loggedUser.email?.toLowerCase() ===
+    "rodrigokamunga@gmail.com"
+) {
+  window.location.href = "./admin-home.html";
+  return;
+}
+
       const user = auth.currentUser;
 
       if (
@@ -934,14 +1447,10 @@ $("loginForm")?.addEventListener(
         if (status !== "Aprovado") {
           await signOut(auth);
 
-          if (status === "Pendente") {
-            throw new Error(
-              "Seu cadastro ainda aguarda aprovação do administrador."
-            );
-          }
-
           throw new Error(
-            "Seu cadastro não está autorizado a acessar o sistema."
+            status === "Pendente"
+              ? "Seu cadastro ainda aguarda aprovação do administrador."
+              : "Seu cadastro não está autorizado a acessar o sistema."
           );
         }
       }
@@ -956,7 +1465,7 @@ $("loginForm")?.addEventListener(
 
 
 // =====================================================
-// CADASTRO
+// CADASTRO DO MORADOR
 // =====================================================
 
 $("registerForm")?.addEventListener(
@@ -987,7 +1496,12 @@ $("registerForm")?.addEventListener(
     const password =
       $("registerPassword")?.value;
 
-    if (!name || !unit || !email || !password) {
+    if (
+      !name ||
+      !unit ||
+      !email ||
+      !password
+    ) {
       message(
         "registerMessage",
         "Preencha nome, unidade, e-mail e senha."
@@ -1057,6 +1571,10 @@ $("registerForm")?.addEventListener(
 // ENVIO DE OCORRÊNCIA
 // =====================================================
 
+// =====================================================
+// ENVIO DE OCORRÊNCIA
+// =====================================================
+
 $("reportForm")?.addEventListener(
   "submit",
   async (event) => {
@@ -1086,41 +1604,54 @@ $("reportForm")?.addEventListener(
 
     try {
       const title =
-        $("reportTitle")?.value.trim();
+        $("reportTitle")?.value.trim() || "";
 
       const category =
-        $("reportCategory")?.value;
+        $("reportCategory")?.value || "";
 
       const priority =
-        $("reportPriority")?.value;
-
-      const location =
-        $("reportLocation")?.value;
-
-      const reference =
-        $("reportReference")?.value.trim();
+        $("reportPriority")?.value || "Normal";
 
       const description =
-        $("reportDescription")?.value.trim();
+        $("reportDescription")?.value.trim() || "";
+
+      const file =
+        $("reportPhoto")?.files?.[0] || null;
 
       const risk =
         $("reportRisk")?.checked || false;
 
-      const updates =
-        $("reportUpdates")?.checked || false;
+      const noLocationRequired =
+        category === "Documentação" ||
+        category === "Jardinagem";
 
-      const file =
-        $("reportPhoto")?.files?.[0];
+      const location =
+        noLocationRequired
+          ? ""
+          : $("reportLocation")?.value || "";
+
+      const reference =
+        category === "Documentação"
+          ? ""
+          : $("reportReference")?.value.trim() || "";
 
       if (
         !title ||
         !category ||
         !priority ||
-        !location ||
         !description
       ) {
         throw new Error(
           "Preencha todos os campos obrigatórios."
+        );
+      }
+
+      if (
+        !noLocationRequired &&
+        !location
+      ) {
+        throw new Error(
+          "Selecione o local da ocorrência."
         );
       }
 
@@ -1136,6 +1667,12 @@ $("reportForm")?.addEventListener(
         if (file.size > 10 * 1024 * 1024) {
           throw new Error(
             "A imagem original deve ter no máximo 10 MB."
+          );
+        }
+
+        if (!file.type.startsWith("image/")) {
+          throw new Error(
+            "Selecione um arquivo de imagem válido."
           );
         }
 
@@ -1167,6 +1704,7 @@ $("reportForm")?.addEventListener(
         collection(db, "reports"),
         {
           protocolo: protocol,
+
           moradorId: user.uid,
 
           nome:
@@ -1174,33 +1712,58 @@ $("reportForm")?.addEventListener(
             user.displayName ||
             "",
 
-          email: user.email || "",
-          unidade: profile.unidade || "",
-          bloco: profile.bloco || "",
+          email:
+            user.email || "",
+
+          unidade:
+            profile.unidade || "",
+
+          bloco:
+            profile.bloco || "",
 
           titulo: title,
           categoria: category,
           prioridade: priority,
           local: location,
-          referenciaLocal: reference || "",
+          referenciaLocal: reference,
           descricao: description,
 
           ofereceRisco: risk,
-          desejaAtualizacao: updates,
 
           status: "Aberto",
 
-          inicioEm: serverTimestamp(),
+          dataAbertura:
+            serverTimestamp(),
+
+          dataAnalise: null,
+
+          dataExecucao: null,
+
+          dataResolvido: null,
+
+          inicioEm:
+            serverTimestamp(),
+
           fimEm: null,
 
-          fotoData,
+          fotoData: fotoData,
 
-          criadoEm: serverTimestamp(),
-          atualizadoEm: serverTimestamp()
+          criadoEm:
+            serverTimestamp(),
+
+          atualizadoEm:
+            serverTimestamp()
         }
       );
 
-      $("reportForm")?.reset();
+      const form =
+        $("reportForm");
+
+      if (form) {
+        form.reset();
+      }
+
+      updateLocationFields();
 
       hide("reportFormCard");
 
@@ -1225,9 +1788,8 @@ $("reportForm")?.addEventListener(
   }
 );
 
-
 // =====================================================
-// CARREGAMENTO DO USUÁRIO E REGISTROS
+// AUTENTICAÇÃO E CARREGAMENTO DOS REGISTROS
 // =====================================================
 
 onAuthStateChanged(
@@ -1258,6 +1820,10 @@ onAuthStateChanged(
       "hidden"
     );
 
+    addCategoryOptions();
+    removeUpdatesField();
+    updateLocationFields();
+
     try {
       const userSnapshot =
         await getDoc(
@@ -1279,18 +1845,13 @@ onAuthStateChanged(
       let reportsQuery;
 
       if (isAdmin(user)) {
-        // Administrador vê todos os registros
+        // O administrador vê todos os registros no index.html
         reportsQuery = query(
           collection(db, "reports"),
           orderBy("criadoEm", "desc")
         );
-
-        setText(
-          "statTotal",
-          "Todos"
-        );
       } else {
-        // Morador vê apenas seus registros
+        // O morador vê somente os próprios registros
         reportsQuery = query(
           collection(db, "reports"),
           where(
@@ -1354,14 +1915,4 @@ onAuthStateChanged(
       );
     }
   }
-);
-
-
-// =====================================================
-// FORMULÁRIO DE EDIÇÃO
-// =====================================================
-
-$("editForm")?.addEventListener(
-  "submit",
-  saveEdit
 );
