@@ -46,6 +46,9 @@ const ADMIN_EMAIL =
 const EMAIL_DESTINO =
   "rodrigokamunga@gmail.com";
 
+  const WHATSAPP_NUMERO =
+  "5521988386027";
+
 
 // =====================================================
 // INICIALIZAÇÃO
@@ -561,7 +564,15 @@ function renderReports() {
         const status =
           report.status || "Aberto";
 
-        return ` <article class="report-item compact-report"> <div> <div class="report-title"> ${escapeHtml( report.titulo || "Sem título" )} </div> <div class="report-meta"> Protocolo: ${escapeHtml( report.protocolo || "Não informado" )} </div> <div class="report-meta"> Início: ${formatDate( report.dataAbertura || report.inicioEm || report.criadoEm )} </div> ${ report.fimEm || report.dataResolvido ? ` <div class="report-meta"> Fim: ${formatDate( report.dataResolvido || report.fimEm )} </div> ` : "" } <span class="badge ${statusClass(status)}"> ${escapeHtml(status)} </span> </div> <div class="report-actions"> <button class="action-icon-button detail-button" data-id="${report.id}" type="button" title="Detalhar" aria-label="Detalhar ocorrência" > 🔍 </button> <button class="action-icon-button timeline-button" data-id="${report.id}" type="button" title="Linha do tempo" aria-label="Linha do tempo" > 🕒 </button> <button class="action-icon-button edit-button" data-id="${report.id}" type="button" title="Editar" aria-label="Editar ocorrência" > ✏️ </button> <button class="action-icon-button email-button" data-id="${report.id}" type="button" title="Enviar e-mail" aria-label="Enviar ocorrência por e-mail" > ✉️ </button> <button class="action-icon-button delete-button" data-id="${report.id}" type="button" title="Excluir" aria-label="Excluir ocorrência" > 🗑️ </button> </div> </article> `;
+        return ` <article class="report-item compact-report"> <div> <div class="report-title"> ${escapeHtml( report.titulo || "Sem título" )} </div> <div class="report-meta"> Protocolo: ${escapeHtml( report.protocolo || "Não informado" )} </div> <div class="report-meta"> Início: ${formatDate( report.dataAbertura || report.inicioEm || report.criadoEm )} </div> ${ report.fimEm || report.dataResolvido ? ` <div class="report-meta"> Fim: ${formatDate( report.dataResolvido || report.fimEm )} </div> ` : "" } <span class="badge ${statusClass(status)}"> ${escapeHtml(status)} </span> </div> <div class="report-actions"> <button class="action-icon-button detail-button" data-id="${report.id}" type="button" title="Detalhar" aria-label="Detalhar ocorrência" > 🔍 </button> <button class="action-icon-button timeline-button" data-id="${report.id}" type="button" title="Linha do tempo" aria-label="Linha do tempo" > 🕒 </button> <button class="action-icon-button edit-button" data-id="${report.id}" type="button" title="Editar" aria-label="Editar ocorrência" > ✏️ </button> <button
+  class="action-icon-button whatsapp-button"
+  data-id="${report.id}"
+  type="button"
+  title="Enviar pelo WhatsApp"
+  aria-label="Enviar ocorrência pelo WhatsApp"
+>
+  💬
+</button> <button class="action-icon-button email-button" data-id="${report.id}" type="button" title="Enviar e-mail" aria-label="Enviar ocorrência por e-mail" > ✉️ </button> <button class="action-icon-button delete-button" data-id="${report.id}" type="button" title="Excluir" aria-label="Excluir ocorrência" > 🗑️ </button> </div> </article> `;
       })
       .join("");
   }
@@ -807,6 +818,58 @@ function sendReportByEmail(reportId) {
   }
 
   window.location.href = mailto;
+}
+
+// =====================================================
+// ENVIO DA OCORRÊNCIA PELO WHATSAPP
+// =====================================================
+
+function sendReportByWhatsApp(reportId) {
+  const report = allReports.find(
+    (item) => item.id === reportId
+  );
+
+  if (!report) {
+    alert("Ocorrência não encontrada.");
+    return;
+  }
+
+  const openingDate =
+    report.dataAbertura ||
+    report.inicioEm ||
+    report.criadoEm;
+
+  const messageText = [
+    "Olá, administração.",
+    "",
+    "Segue uma ocorrência registrada no condomínio.",
+    "",
+    `Título: ${report.titulo || "Não informado"}`,
+    `Protocolo: ${report.protocolo || "Não informado"}`,
+    `Status: ${report.status || "Aberto"}`,
+    `Categoria: ${report.categoria || "Não informada"}`,
+    `Prioridade: ${report.prioridade || "Não informada"}`,
+    `Local: ${report.local || "Não informado"}`,
+    `Referência: ${report.referenciaLocal || "Não informada"}`,
+    `Data e horário: ${formatDate(openingDate)}`,
+    "",
+    "Descrição da ocorrência:",
+    report.descricao || "Não informada",
+    "",
+    `Morador: ${report.nome || "Não informado"}`,
+    `Unidade: ${report.unidade || "Não informada"}`,
+    `Bloco: ${report.bloco || "Não informado"}`
+  ].join("\n");
+
+  const whatsappUrl =
+    `https://wa.me/${WHATSAPP_NUMERO}` +
+    `?text=${encodeURIComponent(messageText)}`;
+
+  window.open(
+    whatsappUrl,
+    "_blank",
+    "noopener,noreferrer"
+  );
 }
 
 
@@ -1327,6 +1390,19 @@ document.addEventListener(
       );
       return;
     }
+
+    const whatsappButton =
+  event.target.closest(
+    ".whatsapp-button"
+  );
+
+if (whatsappButton) {
+  sendReportByWhatsApp(
+    whatsappButton.dataset.id
+  );
+
+  return;
+}
 
     const emailButton =
       event.target.closest(
