@@ -13,7 +13,7 @@
 
   <link rel="stylesheet" href="./styles.css" />
 
-  <style> /* ===================================================== PÁGINA ADMINISTRATIVA ===================================================== */ .admin-page { background: #f1f5f9; } .admin-topbar { background: #172554; border-bottom-color: #1e3a8a; } .admin-topbar .brand strong, .admin-topbar .brand small { color: #ffffff; } .admin-topbar .brand small { opacity: 0.75; } .admin-topbar .brand-icon { background: #dbeafe; } .admin-topbar .link-button { color: #ffffff; } .admin-topbar .link-button:hover { background: rgba(255, 255, 255, 0.12); } .admin-top-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; } .admin-top-actions .link-button { width: 100%; text-align: right; } .admin-hero { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 30px; background: linear-gradient( 135deg, #172554, #1e40af ); color: #ffffff; border-radius: 20px; box-shadow: 0 12px 30px rgba(23, 37, 84, 0.2); } .admin-hero h1, .admin-hero p { color: #ffffff; } .admin-hero .muted { color: #dbeafe; } .admin-user { min-width: 230px; padding: 16px; background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 14px; } .admin-user span, .admin-user strong { display: block; } .admin-user span { color: #bfdbfe; font-size: 12px; } .admin-user strong { margin-top: 5px; color: #ffffff; } /* ===================================================== INDICADORES Total de registros: linha inteira Em aberto + Em análise: segunda linha Em execução + Resolvidos: terceira linha ===================================================== */ .admin-stats-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 22px 0; } .admin-stat-card { min-height: 110px; display: flex; flex-direction: column; justify-content: center; gap: 5px; padding: 18px; background: #ffffff; border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 5px 16px rgba(15, 23, 42, 0.04); } /* Total ocupa as duas colunas */ .admin-stat-card:first-child { grid-column: 1 / -1; } .admin-stat-card span { color: #1d4ed8; font-size: 30px; font-weight: 800; line-height: 1; } .admin-stat-card small { color: var(--muted); font-size: 13px; font-weight: 700; } /* ===================================================== GRÁFICO E AÇÕES ===================================================== */ .admin-dashboard-grid { display: grid; grid-template-columns: minmax(280px, 380px) 1fr; gap: 20px; align-items: stretch; } .chart-card { min-height: 360px; } .chart-container { position: relative; width: 100%; height: 285px; margin-top: 18px; } .chart-container canvas { width: 100% !important; height: 100% !important; } .admin-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; } .admin-filter-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; } .admin-report-item { display: flex; align-items: center; justify-content: space-between; gap: 18px; } .admin-report-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; } .admin-report-actions button { width: 42px; height: 42px; min-height: 42px; display: inline-flex; align-items: center; justify-content: center; padding: 0; font-size: 19px; } .admin-detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 20px; margin: 20px 0; } .admin-detail-field { padding: 10px 12px; background: #f8fafc; border-radius: 10px; } .admin-detail-field strong { display: block; margin-bottom: 3px; color: var(--muted); font-size: 12px; } .admin-detail-field span { color: var(--text); font-size: 14px; } .admin-danger { background: #fee2e2; color: #b91c1c; } .admin-danger:hover { background: #fecaca; } .admin-status-select { min-width: 160px; } /* ===================================================== RESPONSIVIDADE ===================================================== */ @media (max-width: 950px) { .admin-dashboard-grid { grid-template-columns: 1fr; } } @media (max-width: 650px) { .admin-top-actions { width: 100%; align-items: stretch; } .admin-top-actions .link-button { text-align: right; } .admin-hero { align-items: stretch; flex-direction: column; padding: 22px; } .admin-user { width: 100%; min-width: 0; } .admin-stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } .admin-stat-card { min-height: 92px; padding: 14px 10px; } .admin-stat-card:first-child { grid-column: 1 / -1; } .admin-stat-card span { font-size: 25px; } .admin-stat-card small { font-size: 11px; } .admin-filter-row { align-items: stretch; flex-direction: column; } .admin-filter-row select, .admin-actions button { width: 100%; } .admin-report-item { align-items: stretch; flex-direction: column; } .admin-report-actions { justify-content: flex-end; } .admin-detail-grid { grid-template-columns: 1fr; } } @media (max-width: 430px) { .admin-stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .admin-stat-card:first-child { grid-column: 1 / -1; } .admin-stat-card { text-align: center; } .admin-report-actions { justify-content: center; } } </style>
+  <style> /* ===================================================== PÁGINA ADMINISTRATIVA ====================================================== */ .admin-page { background: #f1f5f9; } .admin-topbar { background: #172554; border-bottom-color: #1e3a8a; } .admin-topbar .brand strong, .admin-topbar .brand small { color: #ffffff; } .admin-topbar .brand small { opacity: 0.75; } .admin-topbar .brand-icon { background: #dbeafe; } .admin-topbar .link-button { color: #ffffff; } .admin-topbar .link-button:hover { background: rgba(255, 255, 255, 0.12); } .admin-top-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; } .admin-top-actions .link-button { width: 100%; text-align: right; } .admin-hero { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 30px; background: linear-gradient( 135deg, #172554, #1e40af ); color: #ffffff; border-radius: 20px; box-shadow: 0 12px 30px rgba(23, 37, 84, 0.2); } .admin-hero h1, .admin-hero p { color: #ffffff; } .admin-hero .muted { color: #dbeafe; } .admin-user { min-width: 230px; padding: 16px; background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 14px; } .admin-user span, .admin-user strong { display: block; } .admin-user span { color: #bfdbfe; font-size: 12px; } .admin-user strong { margin-top: 5px; color: #ffffff; } /* ===================================================== INDICADORES ====================================================== */ .admin-stats-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 22px 0; } .admin-stat-card { min-height: 110px; display: flex; flex-direction: column; justify-content: center; gap: 5px; padding: 18px; background: #ffffff; border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 5px 16px rgba(15, 23, 42, 0.04); } .admin-stat-card:first-child { grid-column: 1 / -1; } .admin-stat-card span { color: #1d4ed8; font-size: 30px; font-weight: 800; line-height: 1; } .admin-stat-card small { color: var(--muted); font-size: 13px; font-weight: 700; } /* ===================================================== GRÁFICO E RELATÓRIO ====================================================== */ .admin-dashboard-grid { display: grid; grid-template-columns: minmax(280px, 380px) 1fr; gap: 20px; align-items: stretch; } .chart-card { min-height: 360px; } .chart-container { position: relative; width: 100%; height: 285px; margin-top: 18px; } .chart-container canvas { width: 100% !important; height: 100% !important; } .admin-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; } .report-filter-summary { display: flex; flex-wrap: wrap; gap: 18px; margin: 18px 0; padding: 13px 15px; background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; color: var(--muted); font-size: 13px; } .report-filter-summary p { margin: 0; } .report-filter-summary strong { color: var(--text); } /* ===================================================== FILTROS ====================================================== */ .admin-filter-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; width: 100%; } .admin-filter-row > div:first-child { flex: 1; min-width: 0; } .admin-filters { display: flex; align-items: flex-end; justify-content: flex-end; flex-wrap: wrap; gap: 10px; } .admin-filter-field { display: flex !important; flex-direction: column !important; align-items: stretch !important; gap: 6px !important; min-width: 145px; color: var(--text); font-size: 12px !important; font-weight: 700 !important; } .admin-filter-field input, .admin-filter-field select { width: 100%; min-height: 44px; padding: 9px 11px; border: 1px solid var(--border); border-radius: 10px; background: #ffffff; color: var(--text); font: inherit; font-size: 14px; } .admin-filter-field input:focus, .admin-filter-field select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(17, 127, 117, 0.13); } .admin-clear-filter { min-height: 44px; white-space: nowrap; } /* ===================================================== CARDS DE OCORRÊNCIAS ====================================================== */ .admin-reports-list { display: grid; gap: 12px; margin-top: 22px; } .admin-report-item { position: relative; display: flex; flex-direction: column; align-items: stretch; min-height: 220px; padding: 20px 22px 78px; background: #ffffff; border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 5px 16px rgba(15, 23, 42, 0.04); } .admin-report-header { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 38px; margin-bottom: 12px; } .admin-report-header .report-title { flex: 1; min-width: 0; margin: 0; color: var(--text); font-size: 19px; font-weight: 800; line-height: 1.3; } .admin-report-status { position: static; flex: 0 0 auto; margin: 0; } .admin-report-main { width: 100%; } .admin-report-main .report-meta { color: var(--muted); font-size: 15px; line-height: 1.6; } .admin-report-actions { position: absolute; bottom: 18px; left: 22px; display: flex; align-items: center; justify-content: flex-start; gap: 10px; } .admin-report-actions .action-icon-button { width: 42px; height: 42px; min-height: 42px; display: inline-flex; align-items: center; justify-content: center; padding: 0; border-radius: 10px; font-size: 19px; line-height: 1; } .admin-report-actions .detail-button { background: #e0f2fe; color: #0369a1; } .admin-report-actions .timeline-button { background: #ede9fe; color: #6d28d9; } .admin-report-actions .edit-button { background: #fef3c7; color: #a16207; } .admin-report-actions .whatsapp-button { background: #dcfce7; color: #15803d; } .admin-report-actions .email-button { background: var(--primary-light); color: var(--primary-dark); } .admin-report-actions .delete-button { background: #fee2e2; color: #b91c1c; } /* ===================================================== MODAIS ====================================================== */ .admin-detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 20px; margin: 20px 0; } .admin-detail-field { padding: 10px 12px; background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; } .admin-detail-field strong { display: block; margin-bottom: 3px; color: var(--muted); font-size: 12px; } .admin-detail-field span { color: var(--text); font-size: 14px; } /* ===================================================== RESPONSIVIDADE TABLET ====================================================== */ @media (max-width: 950px) { .admin-dashboard-grid { grid-template-columns: 1fr; } .admin-filters { justify-content: flex-start; } } /* ===================================================== RESPONSIVIDADE MOBILE ====================================================== */ @media (max-width: 650px) { .admin-top-actions { width: 100%; align-items: stretch; } .admin-top-actions .link-button { text-align: right; } .admin-hero { align-items: stretch; flex-direction: column; padding: 22px; } .admin-user { width: 100%; min-width: 0; } .admin-stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } .admin-stat-card { min-height: 92px; padding: 14px 10px; } .admin-stat-card:first-child { grid-column: 1 / -1; } .admin-stat-card span { font-size: 25px; } .admin-stat-card small { font-size: 11px; } .admin-filter-row { align-items: stretch; flex-direction: column; } .admin-filters { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; } .admin-filter-field { min-width: 0; } .admin-clear-filter { width: 100%; } .admin-report-item { min-height: 230px; padding: 18px 16px 78px; } .admin-report-header { align-items: flex-start; gap: 12px; } .admin-report-header .report-title { font-size: 17px; } .admin-report-main .report-meta { font-size: 14px; } .admin-report-actions { bottom: 16px; left: 16px; } .admin-report-actions .action-icon-button { width: 40px; height: 40px; min-height: 40px; } .report-filter-summary { flex-direction: column; gap: 7px; } .admin-detail-grid { grid-template-columns: 1fr; } } /* ===================================================== CELULARES PEQUENOS ====================================================== */ @media (max-width: 430px) { .admin-filters { grid-template-columns: 1fr; } .admin-stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .admin-stat-card:first-child { grid-column: 1 / -1; } .admin-report-actions { gap: 7px; } .admin-report-actions .action-icon-button { width: 38px; height: 38px; min-height: 38px; font-size: 17px; } } </style>
 </head>
 
 <body class="admin-page">
@@ -78,7 +78,7 @@
     <!-- PAINEL -->
     <section id="adminView" class="hidden" >
 
-      <!-- CABEÇALHO DO PAINEL -->
+      <!-- CABEÇALHO -->
       <section class="admin-hero">
         <div>
           <span class="eyebrow">
@@ -109,13 +109,11 @@
       <!-- INDICADORES -->
       <section class="admin-stats-grid">
 
-        <!-- Primeira linha inteira -->
         <div class="admin-stat-card">
           <span id="adminTotal">0</span>
           <small>Total de registros</small>
         </div>
 
-        <!-- Segunda linha -->
         <div class="admin-stat-card">
           <span id="adminOpen">0</span>
           <small>Em aberto</small>
@@ -126,7 +124,6 @@
           <small>Em análise</small>
         </div>
 
-        <!-- Terceira linha -->
         <div class="admin-stat-card">
           <span id="adminExecution">0</span>
           <small>Em execução</small>
@@ -149,7 +146,7 @@
           </h2>
 
           <p class="muted">
-            Distribuição das ocorrências por status.
+            Distribuição das ocorrências por situação.
           </p>
 
           <div class="chart-container">
@@ -161,17 +158,35 @@
         <section class="card">
           <div class="section-heading">
             <div>
-              <h2>Relatório</h2>
+              <h2>
+                Relatório
+              </h2>
 
               <p class="muted">
-                Gere um arquivo PDF com os registros atuais.
+                O PDF será gerado usando os filtros selecionados.
               </p>
             </div>
           </div>
 
+          <div class="report-filter-summary">
+            <p>
+              <strong>Situação:</strong>
+              <span id="pdfSelectedStatus">
+                Todos
+              </span>
+            </p>
+
+            <p>
+              <strong>Período:</strong>
+              <span id="pdfSelectedPeriod">
+                Todas as datas
+              </span>
+            </p>
+          </div>
+
           <div class="admin-actions">
             <button id="btnGeneratePdf" class="primary-button" type="button" >
-              Gerar PDF
+              Gerar PDF filtrado
             </button>
 
             <button id="btnRefreshAdmin" class="secondary-button" type="button" >
@@ -187,39 +202,70 @@
 
       <!-- LISTA DE OCORRÊNCIAS -->
       <section class="card">
+
         <div class="admin-filter-row">
+
           <div>
             <h2>
               Todas as ocorrências
             </h2>
 
             <p class="muted">
-              O administrador pode detalhar, alterar e excluir registros.
+              Filtre por situação e período.
             </p>
           </div>
 
-          <select id="adminStatusFilter" class="compact-select admin-status-select" >
-            <option value="Todos">
-              Todos
-            </option>
 
-            <option value="Aberto">
-              Aberto
-            </option>
+          <div class="admin-filters">
 
-            <option value="Em análise">
-              Em análise
-            </option>
+            <label class="admin-filter-field">
+              Situação
 
-            <option value="Em execução">
-              Em execução
-            </option>
+              <select id="adminStatusFilter" >
+                <option value="Todos">
+                  Todos
+                </option>
 
-            <option value="Resolvido">
-              Resolvido
-            </option>
-          </select>
+                <option value="Aberto">
+                  Aberto
+                </option>
+
+                <option value="Em análise">
+                  Em análise
+                </option>
+
+                <option value="Em execução">
+                  Em execução
+                </option>
+
+                <option value="Resolvido">
+                  Resolvido
+                </option>
+              </select>
+            </label>
+
+
+            <label class="admin-filter-field">
+              Data inicial
+
+              <input id="adminStartDate" type="date" />
+            </label>
+
+
+            <label class="admin-filter-field">
+              Data final
+
+              <input id="adminEndDate" type="date" />
+            </label>
+
+
+            <button id="btnClearAdminFilters" class="secondary-button admin-clear-filter" type="button" >
+              Limpar filtros
+            </button>
+
+          </div>
         </div>
+
 
         <div id="adminReportsList" class="reports-list" >
           <div class="empty-state">
@@ -227,7 +273,9 @@
           </div>
         </div>
 
+
         <div id="adminPagination" class="pagination" ></div>
+
       </section>
 
     </section>
@@ -237,11 +285,13 @@
   <!-- MODAL DE DETALHAMENTO -->
   <div id="adminDetailModal" class="modal hidden" >
     <div class="modal-card">
+
       <button id="btnCloseAdminDetail" class="modal-close" type="button" aria-label="Fechar detalhamento" >
         ×
       </button>
 
-      <div id="adminDetailContent"></div>
+      <div id="adminDetailContent" ></div>
+
     </div>
   </div>
 
@@ -249,6 +299,7 @@
   <!-- MODAL DE EDIÇÃO -->
   <div id="adminEditModal" class="modal hidden" >
     <div class="modal-card">
+
       <button id="btnCloseAdminEdit" class="modal-close" type="button" aria-label="Fechar edição" >
         ×
       </button>
@@ -270,82 +321,234 @@
           <input id="adminEditTitle" type="text" required maxlength="100" />
         </label>
 
+
         <div class="two-columns">
+
           <label>
             Categoria *
 
             <select id="adminEditCategory" required >
-              <option value="Elétrica">Elétrica</option>
-              <option value="Hidráulica">Hidráulica</option>
-              <option value="Jardinagem">jardinagem</option>
-              <option value="Limpeza">Limpeza</option>
-              <option value="Segurança">Segurança</option>
-              <option value="Elevador">Elevador</option>
-              <option value="Garagem">Garagem</option>
-              <option value="Áreas comuns">Áreas comuns</option>
-              <option value="Barulho">Barulho</option>
-              <option value="Estrutura">Estrutura</option>
-              <option value="Outros">Outros</option>
+              <option value="Elétrica">
+                Elétrica
+              </option>
+
+              <option value="Hidráulica">
+                Hidráulica
+              </option>
+
+              <option value="Limpeza">
+                Limpeza
+              </option>
+
+              <option value="Jardinagem">
+                Jardinagem
+              </option>
+
+              <option value="Documentação">
+                Documentação
+              </option>
+
+              <option value="Segurança">
+                Segurança
+              </option>
+
+              <option value="Elevador">
+                Elevador
+              </option>
+
+              <option value="Garagem">
+                Garagem
+              </option>
+
+              <option value="Áreas comuns">
+                Áreas comuns
+              </option>
+
+              <option value="Barulho">
+                Barulho
+              </option>
+
+              <option value="Estrutura">
+                Estrutura
+              </option>
+
+              <option value="Outros">
+                Outros
+              </option>
             </select>
           </label>
+
 
           <label>
             Prioridade *
 
             <select id="adminEditPriority" required >
-              <option value="Baixa">Baixa</option>
-              <option value="Normal">Normal</option>
-              <option value="Alta">Alta</option>
-              <option value="Emergência">Emergência</option>
+              <option value="Baixa">
+                Baixa
+              </option>
+
+              <option value="Normal">
+                Normal
+              </option>
+
+              <option value="Alta">
+                Alta
+              </option>
+
+              <option value="Emergência">
+                Emergência
+              </option>
             </select>
           </label>
+
         </div>
 
+
         <div class="two-columns">
+
           <label>
             Local *
 
             <select id="adminEditLocation" required >
-              <option value="Bloco 1">Bloco 1</option>
-              <option value="Bloco 2">Bloco 2</option>
-              <option value="Bloco 3">Bloco 3</option>
-              <option value="Bloco 4">Bloco 4</option>
-              <option value="Bloco 5">Bloco 5</option>
-              <option value="Bloco 6">Bloco 6</option>
-              <option value="Bloco 7">Bloco 7</option>
-              <option value="Bloco 8">Bloco 8</option>
-              <option value="Garagem">Garagem</option>
-              <option value="Garagem subsolo">Garagem subsolo</option>
-              <option value="Piscina">Piscina</option>
-              <option value="Quadra Poliesportiva">Quadra Poliesportiva</option>
-              <option value="Quadra de Tênis">Quadra de Tênis</option>
-              <option value="Churrasqueira 1">Churrasqueira 1</option>
-              <option value="Churrasqueira 2">Churrasqueira 2</option>
-              <option value="Churrasqueira 3">Churrasqueira 3</option>
-              <option value="Churrasqueira 4">Churrasqueira 4</option>
-              <option value="Salão de Festas">Salão de Festas</option>
-              <option value="Salão Gourmet">Salão Gourmet</option>
-              <option value="Espaço do Conhecimento">Espaço do Conhecimento</option>
-              <option value="Spinning">Spinning</option>
-              <option value="Academia">Academia</option>
-              <option value="Sala de Lutas">Sala de Lutas</option>
-              <option value="Sala de Jogos Infantil">Salão de Jogos Infantil</option>
-              <option value="SPA">SPA</option>
-              <option value="Salão de Jogos Adulto">Salão de Jogos Adulto</option>
-              <option value="Salão Teen">Salão Teen</option>
-              <option value="Brinquedoteca">Brinquedoteca</option>
-              <option value="Parquinho">Parquinho</option>
-              <option value="Portaria">Portaria</option>
-              <option value="Área Externa">Área Externa</option>
+              <option value="">
+                Selecione o local
+              </option>
+
+              <option value="Bloco 1">
+                Bloco 1
+              </option>
+
+              <option value="Bloco 2">
+                Bloco 2
+              </option>
+
+              <option value="Bloco 3">
+                Bloco 3
+              </option>
+
+              <option value="Bloco 4">
+                Bloco 4
+              </option>
+
+              <option value="Bloco 5">
+                Bloco 5
+              </option>
+
+              <option value="Bloco 6">
+                Bloco 6
+              </option>
+
+              <option value="Bloco 7">
+                Bloco 7
+              </option>
+
+              <option value="Bloco 8">
+                Bloco 8
+              </option>
+
+              <option value="Garagem">
+                Garagem
+              </option>
+
+              <option value="Garagem subsolo">
+                Garagem subsolo
+              </option>
+
+              <option value="Piscina">
+                Piscina
+              </option>
+
+              <option value="Quadra Poliesportiva">
+                Quadra Poliesportiva
+              </option>
+
+              <option value="Quadra de Tênis">
+                Quadra de Tênis
+              </option>
+
+              <option value="Churrasqueira 1">
+                Churrasqueira 1
+              </option>
+
+              <option value="Churrasqueira 2">
+                Churrasqueira 2
+              </option>
+
+              <option value="Churrasqueira 3">
+                Churrasqueira 3
+              </option>
+
+              <option value="Churrasqueira 4">
+                Churrasqueira 4
+              </option>
+
+              <option value="Salão de Festas">
+                Salão de Festas
+              </option>
+
+              <option value="Salão Gourmet">
+                Salão Gourmet
+              </option>
+
+              <option value="Espaço do Conhecimento">
+                Espaço do Conhecimento
+              </option>
+
+              <option value="Spinning">
+                Spinning
+              </option>
+
+              <option value="Academia">
+                Academia
+              </option>
+
+              <option value="Sala de Lutas">
+                Sala de Lutas
+              </option>
+
+              <option value="Sala de Jogos Infantil">
+                Sala de Jogos Infantil
+              </option>
+
+              <option value="SPA">
+                SPA
+              </option>
+
+              <option value="Salão de Jogos Adulto">
+                Salão de Jogos Adulto
+              </option>
+
+              <option value="Salão Teen">
+                Salão Teen
+              </option>
+
+              <option value="Brinquedoteca">
+                Brinquedoteca
+              </option>
+
+              <option value="Parquinho">
+                Parquinho
+              </option>
+
+              <option value="Portaria">
+                Portaria
+              </option>
+
+              <option value="Área Externa">
+                Área Externa
+              </option>
             </select>
           </label>
+
 
           <label>
             Referência do local
 
             <input id="adminEditReference" type="text" />
           </label>
+
         </div>
+
 
         <label>
           Descrição *
@@ -353,16 +556,29 @@
           <textarea id="adminEditDescription" required minlength="10" maxlength="2000" rows="5" ></textarea>
         </label>
 
+
         <label>
           Situação *
 
           <select id="adminEditStatus" required >
-            <option value="Aberto">Aberto</option>
-            <option value="Em análise">Em análise</option>
-            <option value="Em execução">Em execução</option>
-            <option value="Resolvido">Resolvido</option>
+            <option value="Aberto">
+              Aberto
+            </option>
+
+            <option value="Em análise">
+              Em análise
+            </option>
+
+            <option value="Em execução">
+              Em execução
+            </option>
+
+            <option value="Resolvido">
+              Resolvido
+            </option>
           </select>
         </label>
+
 
         <button id="btnSaveAdminEdit" class="primary-button" type="submit" >
           Salvar alterações
@@ -370,6 +586,7 @@
 
         <p id="adminEditMessage" class="message" ></p>
       </form>
+
     </div>
   </div>
 
