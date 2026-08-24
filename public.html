@@ -12,6 +12,8 @@
   </title>
 
   <link rel="stylesheet" href="./styles.css" />
+
+  <style> .public-page { background: #effaf8; } .public-topbar { background: #ffffff; border-bottom-color: #b7e4df; } .public-hero { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 30px; background: linear-gradient( 135deg, #ffffff, #e9faf7 ); border: 1px solid #b7e4df; border-left: 5px solid #0f766e; border-radius: 20px; box-shadow: 0 10px 30px rgba(15, 23, 42, 0.07); } .public-hero h1 { margin-top: 8px; } .public-user { min-width: 210px; padding: 16px; background: #e8f8f5; border: 1px solid #b7e4df; border-radius: 14px; } .public-user span, .public-user strong { display: block; } .public-user span { color: #64748b; font-size: 12px; } .public-user strong { margin-top: 6px; color: #115e59; font-size: 15px; } .public-dashboard-grid { display: grid; grid-template-columns: minmax(280px, 380px) 1fr; gap: 20px; margin-bottom: 20px; } .public-chart-card { min-height: 360px; } .public-chart-container { position: relative; width: 100%; height: 280px; margin-top: 18px; } .public-chart-container canvas { width: 100% !important; height: 100% !important; } .public-stats-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-bottom: 20px; } .public-stat-card { min-height: 100px; display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: 18px; background: #f8fffe; border: 1px solid #b7e4df; border-radius: 14px; text-align: center; } .public-stat-card:first-child { grid-column: 1 / -1; } .public-stat-card span { color: #0f766e; font-size: 30px; font-weight: 800; line-height: 1; } .public-stat-card small { color: #64748b; font-size: 13px; font-weight: 700; } .public-report { display: flex; align-items: center; justify-content: space-between; gap: 18px; } .public-report-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; } .public-icon-button { width: 42px; height: 42px; min-height: 42px; display: inline-flex; align-items: center; justify-content: center; padding: 0; border-radius: 10px; background: #e0f2fe; color: #0369a1; font-size: 19px; } .public-icon-button:hover { background: #bae6fd; } .timeline { display: grid; gap: 0; margin-top: 22px; } .timeline-item { position: relative; display: flex; gap: 14px; min-height: 82px; } .timeline-item:not(:last-child)::after { content: ""; position: absolute; top: 32px; left: 15px; width: 2px; height: 50px; background: #dbe3ef; } .timeline-dot { position: relative; z-index: 1; width: 32px; height: 32px; min-width: 32px; display: grid; place-items: center; border-radius: 50%; background: #dbe3ef; color: #64748b; font-size: 13px; font-weight: 800; } .timeline-item.completed .timeline-dot { background: #0f766e; color: #ffffff; } .timeline-content { display: flex; flex-direction: column; gap: 3px; } .timeline-content strong { color: #13233f; } .timeline-content span, .timeline-content small { color: #64748b; font-size: 13px; } .timeline-item.pending { opacity: 0.65; } @media (max-width: 950px) { .public-dashboard-grid { grid-template-columns: 1fr; } } @media (max-width: 650px) { .public-hero { align-items: stretch; flex-direction: column; padding: 22px; } .public-user { width: 100%; min-width: 0; } .public-stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } .public-stat-card { min-height: 86px; padding: 13px 8px; } .public-stat-card:first-child { grid-column: 1 / -1; } .public-stat-card span { font-size: 24px; } .public-stat-card small { font-size: 11px; } .public-report { align-items: stretch; flex-direction: column; } .public-report-actions { justify-content: flex-end; } .public-report-actions button { width: 42px; } } @media (max-width: 400px) { .public-stats-grid { grid-template-columns: 1fr; } .public-stat-card:first-child { grid-column: auto; } .public-report-actions { justify-content: center; } } </style>
 </head>
 
 <body class="public-page">
@@ -70,7 +72,7 @@
     <!-- PÁGINA PÚBLICA -->
     <section id="publicView" class="hidden" >
 
-      <!-- CABEÇALHO DO MURAL -->
+      <!-- CABEÇALHO -->
       <section class="public-hero">
         <div>
           <span class="eyebrow">
@@ -82,7 +84,7 @@
           </h1>
 
           <p class="muted">
-            Consulte os registros compartilhados pelos moradores e acompanhe seus status.
+            Consulte os registros compartilhados pelos moradores.
           </p>
         </div>
 
@@ -98,41 +100,71 @@
       </section>
 
 
-      <!-- LISTA E INDICADORES -->
+      <!-- GRÁFICO E INDICADORES -->
+      <section class="public-dashboard-grid">
+
+        <!-- GRÁFICO -->
+        <section class="card public-chart-card">
+          <h2>
+            Situação dos registros
+          </h2>
+
+          <p class="muted">
+            Distribuição das ocorrências por situação.
+          </p>
+
+          <div class="public-chart-container">
+            <canvas id="publicStatusChart"></canvas>
+          </div>
+        </section>
+
+
+        <!-- INDICADORES -->
+        <section class="card">
+          <h2>
+            Resumo das ocorrências
+          </h2>
+
+          <p class="muted">
+            Quantidade de registros por situação.
+          </p>
+
+          <div class="public-stats-grid">
+
+            <div class="public-stat-card">
+              <span id="publicTotal">0</span>
+              <small>Total de registros</small>
+            </div>
+
+            <div class="public-stat-card">
+              <span id="publicOpen">0</span>
+              <small>Abertos</small>
+            </div>
+
+            <div class="public-stat-card">
+              <span id="publicAnalysis">0</span>
+              <small>Em análise</small>
+            </div>
+
+            <div class="public-stat-card">
+              <span id="publicExecution">0</span>
+              <small>Em execução</small>
+            </div>
+
+            <div class="public-stat-card">
+              <span id="publicResolved">0</span>
+              <small>Resolvidos</small>
+            </div>
+
+          </div>
+        </section>
+
+      </section>
+
+
+      <!-- LISTA -->
       <section class="card">
 
-        <!-- INDICADORES PÚBLICOS -->
-        <div class="public-stats-grid">
-
-          <div class="public-stat-card">
-            <span id="publicTotal">0</span>
-            <small>Total</small>
-          </div>
-
-          <div class="public-stat-card">
-            <span id="publicOpen">0</span>
-            <small>Abertos</small>
-          </div>
-
-          <div class="public-stat-card">
-            <span id="publicAnalysis">0</span>
-            <small>Em análise</small>
-          </div>
-
-          <div class="public-stat-card">
-            <span id="publicExecution">0</span>
-            <small>Em execução</small>
-          </div>
-
-          <div class="public-stat-card">
-            <span id="publicResolved">0</span>
-            <small>Resolvidos</small>
-          </div>
-
-        </div>
-
-
-        <!-- CABEÇALHO DA LISTA -->
         <div class="section-heading">
           <div>
             <h2>
@@ -140,7 +172,7 @@
             </h2>
 
             <p class="muted">
-              Para preservar a privacidade, dados pessoais dos moradores não são exibidos.
+              Para preservar a privacidade, os dados pessoais dos moradores não são exibidos.
             </p>
           </div>
 
@@ -168,7 +200,6 @@
         </div>
 
 
-        <!-- REGISTROS -->
         <div id="publicReportsList" class="reports-list" >
           <div class="empty-state">
             Carregando ocorrências...
@@ -176,7 +207,6 @@
         </div>
 
 
-        <!-- PAGINAÇÃO -->
         <div id="publicPagination" class="pagination" ></div>
 
       </section>
@@ -198,10 +228,27 @@
   </div>
 
 
-  <!-- NOTIFICAÇÃO -->
+  <!-- MODAL DA LINHA DO TEMPO -->
+  <div id="publicTimelineModal" class="modal hidden" >
+    <div class="modal-card">
+
+      <button id="btnClosePublicTimeline" class="modal-close" type="button" aria-label="Fechar linha do tempo" >
+        ×
+      </button>
+
+      <div id="publicTimelineContent" ></div>
+
+    </div>
+  </div>
+
+
   <div id="toast" class="toast" ></div>
 
 
+  <!-- CHART.JS -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- JAVASCRIPT DA PÁGINA -->
   <script type="module" src="./public.js" ></script>
 </body>
 </html>
