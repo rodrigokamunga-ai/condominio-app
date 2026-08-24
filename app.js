@@ -824,6 +824,10 @@ function sendReportByEmail(reportId) {
 // ENVIO DA OCORRÊNCIA PELO WHATSAPP
 // =====================================================
 
+// =====================================================
+// ENVIO DA OCORRÊNCIA PELO WHATSAPP
+// =====================================================
+
 function sendReportByWhatsApp(reportId) {
   const report = allReports.find(
     (item) => item.id === reportId
@@ -834,28 +838,11 @@ function sendReportByWhatsApp(reportId) {
     return;
   }
 
-  const openingDate =
-    report.dataAbertura ||
-    report.inicioEm ||
-    report.criadoEm;
-
   const messageText = [
-    "Olá, administração.",
-    "",
-    "Segue uma ocorrência registrada no condomínio.",
-    "",
     `Título: ${report.titulo || "Não informado"}`,
-    `Protocolo: ${report.protocolo || "Não informado"}`,
-    `Status: ${report.status || "Aberto"}`,
-    `Categoria: ${report.categoria || "Não informada"}`,
-    `Prioridade: ${report.prioridade || "Não informada"}`,
     `Local: ${report.local || "Não informado"}`,
     `Referência: ${report.referenciaLocal || "Não informada"}`,
-    `Data e horário: ${formatDate(openingDate)}`,
-    "",
-    "Descrição da ocorrência:",
-    report.descricao || "Não informada",
-    "",
+    `Descrição da ocorrência: ${report.descricao || "Não informada"}`,
     `Morador: ${report.nome || "Não informado"}`,
     `Unidade: ${report.unidade || "Não informada"}`,
     `Bloco: ${report.bloco || "Não informado"}`
