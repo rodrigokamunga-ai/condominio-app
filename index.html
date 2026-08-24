@@ -45,87 +45,140 @@
       </p>
 
       <form id="loginForm" class="form" >
-        <label>
-          E-mail
+  <label>
+    E-mail
 
-          <input id="loginEmail" type="email" required autocomplete="email" placeholder="voce@email.com" />
-        </label>
+    <input id="loginEmail" type="email" required autocomplete="email" placeholder="voce@email.com" />
+  </label>
 
-        <label>
-          Senha
+  <label>
+    Senha
 
-          <input id="loginPassword" type="password" required minlength="6" autocomplete="current-password" placeholder="Mínimo de 6 caracteres" />
-        </label>
+    <input id="loginPassword" type="password" required minlength="8" autocomplete="current-password" placeholder="Digite sua senha" />
+  </label>
 
-        <button class="primary-button" type="submit" >
-          Entrar
-        </button>
+  <button id="btnForgotPassword" class="link-button" type="button" >
+    Esqueci minha senha
+  </button>
 
-        <button id="btnShowRegister" class="secondary-button" type="button" >
-          Criar cadastro
-        </button>
-      </form>
+  <button class="primary-button" type="submit" >
+    Entrar
+  </button>
 
-      <p id="loginMessage" class="message" ></p>
+  <button id="btnShowRegister" class="secondary-button" type="button" >
+    Criar cadastro
+  </button>
+</form>
+
+<p id="loginMessage" class="message" ></p>
     </section>
 
 
     <!-- CADASTRO -->
     <section id="registerView" class="card auth-card hidden" >
-      <h1>Criar cadastro</h1>
+  <h1>Criar cadastro</h1>
 
-      <p class="muted">
-        Informe seus dados para abrir chamados no condomínio.
-      </p>
+  <p class="muted">
+    Informe seus dados para abrir chamados no condomínio.
+  </p>
 
-      <form id="registerForm" class="form" >
-        <label>
-          Nome completo
+  <form id="registerForm" class="form" >
+    <label>
+      Nome completo
 
-          <input id="registerName" type="text" required minlength="3" autocomplete="name" placeholder="Digite seu nome completo" />
-        </label>
+      <input id="registerName" type="text" required minlength="3" autocomplete="name" placeholder="Digite seu nome completo" />
+    </label>
 
-        <label>
-          Unidade / apartamento
+    <label>
+      Unidade / apartamento
 
-          <input id="registerUnit" type="text" required placeholder="Ex.: Apto 204" />
-        </label>
+      <input id="registerUnit" type="text" required placeholder="Ex.: 200" />
+    </label>
 
-        <label>
-          Bloco / torre
+    <label>
+      Bloco 
 
-          <input id="registerBlock" type="text" placeholder="Ex.: Bloco A" />
-        </label>
+      <input id="registerBlock" type="text" placeholder="Ex.: 1" />
+    </label>
 
-        <label>
-          Telefone
+    <label>
+      Telefone
 
-          <input id="registerPhone" type="tel" autocomplete="tel" placeholder="(00) 00000-0000" />
-        </label>
+      <input id="registerPhone" type="tel" autocomplete="tel" placeholder="(00) 00000-0000" />
+    </label>
 
-        <label>
-          E-mail
+    <label>
+      E-mail
 
-          <input id="registerEmail" type="email" required autocomplete="email" placeholder="voce@email.com" />
-        </label>
+      <input id="registerEmail" type="email" required autocomplete="email" placeholder="voce@email.com" />
+    </label>
 
-        <label>
-          Senha
+    <label>
+      Senha 
 
-          <input id="registerPassword" type="password" required minlength="6" autocomplete="new-password" placeholder="Mínimo de 6 caracteres" />
-        </label>
+      <input id="registerPassword" type="password" required minlength="8" autocomplete="new-password" placeholder="Crie uma senha forte" />
 
-        <button class="primary-button" type="submit" >
-          Cadastrar
-        </button>
+      <small id="passwordRequirements" class="helper" >
+        A senha deve ter pelo menos 8 caracteres, uma letra maiúscula,
+        uma letra minúscula, um número e um caractere especial.
+      </small>
+    </label>
 
-        <button id="btnBackLogin" class="secondary-button" type="button" >
-          Voltar para login
-        </button>
-      </form>
+    <label>
+      Confirmar senha
 
-      <p id="registerMessage" class="message" ></p>
-    </section>
+      <input id="registerPasswordConfirm" type="password" required minlength="8" autocomplete="new-password" placeholder="Digite a senha novamente" />
+    </label>
+
+    <label class="terms-box">
+      <input id="acceptTerms" type="checkbox" required />
+
+      <span>
+        Li e aceito os termos de uso e a política de privacidade.
+        Estou ciente de que os dados informados serão utilizados
+        para identificação, comunicação e gerenciamento das ocorrências
+        do condomínio, sendo tratados com sigilo e segurança, conforme
+        a legislação aplicável e os princípios da LGPD.
+      </span>
+    </label>
+
+    <button class="primary-button" type="submit" >
+      Cadastrar
+    </button>
+
+    <button id="btnBackLogin" class="secondary-button" type="button" >
+      Voltar para login
+    </button>
+  </form>
+
+  <p id="registerMessage" class="message" ></p>
+</section>
+
+<section id="forgotPasswordView" class="card auth-card hidden" >
+  <h1>Redefinir senha</h1>
+
+  <p class="muted">
+    Informe seu e-mail. Enviaremos um link para criar uma nova senha.
+  </p>
+
+  <form id="forgotPasswordForm" class="form" >
+    <label>
+      E-mail cadastrado
+
+      <input id="forgotPasswordEmail" type="email" required autocomplete="email" placeholder="voce@email.com" />
+    </label>
+
+    <button class="primary-button" type="submit" >
+      Resetar senha
+    </button>
+
+    <button id="btnBackToLogin" class="secondary-button" type="button" >
+      Voltar para login
+    </button>
+  </form>
+
+  <p id="forgotPasswordMessage" class="message" ></p>
+</section>
 
 
     <!-- ÁREA DO MORADOR -->
