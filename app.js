@@ -6,7 +6,8 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-  updateProfile
+  updateProfile,
+  sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 import {
@@ -23,7 +24,6 @@ import {
   updateDoc,
   deleteDoc,
   serverTimestamp
-  
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
@@ -46,8 +46,8 @@ const ADMIN_EMAIL =
 const EMAIL_DESTINO =
   "rodrigokamunga@gmail.com";
 
-  const WHATSAPP_NUMERO =
-  "5521988386027";
+const WHATSAPP_NUMERO =
+  "5511999999999";
 
 
 // =====================================================
@@ -148,8 +148,13 @@ function formatDate(value) {
     return "Não informada";
   }
 
-  if (typeof value.toDate === "function") {
-    return value.toDate().toLocaleString("pt-BR");
+  if (
+    typeof value.toDate ===
+    "function"
+  ) {
+    return value
+      .toDate()
+      .toLocaleString("pt-BR");
   }
 
   if (value instanceof Date) {
@@ -159,12 +164,15 @@ function formatDate(value) {
   return "Não informada";
 }
 
-function getDateFromValue(value) {
+function toDate(value) {
   if (!value) {
     return null;
   }
 
-  if (typeof value.toDate === "function") {
+  if (
+    typeof value.toDate ===
+    "function"
+  ) {
     return value.toDate();
   }
 
@@ -173,6 +181,14 @@ function getDateFromValue(value) {
   }
 
   return null;
+}
+
+function isAdmin(user) {
+  return Boolean(
+    user?.email &&
+    user.email.toLowerCase() ===
+      ADMIN_EMAIL.toLowerCase()
+  );
 }
 
 function statusClass(status) {
@@ -226,77 +242,23 @@ function friendlyError(error) {
     return errors[error.code];
   }
 
-  if (
-    error?.message &&
-    error.message.toLowerCase().includes("permission")
-  ) {
-    return "Permissão negada. Verifique as regras do Firebase.";
-  }
-
   return error?.message ||
     "Não foi possível concluir a operação.";
 }
 
-function isAdmin(user) {
-  return Boolean(
-    user &&
-    user.email &&
-    user.email.toLowerCase() ===
-      ADMIN_EMAIL.toLowerCase()
+
+// =====================================================
+// VALIDAÇÃO DE SENHA
+// =====================================================
+
+function isStrongPassword(password) {
+  return (
+    password.length >= 8 &&
+    /[A-Z]/.test(password) &&
+    /[a-z]/.test(password) &&
+    /[0-9]/.test(password) &&
+    /[^A-Za-z0-9]/.test(password)
   );
-}
-
-function isDocumentationCategory() {
-  return $("reportCategory")?.value ===
-    "Documentação";
-}
-
-function getStatusDate(report, status) {
-  if (status === "Aberto") {
-    return report.dataAbertura ||
-      report.inicioEm ||
-      report.criadoEm;
-  }
-
-  if (status === "Em análise") {
-    return report.dataAnalise;
-  }
-
-  if (status === "Em execução") {
-    return report.dataExecucao;
-  }
-
-  if (status === "Resolvido") {
-    return report.dataResolvido ||
-      report.fimEm;
-  }
-
-  return null;
-}
-
-function calculateDays(startValue, endValue = null) {
-  const start = getDateFromValue(startValue);
-
-  if (!start) {
-    return "Não informado";
-  }
-
-  const end =
-    getDateFromValue(endValue) ||
-    new Date();
-
-  const difference =
-    end.getTime() - start.getTime();
-
-  const days = Math.floor(
-    difference / (1000 * 60 * 60 * 24)
-  );
-
-  if (days <= 0) {
-    return "menos de 1 dia";
-  }
-
-  return `${days} dia${days === 1 ? "" : "s"}`;
 }
 
 
@@ -339,12 +301,14 @@ function compressImage( file, maxWidth = 640, maxHeight = 480, quality = 0.6 ) {
       width = Math.round(width * scale);
       height = Math.round(height * scale);
 
-      const canvas = document.createElement("canvas");
+      const canvas =
+        document.createElement("canvas");
 
       canvas.width = width;
       canvas.height = height;
 
-      const context = canvas.getContext("2d");
+      const context =
+        canvas.getContext("2d");
 
       if (!context) {
         reject(
@@ -361,13 +325,16 @@ function compressImage( file, maxWidth = 640, maxHeight = 480, quality = 0.6 ) {
         height
       );
 
-      const imageData = canvas.toDataURL(
-        "image/jpeg",
-        quality
-      );
+      const imageData =
+        canvas.toDataURL(
+          "image/jpeg",
+          quality
+        );
 
       const approximateSize =
-        Math.round((imageData.length * 3) / 4);
+        Math.round(
+          (imageData.length * 3) / 4
+        );
 
       if (approximateSize > 350000) {
         reject(
@@ -383,7 +350,7 @@ function compressImage( file, maxWidth = 640, maxHeight = 480, quality = 0.6 ) {
 
     image.onerror = () => {
       reject(
-        new Error("Não foi possível processar a imagem.")
+        new Error("Imagem inválida.")
       );
     };
 
@@ -393,7 +360,7 @@ function compressImage( file, maxWidth = 640, maxHeight = 480, quality = 0.6 ) {
 
 
 // =====================================================
-// CONTROLES DO CAMPO DOCUMENTAÇÃO
+// CATEGORIAS
 // =====================================================
 
 function addCategoryOptions() {
@@ -404,50 +371,68 @@ function addCategoryOptions() {
     return;
   }
 
-  const documentationExists =
-    Array.from(category.options)
-      .some(
-        (option) =>
-          option.value === "Documentação"
-      );
+  const options = [
+    "Documentação",
+    "Jardinagem"
+  ];
 
-  if (!documentationExists) {
-    const documentationOption =
-      document.createElement("option");
+  options.forEach((value) => {
+    const exists =
+      Array.from(category.options)
+        .some(
+          (option) =>
+            option.value === value
+        );
 
-    documentationOption.value =
-      "Documentação";
+    if (!exists) {
+      const option =
+        document.createElement("option");
 
-    documentationOption.textContent =
-      "Documentação";
+      option.value = value;
+      option.textContent = value;
 
-    category.appendChild(
-      documentationOption
-    );
-  }
-
-  const jardinagemExists =
-    Array.from(category.options)
-      .some(
-        (option) =>
-          option.value === "Jardinagem"
-      );
-
-  if (!jardinagemExists) {
-    const jardinagemOption =
-      document.createElement("option");
-
-    jardinagemOption.value =
-      "Jardinagem";
-
-    jardinagemOption.textContent =
-      "Jardinagem";
-
-    category.appendChild(
-      jardinagemOption
-    );
-  }
+      category.appendChild(option);
+    }
+  });
 }
+
+function addEditCategoryOptions() {
+  const category =
+    $("editCategory");
+
+  if (!category) {
+    return;
+  }
+
+  const options = [
+    "Documentação",
+    "Jardinagem"
+  ];
+
+  options.forEach((value) => {
+    const exists =
+      Array.from(category.options)
+        .some(
+          (option) =>
+            option.value === value
+        );
+
+    if (!exists) {
+      const option =
+        document.createElement("option");
+
+      option.value = value;
+      option.textContent = value;
+
+      category.appendChild(option);
+    }
+  });
+}
+
+
+// =====================================================
+// CAMPOS DE LOCAL
+// =====================================================
 
 function updateLocationFields() {
   const category =
@@ -482,511 +467,6 @@ function updateLocationFields() {
     if (disableReference) {
       reference.value = "";
     }
-  }
-}
-
-function removeUpdatesField() {
-  const updates = $("reportUpdates");
-
-  if (!updates) {
-    return;
-  }
-
-  const label =
-    updates.closest("label");
-
-  if (label) {
-    label.remove();
-  } else {
-    updates.remove();
-  }
-}
-
-
-// =====================================================
-// FILTRO
-// =====================================================
-
-function getFilteredReports() {
-  const selectedStatus =
-    $("statusFilter")?.value || "Todos";
-
-  if (selectedStatus === "Todos") {
-    return allReports;
-  }
-
-  return allReports.filter(
-    (report) =>
-      (report.status || "Aberto") === selectedStatus
-  );
-}
-
-
-// =====================================================
-// LISTAGEM
-// =====================================================
-
-function renderReports() {
-  const list = $("reportsList");
-
-  if (!list) {
-    return;
-  }
-
-  const filteredReports =
-    getFilteredReports();
-
-  const totalPages = Math.max(
-    1,
-    Math.ceil(
-      filteredReports.length / pageSize
-    )
-  );
-
-  if (currentPage > totalPages) {
-    currentPage = totalPages;
-  }
-
-  const start =
-    (currentPage - 1) * pageSize;
-
-  const visibleReports =
-    filteredReports.slice(
-      start,
-      start + pageSize
-    );
-
-  if (visibleReports.length === 0) {
-    list.innerHTML = ` <div class="empty-state"> Nenhum registro encontrado. </div> `;
-  } else {
-    list.innerHTML = visibleReports
-      .map((report) => {
-        const status =
-          report.status || "Aberto";
-
-        return ` <article class="report-item compact-report"> <div> <div class="report-title"> ${escapeHtml( report.titulo || "Sem título" )} </div> <div class="report-meta"> Protocolo: ${escapeHtml( report.protocolo || "Não informado" )} </div> <div class="report-meta"> Início: ${formatDate( report.dataAbertura || report.inicioEm || report.criadoEm )} </div> ${ report.fimEm || report.dataResolvido ? ` <div class="report-meta"> Fim: ${formatDate( report.dataResolvido || report.fimEm )} </div> ` : "" } <span class="badge ${statusClass(status)}"> ${escapeHtml(status)} </span> </div> <div class="report-actions"> <button class="action-icon-button detail-button" data-id="${report.id}" type="button" title="Detalhar" aria-label="Detalhar ocorrência" > 🔍 </button> <button class="action-icon-button timeline-button" data-id="${report.id}" type="button" title="Linha do tempo" aria-label="Linha do tempo" > 🕒 </button> <button class="action-icon-button edit-button" data-id="${report.id}" type="button" title="Editar" aria-label="Editar ocorrência" > ✏️ </button> <button
-  class="action-icon-button whatsapp-button"
-  data-id="${report.id}"
-  type="button"
-  title="Enviar pelo WhatsApp"
-  aria-label="Enviar ocorrência pelo WhatsApp"
->
-  💬
-</button> <button class="action-icon-button email-button" data-id="${report.id}" type="button" title="Enviar e-mail" aria-label="Enviar ocorrência por e-mail" > ✉️ </button> <button class="action-icon-button delete-button" data-id="${report.id}" type="button" title="Excluir" aria-label="Excluir ocorrência" > 🗑️ </button> </div> </article> `;
-      })
-      .join("");
-  }
-
-  renderPagination(
-    filteredReports.length,
-    totalPages
-  );
-
-  setText(
-    "statTotal",
-    allReports.length
-  );
-
-  setText(
-    "statOpen",
-    allReports.filter(
-      (report) =>
-        (report.status || "Aberto") !==
-        "Resolvido"
-    ).length
-  );
-
-  setText(
-    "statResolved",
-    allReports.filter(
-      (report) =>
-        report.status === "Resolvido"
-    ).length
-  );
-}
-
-
-// =====================================================
-// PAGINAÇÃO
-// =====================================================
-
-function renderPagination( totalItems, totalPages ) {
-  const pagination =
-    $("pagination");
-
-  if (!pagination) {
-    return;
-  }
-
-  if (totalItems === 0) {
-    pagination.innerHTML = "";
-    return;
-  }
-
-  pagination.innerHTML = ` <button id="prevPage" class="secondary-button" type="button" ${currentPage <= 1 ? "disabled" : ""} > Anterior </button> <span> Página ${currentPage} de ${totalPages} </span> <button id="nextPage" class="secondary-button" type="button" ${currentPage >= totalPages ? "disabled" : ""} > Próxima </button> `;
-}
-
-
-// =====================================================
-// DETALHAMENTO
-// =====================================================
-
-function openDetails(reportId) {
-  const report = allReports.find(
-    (item) => item.id === reportId
-  );
-
-  if (!report) {
-    return;
-  }
-
-  const detailContent =
-    $("detailContent");
-
-  if (!detailContent) {
-    return;
-  }
-
-  const status =
-    report.status || "Aberto";
-
-  detailContent.innerHTML = ` <span class="eyebrow"> DETALHAMENTO DA OCORRÊNCIA </span> <h2> ${escapeHtml( report.titulo || "Sem título" )} </h2> <p> <b>Protocolo:</b> ${escapeHtml( report.protocolo || "Não informado" )} </p> <p> <b>Status:</b> <span class="badge ${statusClass(status)}"> ${escapeHtml(status)} </span> </p> <p> <b>Categoria:</b> ${escapeHtml( report.categoria || "Não informada" )} </p> <p> <b>Prioridade:</b> ${escapeHtml( report.prioridade || "Não informada" )} </p> <p> <b>Local:</b> ${escapeHtml( report.local || "Não informado" )} </p> <p> <b>Referência:</b> ${escapeHtml( report.referenciaLocal || "Não informada" )} </p> <p> <b>Data de abertura:</b> ${formatDate( report.dataAbertura || report.inicioEm || report.criadoEm )} </p> <p> <b>Data em análise:</b> ${formatDate(report.dataAnalise)} </p> <p> <b>Data em execução:</b> ${formatDate(report.dataExecucao)} </p> <p> <b>Data de resolução:</b> ${formatDate( report.dataResolvido || report.fimEm )} </p> <p> <b>Descrição:</b><br> ${escapeHtml( report.descricao || "Sem descrição" )} </p>  ${ report.fotoData ? ` <div class="report-photo-container"> <img class="detail-photo" src="${report.fotoData}" alt="Foto da ocorrência" /> </div> ` : "" } `;
-
-  show("detailModal");
-}
-
-
-// =====================================================
-// LINHA DO TEMPO
-// =====================================================
-
-function openTimeline(reportId) {
-  const report = allReports.find(
-    (item) => item.id === reportId
-  );
-
-  if (!report) {
-    return;
-  }
-
-  const modal = getOrCreateTimelineModal();
-
-  const content =
-    modal.querySelector(
-      "#timelineContent"
-    );
-
-  if (!content) {
-    return;
-  }
-
-  const abertura =
-    report.dataAbertura ||
-    report.inicioEm ||
-    report.criadoEm;
-
-  const analise =
-    report.dataAnalise;
-
-  const execucao =
-    report.dataExecucao;
-
-  const resolvido =
-    report.dataResolvido ||
-    report.fimEm;
-
-  content.innerHTML = ` <span class="eyebrow"> LINHA DO TEMPO </span> <h2> ${escapeHtml( report.titulo || "Ocorrência" )} </h2> <div class="timeline"> <div class="timeline-item completed"> <div class="timeline-dot">1</div> <div class="timeline-content"> <strong>Abertura da ocorrência</strong> <span> ${formatDate(abertura)} </span> <small> ${ analise ? `Aberto por ${calculateDays( abertura, analise )}` : `Em aberto há ${calculateDays( abertura )}` } </small> </div> </div> <div class="timeline-item ${analise ? "completed" : "pending"}"> <div class="timeline-dot">2</div> <div class="timeline-content"> <strong>Em análise</strong> <span> ${formatDate(analise)} </span> <small> ${ analise ? execucao ? `Em análise por ${calculateDays( analise, execucao )}` : resolvido ? `Em análise por ${calculateDays( analise, resolvido )}` : `Em análise há ${calculateDays( analise )}` : "Ainda não entrou em análise" } </small> </div> </div> <div class="timeline-item ${execucao ? "completed" : "pending"}"> <div class="timeline-dot">3</div> <div class="timeline-content"> <strong>Em execução</strong> <span> ${formatDate(execucao)} </span> <small> ${ execucao ? resolvido ? `Em execução por ${calculateDays( execucao, resolvido )}` : `Em execução há ${calculateDays( execucao )}` : "Ainda não entrou em execução" } </small> </div> </div> <div class="timeline-item ${resolvido ? "completed" : "pending"}"> <div class="timeline-dot">4</div> <div class="timeline-content"> <strong>Resolvido</strong> <span> ${formatDate(resolvido)} </span> <small> ${ resolvido ? "Ocorrência finalizada" : "Ainda não resolvido" } </small> </div> </div> </div> `;
-
-  show("timelineModal");
-}
-
-function getOrCreateTimelineModal() {
-  let modal = $("timelineModal");
-
-  if (modal) {
-    return modal;
-  }
-
-  modal =
-    document.createElement("div");
-
-  modal.id = "timelineModal";
-  modal.className = "modal hidden";
-
-  modal.innerHTML = ` <div class="modal-card"> <button id="btnCloseTimeline" class="modal-close" type="button" aria-label="Fechar linha do tempo" > × </button> <div id="timelineContent"></div> </div> `;
-
-  document.body.appendChild(modal);
-
-  modal.addEventListener(
-    "click",
-    (event) => {
-      if (
-        event.target.id ===
-        "timelineModal"
-      ) {
-        hide("timelineModal");
-      }
-    }
-  );
-
-  modal.querySelector(
-    "#btnCloseTimeline"
-  )?.addEventListener(
-    "click",
-    () => hide("timelineModal")
-  );
-
-  return modal;
-}
-
-
-// =====================================================
-// E-MAIL DA OCORRÊNCIA
-// =====================================================
-
-function sendReportByEmail(reportId) {
-  const report = allReports.find(
-    (item) => item.id === reportId
-  );
-
-  if (!report) {
-    alert("Ocorrência não encontrada.");
-    return;
-  }
-
-  const subject =
-    report.titulo ||
-    "Ocorrência do condomínio";
-
-  const dateValue =
-    report.dataAbertura ||
-    report.inicioEm ||
-    report.criadoEm;
-
-  const dateText =
-    formatDate(dateValue);
-
-  const residentName =
-    report.nome ||
-    "Nome não informado";
-
-  const apartment =
-    report.unidade ||
-    "Apartamento não informado";
-
-  const block =
-    report.bloco ||
-    "Bloco não informado";
-
-  const location =
-    report.local ||
-    "Não informado";
-
-  const description =
-    report.descricao ||
-    "Não informada";
-
-  /* O corpo é criado com CRLF. Essa combinação funciona melhor com Outlook, Gmail e outros clientes. */
-  const body = [
-    "Prezados,",
-    "",
-    "Venho, por meio deste, comunicar uma ocorrência no condomínio.",
-    "",
-    `Data e horário: ${dateText}`,
-    "",
-    `Local: ${location}`,
-    "",
-    `Descrição da ocorrência: ${description}`,
-    "",
-    "Solicito, por gentileza, que a administração verifique a situação e tome as providências cabíveis, conforme as normas do condomínio. Caso necessário, coloco-me à disposição para fornecer informações adicionais.",
-    "",
-    "Agradeço a atenção.",
-    "",
-    "Atenciosamente,",
-    "",
-    residentName,
-    `Bloco ${block.replace(/^Bloco\s*/i, "")} / Apartamento ${apartment .replace(/^Apartamento\s*/i, "") .replace(/^Apto\s*/i, "")}`
-  ].join("\r\n");
-
-  const mailto =
-    `mailto:${EMAIL_DESTINO}` +
-    `?subject=${encodeURIComponent(subject)}` +
-    `&body=${encodeURIComponent(body)}`;
-
-  if (report.fotoData) {
-    downloadReportPhoto(report);
-  }
-
-  window.location.href = mailto;
-}
-
-// =====================================================
-// ENVIO DA OCORRÊNCIA PELO WHATSAPP
-// =====================================================
-
-// =====================================================
-// ENVIO DA OCORRÊNCIA PELO WHATSAPP
-// =====================================================
-
-function sendReportByWhatsApp(reportId) {
-  const report = allReports.find(
-    (item) => item.id === reportId
-  );
-
-  if (!report) {
-    alert("Ocorrência não encontrada.");
-    return;
-  }
-
-  const messageText = [
-    `Título: ${report.titulo || "Não informado"}`,
-    `Local: ${report.local || "Não informado"}`,
-    `Referência: ${report.referenciaLocal || "Não informada"}`,
-    `Descrição da ocorrência: ${report.descricao || "Não informada"}`,
-    `Morador: ${report.nome || "Não informado"}`,
-    `Unidade: ${report.unidade || "Não informada"}`,
-    `Bloco: ${report.bloco || "Não informado"}`
-  ].join("\n");
-
-  const whatsappUrl =
-    `https://wa.me/${WHATSAPP_NUMERO}` +
-    `?text=${encodeURIComponent(messageText)}`;
-
-  window.open(
-    whatsappUrl,
-    "_blank",
-    "noopener,noreferrer"
-  );
-}
-
-
-// =====================================================
-// DOWNLOAD DA FOTO DA OCORRÊNCIA
-// =====================================================
-
-function downloadReportPhoto(report) {
-  try {
-    const link =
-      document.createElement("a");
-
-    link.href = report.fotoData;
-
-    const protocol =
-      report.protocolo || "ocorrencia";
-
-    link.download =
-      `foto-${protocol}.jpg`;
-
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    setTimeout(() => {
-      alert(
-        "A foto foi baixada. Anexe o arquivo manualmente no e-mail."
-      );
-    }, 500);
-  } catch (error) {
-    console.error(
-      "Não foi possível baixar a foto:",
-      error
-    );
-  }
-}
-
-
-// =====================================================
-// ABRIR MODAL DE EDIÇÃO
-// =====================================================
-
-function openEditModal(reportId) {
-  const report = allReports.find(
-    (item) => item.id === reportId
-  );
-
-  if (!report) {
-    return;
-  }
-
-  const fields = {
-    id: $("editReportId"),
-    title: $("editTitle"),
-    category: $("editCategory"),
-    priority: $("editPriority"),
-    location: $("editLocation"),
-    reference: $("editReference"),
-    description: $("editDescription"),
-    status: $("editStatus"),
-    risk: $("editRisk")
-  };
-
-  if (
-    !fields.id ||
-    !fields.title ||
-    !fields.category ||
-    !fields.priority ||
-    !fields.location ||
-    !fields.reference ||
-    !fields.description ||
-    !fields.status
-  ) {
-    alert(
-      "Os campos de edição não foram encontrados."
-    );
-    return;
-  }
-
-  addDocumentationToEditCategory();
-
-  fields.id.value = report.id;
-  fields.title.value = report.titulo || "";
-  fields.category.value =
-    report.categoria || "";
-  fields.priority.value =
-    report.prioridade || "Normal";
-  fields.location.value =
-    report.local || "";
-  fields.reference.value =
-    report.referenciaLocal || "";
-  fields.description.value =
-    report.descricao || "";
-  fields.status.value =
-    report.status || "Aberto";
-
-  if (fields.risk) {
-    fields.risk.checked =
-      Boolean(report.ofereceRisco);
-  }
-
-  updateEditLocationFields();
-
-  message("editMessage", "");
-  show("editModal");
-}
-
-function addDocumentationToEditCategory() {
-  const category =
-    $("editCategory");
-
-  if (!category) {
-    return;
-  }
-
-  const exists =
-    Array.from(category.options)
-      .some(
-        (option) =>
-          option.value === "Documentação"
-      );
-
-  if (!exists) {
-    const option =
-      document.createElement("option");
-
-    option.value = "Documentação";
-    option.textContent = "Documentação";
-
-    category.appendChild(option);
   }
 }
 
@@ -1026,31 +506,431 @@ function updateEditLocationFields() {
   }
 }
 
+function removeUpdatesField() {
+  const updates =
+    $("reportUpdates");
+
+  if (!updates) {
+    return;
+  }
+
+  const label =
+    updates.closest("label");
+
+  if (label) {
+    label.remove();
+  } else {
+    updates.remove();
+  }
+}
+
+
 // =====================================================
-// SALVAR EDIÇÃO
+// DATAS E LINHA DO TEMPO
 // =====================================================
+
+function openingDate(report) {
+  return report.dataAbertura ||
+    report.inicioEm ||
+    report.criadoEm;
+}
+
+function resolvedDate(report) {
+  return report.dataResolvido ||
+    report.fimEm;
+}
+
+function calculateDays( startValue, endValue = null ) {
+  const start =
+    toDate(startValue);
+
+  if (!start) {
+    return "Não informado";
+  }
+
+  const end =
+    toDate(endValue) ||
+    new Date();
+
+  const difference =
+    end.getTime() -
+    start.getTime();
+
+  const days = Math.floor(
+    difference /
+      (1000 * 60 * 60 * 24)
+  );
+
+  if (days <= 0) {
+    return "menos de 1 dia";
+  }
+
+  return `${days} dia${days === 1 ? "" : "s"}`;
+}
+
+
+// =====================================================
+// FILTRO E LISTAGEM
+// =====================================================
+
+function getFilteredReports() {
+  const selectedStatus =
+    $("statusFilter")?.value || "Todos";
+
+  if (selectedStatus === "Todos") {
+    return allReports;
+  }
+
+  return allReports.filter(
+    (report) =>
+      (report.status || "Aberto") ===
+      selectedStatus
+  );
+}
+
+function renderReports() {
+  const list =
+    $("reportsList");
+
+  if (!list) {
+    return;
+  }
+
+  const filteredReports =
+    getFilteredReports();
+
+  const totalPages = Math.max(
+    1,
+    Math.ceil(
+      filteredReports.length /
+      pageSize
+    )
+  );
+
+  if (currentPage > totalPages) {
+    currentPage = totalPages;
+  }
+
+  const start =
+    (currentPage - 1) * pageSize;
+
+  const visibleReports =
+    filteredReports.slice(
+      start,
+      start + pageSize
+    );
+
+  if (visibleReports.length === 0) {
+    list.innerHTML = ` <div class="empty-state"> Nenhum registro encontrado. </div> `;
+  } else {
+    list.innerHTML =
+      visibleReports.map((report) => {
+        const status =
+          report.status || "Aberto";
+
+        return ` <article class="report-item compact-report"> <div> <div class="report-title"> ${escapeHtml( report.titulo || "Sem título" )} </div> <div class="report-meta"> Protocolo: ${escapeHtml( report.protocolo || "Não informado" )} </div> <div class="report-meta"> Início: ${formatDate( openingDate(report) )} </div> ${ resolvedDate(report) ? ` <div class="report-meta"> Fim: ${formatDate( resolvedDate(report) )} </div> ` : "" } <span class="badge ${statusClass(status)}"> ${escapeHtml(status)} </span> </div> <div class="report-actions"> <button class="action-icon-button detail-button" data-id="${report.id}" type="button" title="Detalhar" aria-label="Detalhar ocorrência" > 🔍 </button> <button class="action-icon-button timeline-button" data-id="${report.id}" type="button" title="Linha do tempo" aria-label="Linha do tempo" > 🕒 </button> <button class="action-icon-button edit-button" data-id="${report.id}" type="button" title="Editar" aria-label="Editar ocorrência" > ✏️ </button> <button class="action-icon-button whatsapp-button" data-id="${report.id}" type="button" title="Enviar pelo WhatsApp" aria-label="Enviar pelo WhatsApp" > 💬 </button> <button class="action-icon-button email-button" data-id="${report.id}" type="button" title="Enviar por e-mail" aria-label="Enviar por e-mail" > ✉️ </button> <button class="action-icon-button delete-button" data-id="${report.id}" type="button" title="Excluir" aria-label="Excluir ocorrência" > 🗑️ </button> </div> </article> `;
+      }).join("");
+  }
+
+  renderPagination(
+    filteredReports.length,
+    totalPages
+  );
+
+  setText(
+    "statTotal",
+    allReports.length
+  );
+
+  setText(
+    "statOpen",
+    allReports.filter(
+      (report) =>
+        (report.status || "Aberto") !==
+        "Resolvido"
+    ).length
+  );
+
+  setText(
+    "statResolved",
+    allReports.filter(
+      (report) =>
+        report.status === "Resolvido"
+    ).length
+  );
+}
+
+function renderPagination( totalItems, totalPages ) {
+  const pagination =
+    $("pagination");
+
+  if (!pagination) {
+    return;
+  }
+
+  if (totalItems === 0) {
+    pagination.innerHTML = "";
+    return;
+  }
+
+  pagination.innerHTML = ` <button id="prevPage" class="secondary-button" type="button" ${currentPage <= 1 ? "disabled" : ""} > Anterior </button> <span> Página ${currentPage} de ${totalPages} </span> <button id="nextPage" class="secondary-button" type="button" ${currentPage >= totalPages ? "disabled" : ""} > Próxima </button> `;
+}
+
+
+// =====================================================
+// DETALHAMENTO
+// =====================================================
+
+function openDetails(reportId) {
+  const report =
+    allReports.find(
+      (item) => item.id === reportId
+    );
+
+  if (!report) {
+    return;
+  }
+
+  const content =
+    $("detailContent");
+
+  if (!content) {
+    return;
+  }
+
+  const status =
+    report.status || "Aberto";
+
+  content.innerHTML = ` <span class="eyebrow"> DETALHAMENTO DA OCORRÊNCIA </span> <h2> ${escapeHtml( report.titulo || "Sem título" )} </h2> <p> <b>Protocolo:</b> ${escapeHtml( report.protocolo || "Não informado" )} </p> <p> <b>Status:</b> <span class="badge ${statusClass(status)}"> ${escapeHtml(status)} </span> </p> <p> <b>Categoria:</b> ${escapeHtml( report.categoria || "Não informada" )} </p> <p> <b>Prioridade:</b> ${escapeHtml( report.prioridade || "Não informada" )} </p> <p> <b>Local:</b> ${escapeHtml( report.local || "Não informado" )} </p> <p> <b>Referência:</b> ${escapeHtml( report.referenciaLocal || "Não informada" )} </p> <p> <b>Data de abertura:</b> ${formatDate( openingDate(report) )} </p> <p> <b>Data em análise:</b> ${formatDate( report.dataAnalise )} </p> <p> <b>Data em execução:</b> ${formatDate( report.dataExecucao )} </p> <p> <b>Data de resolução:</b> ${formatDate( resolvedDate(report) )} </p> <p> <b>Descrição:</b><br> ${escapeHtml( report.descricao || "Sem descrição" )} </p> ${ report.fotoData ? ` <div class="report-photo-container"> <img class="detail-photo" src="${report.fotoData}" alt="Foto da ocorrência" /> </div> ` : "" } `;
+
+  show("detailModal");
+}
+
+
+// =====================================================
+// LINHA DO TEMPO
+// =====================================================
+
+function openTimeline(reportId) {
+  const report =
+    allReports.find(
+      (item) => item.id === reportId
+    );
+
+  if (!report) {
+    return;
+  }
+
+  const modal =
+    getOrCreateTimelineModal();
+
+  const content =
+    modal.querySelector(
+      "#timelineContent"
+    );
+
+  if (!content) {
+    return;
+  }
+
+  const abertura =
+    openingDate(report);
+
+  const analise =
+    report.dataAnalise;
+
+  const execucao =
+    report.dataExecucao;
+
+  const resolvido =
+    resolvedDate(report);
+
+  content.innerHTML = ` <span class="eyebrow"> LINHA DO TEMPO </span> <h2> ${escapeHtml( report.titulo || "Ocorrência" )} </h2> <p> <b>Protocolo:</b> ${escapeHtml( report.protocolo || "Não informado" )} </p> <div class="timeline"> <div class="timeline-item completed"> <div class="timeline-dot">1</div> <div class="timeline-content"> <strong>Abertura</strong> <span> ${formatDate(abertura)} </span> <small> ${ analise ? `Aberta por ${calculateDays( abertura, analise )}` : `Aberta há ${calculateDays( abertura )}` } </small> </div> </div> <div class="timeline-item ${analise ? "completed" : "pending"}"> <div class="timeline-dot">2</div> <div class="timeline-content"> <strong>Em análise</strong> <span> ${formatDate(analise)} </span> <small> ${ analise ? execucao ? `Em análise por ${calculateDays( analise, execucao )}` : resolvido ? `Em análise por ${calculateDays( analise, resolvido )}` : `Em análise há ${calculateDays( analise )}` : "Ainda não entrou em análise" } </small> </div> </div> <div class="timeline-item ${execucao ? "completed" : "pending"}"> <div class="timeline-dot">3</div> <div class="timeline-content"> <strong>Em execução</strong> <span> ${formatDate(execucao)} </span> <small> ${ execucao ? resolvido ? `Em execução por ${calculateDays( execucao, resolvido )}` : `Em execução há ${calculateDays( execucao )}` : "Ainda não entrou em execução" } </small> </div> </div> <div class="timeline-item ${resolvido ? "completed" : "pending"}"> <div class="timeline-dot">4</div> <div class="timeline-content"> <strong>Resolvido</strong> <span> ${formatDate(resolvido)} </span> <small> ${ resolvido ? "Ocorrência finalizada" : "Ainda não resolvido" } </small> </div> </div> </div> `;
+
+  show("timelineModal");
+}
+
+function getOrCreateTimelineModal() {
+  let modal =
+    $("timelineModal");
+
+  if (modal) {
+    return modal;
+  }
+
+  modal =
+    document.createElement("div");
+
+  modal.id = "timelineModal";
+  modal.className = "modal hidden";
+
+  modal.innerHTML = ` <div class="modal-card"> <button id="btnCloseTimeline" class="modal-close" type="button" aria-label="Fechar linha do tempo" > × </button> <div id="timelineContent"></div> </div> `;
+
+  document.body.appendChild(modal);
+
+  modal.addEventListener(
+    "click",
+    (event) => {
+      if (
+        event.target.id ===
+        "timelineModal"
+      ) {
+        hide("timelineModal");
+      }
+    }
+  );
+
+  modal.querySelector(
+    "#btnCloseTimeline"
+  )?.addEventListener(
+    "click",
+    () => hide("timelineModal")
+  );
+
+  return modal;
+}
+
+
+// =====================================================
+// E-MAIL
+// =====================================================
+
+function sendReportByEmail(reportId) {
+  const report =
+    allReports.find(
+      (item) => item.id === reportId
+    );
+
+  if (!report) {
+    return;
+  }
+
+  const subject =
+    report.titulo ||
+    "Ocorrência do condomínio";
+
+  const body = [
+    "Prezados,",
+    "",
+    "Venho, por meio deste, comunicar uma ocorrência no condomínio.",
+    "",
+    `Data e horário: ${formatDate( openingDate(report) )}`,
+    `Local: ${report.local || "Não informado"}`,
+    `Descrição da ocorrência: ${ report.descricao || "Não informada" }`,
+    "",
+    "Solicito, por gentileza, que a administração verifique a situação e tome as providências cabíveis, conforme as normas do condomínio. Caso necessário, coloco-me à disposição para fornecer informações adicionais.",
+    "",
+    "Agradeço a atenção.",
+    "",
+    "Atenciosamente,",
+    "",
+    report.nome || "Nome não informado",
+    `Bloco ${report.bloco || "Não informado"} / Apartamento ${report.unidade || "Não informado"}`
+  ].join("\r\n");
+
+  const mailto =
+    `mailto:${EMAIL_DESTINO}` +
+    `?subject=${encodeURIComponent(subject)}` +
+    `&body=${encodeURIComponent(body)}`;
+
+  window.location.href = mailto;
+}
+
+
+// =====================================================
+// WHATSAPP
+// =====================================================
+
+function sendReportByWhatsApp(reportId) {
+  const report =
+    allReports.find(
+      (item) => item.id === reportId
+    );
+
+  if (!report) {
+    return;
+  }
+
+  const messageText = [
+    `Título: ${report.titulo || "Não informado"}`,
+    `Local: ${report.local || "Não informado"}`,
+    `Referência: ${report.referenciaLocal || "Não informada"}`,
+    `Descrição da ocorrência: ${ report.descricao || "Não informada" }`,
+    `Morador: ${report.nome || "Não informado"}`,
+    `Unidade: ${report.unidade || "Não informada"}`,
+    `Bloco: ${report.bloco || "Não informado"}`
+  ].join("\n");
+
+  const whatsappUrl =
+    `https://wa.me/${WHATSAPP_NUMERO}` +
+    `?text=${encodeURIComponent(messageText)}`;
+
+  window.open(
+    whatsappUrl,
+    "_blank",
+    "noopener,noreferrer"
+  );
+}
+
+
+// =====================================================
+// EDIÇÃO
+// =====================================================
+
+function openEditModal(reportId) {
+  const report =
+    allReports.find(
+      (item) => item.id === reportId
+    );
+
+  if (!report) {
+    return;
+  }
+
+  addEditCategoryOptions();
+
+  $("editReportId").value =
+    report.id;
+
+  $("editTitle").value =
+    report.titulo || "";
+
+  $("editCategory").value =
+    report.categoria || "";
+
+  $("editPriority").value =
+    report.prioridade || "Normal";
+
+  $("editLocation").value =
+    report.local || "";
+
+  $("editReference").value =
+    report.referenciaLocal || "";
+
+  $("editDescription").value =
+    report.descricao || "";
+
+  $("editStatus").value =
+    report.status || "Aberto";
+
+  updateEditLocationFields();
+
+  message("editMessage", "");
+  show("editModal");
+}
 
 $("editForm")?.addEventListener(
   "submit",
   async (event) => {
     event.preventDefault();
 
-    const user = auth.currentUser;
-
-    if (!user) {
-      message(
-        "editMessage",
-        "Você precisa estar autenticado."
-      );
-      return;
-    }
-
     const reportId =
       $("editReportId")?.value;
 
-    const report = allReports.find(
-      (item) => item.id === reportId
-    );
+    const report =
+      allReports.find(
+        (item) => item.id === reportId
+      );
 
     if (!report) {
       message(
@@ -1060,27 +940,59 @@ $("editForm")?.addEventListener(
       return;
     }
 
-    if (
-      !isAdmin(user) &&
-      report.moradorId !== user.uid
-    ) {
-      message(
-        "editMessage",
-        "Você só pode editar suas próprias ocorrências."
-      );
-      return;
-    }
-
     const category =
       $("editCategory")?.value;
 
-    const isDocumentation =
+    const documentation =
       category === "Documentação";
+
+    const noLocationRequired =
+      documentation ||
+      category === "Jardinagem";
+
+    const title =
+      $("editTitle")?.value.trim();
 
     const description =
       $("editDescription")?.value.trim();
 
-    if (!description || description.length < 10) {
+    const location =
+      noLocationRequired
+        ? ""
+        : $("editLocation")?.value || "";
+
+    const reference =
+      documentation
+        ? ""
+        : $("editReference")?.value.trim() || "";
+
+    const status =
+      $("editStatus")?.value ||
+      "Aberto";
+
+    if (!title || title.length < 3) {
+      message(
+        "editMessage",
+        "Informe um título válido."
+      );
+      return;
+    }
+
+    if (
+      !noLocationRequired &&
+      !location
+    ) {
+      message(
+        "editMessage",
+        "Informe o local da ocorrência."
+      );
+      return;
+    }
+
+    if (
+      !description ||
+      description.length < 10
+    ) {
       message(
         "editMessage",
         "A descrição deve ter pelo menos 10 caracteres."
@@ -1088,78 +1000,58 @@ $("editForm")?.addEventListener(
       return;
     }
 
-    const status =
-      $("editStatus")?.value ||
-      report.status ||
-      "Aberto";
-
-    const updateData = {
-      titulo:
-        $("editTitle")?.value.trim() ||
-        report.titulo ||
-        "",
-
-      categoria: category,
-
-      prioridade:
-        $("editPriority")?.value ||
-        "Normal",
-
-      local: isDocumentation
-        ? ""
-        : $("editLocation")?.value || "",
-
-      referenciaLocal: isDocumentation
-        ? ""
-        : $("editReference")?.value.trim() || "",
-
-      descricao: description,
-      status,
-
-      ofereceRisco:
-        $("editRisk")?.checked ??
-        report.ofereceRisco ??
-        false,
-
-      dataAnalise:
-        status === "Em análise"
-          ? report.dataAnalise ||
-            serverTimestamp()
-          : report.dataAnalise || null,
-
-      dataExecucao:
-        status === "Em execução"
-          ? report.dataExecucao ||
-            serverTimestamp()
-          : report.dataExecucao || null,
-
-      dataResolvido:
-        status === "Resolvido"
-          ? report.dataResolvido ||
-            serverTimestamp()
-          : report.dataResolvido || null,
-
-      fimEm:
-        status === "Resolvido"
-          ? report.fimEm ||
-            serverTimestamp()
-          : report.fimEm || null,
-
-      atualizadoEm:
-        serverTimestamp()
-    };
-
-    const saveButton =
+    const button =
       $("btnSaveEdit");
 
-    if (saveButton) {
-      saveButton.disabled = true;
+    if (button) {
+      button.disabled = true;
     }
 
     try {
       await updateDoc(
         doc(db, "reports", reportId),
-        updateData
+        {
+          titulo: title,
+          categoria: category,
+          prioridade:
+            $("editPriority")?.value ||
+            "Normal",
+          local: location,
+          referenciaLocal: reference,
+          descricao: description,
+          status,
+
+          dataAnalise:
+            status === "Em análise"
+              ? report.dataAnalise ||
+                serverTimestamp()
+              : report.dataAnalise ||
+                null,
+
+          dataExecucao:
+            status === "Em execução"
+              ? report.dataExecucao ||
+                serverTimestamp()
+              : report.dataExecucao ||
+                null,
+
+          dataResolvido:
+            status === "Resolvido"
+              ? report.dataResolvido ||
+                serverTimestamp()
+              : report.dataResolvido ||
+                null,
+
+          fimEm:
+            status === "Resolvido"
+              ? report.fimEm ||
+                serverTimestamp()
+              : report.fimEm ||
+                null,
+
+          atualizadoEm:
+            serverTimestamp()
+        }
       );
 
       hide("editModal");
@@ -1173,8 +1065,8 @@ $("editForm")?.addEventListener(
         friendlyError(error)
       );
     } finally {
-      if (saveButton) {
-        saveButton.disabled = false;
+      if (button) {
+        button.disabled = false;
       }
     }
   }
@@ -1182,11 +1074,12 @@ $("editForm")?.addEventListener(
 
 
 // =====================================================
-// EXCLUIR OCORRÊNCIA
+// EXCLUSÃO
 // =====================================================
 
 async function deleteReport(reportId) {
-  const user = auth.currentUser;
+  const user =
+    auth.currentUser;
 
   if (!user) {
     alert(
@@ -1195,9 +1088,10 @@ async function deleteReport(reportId) {
     return;
   }
 
-  const report = allReports.find(
-    (item) => item.id === reportId
-  );
+  const report =
+    allReports.find(
+      (item) => item.id === reportId
+    );
 
   if (!report) {
     alert(
@@ -1233,11 +1127,6 @@ async function deleteReport(reportId) {
       "Ocorrência excluída com sucesso."
     );
   } catch (error) {
-    console.error(
-      "Erro ao excluir ocorrência:",
-      error
-    );
-
     alert(
       friendlyError(error)
     );
@@ -1246,7 +1135,7 @@ async function deleteReport(reportId) {
 
 
 // =====================================================
-// CONTROLES DO FORMULÁRIO
+// EVENTOS
 // =====================================================
 
 $("reportCategory")?.addEventListener(
@@ -1259,10 +1148,19 @@ $("editCategory")?.addEventListener(
   updateEditLocationFields
 );
 
+$("statusFilter")?.addEventListener(
+  "change",
+  () => {
+    currentPage = 1;
+    renderReports();
+  }
+);
+
 $("btnShowRegister")?.addEventListener(
   "click",
   () => {
     hide("loginView");
+    hide("forgotPasswordView");
     show("registerView");
   }
 );
@@ -1271,6 +1169,7 @@ $("btnBackLogin")?.addEventListener(
   "click",
   () => {
     hide("registerView");
+    hide("forgotPasswordView");
     show("loginView");
   }
 );
@@ -1293,14 +1192,6 @@ $("btnCancelReport")?.addEventListener(
   }
 );
 
-$("statusFilter")?.addEventListener(
-  "change",
-  () => {
-    currentPage = 1;
-    renderReports();
-  }
-);
-
 $("btnCloseDetail")?.addEventListener(
   "click",
   () => hide("detailModal")
@@ -1309,7 +1200,10 @@ $("btnCloseDetail")?.addEventListener(
 $("detailModal")?.addEventListener(
   "click",
   (event) => {
-    if (event.target.id === "detailModal") {
+    if (
+      event.target.id ===
+      "detailModal"
+    ) {
       hide("detailModal");
     }
   }
@@ -1323,7 +1217,10 @@ $("btnCloseEdit")?.addEventListener(
 $("editModal")?.addEventListener(
   "click",
   (event) => {
-    if (event.target.id === "editModal") {
+    if (
+      event.target.id ===
+      "editModal"
+    ) {
       hide("editModal");
     }
   }
@@ -1336,7 +1233,7 @@ $("btnLogout")?.addEventListener(
 
 
 // =====================================================
-// EVENTOS DA LISTA
+// PAGINAÇÃO E AÇÕES DOS REGISTROS
 // =====================================================
 
 document.addEventListener(
@@ -1379,17 +1276,16 @@ document.addEventListener(
     }
 
     const whatsappButton =
-  event.target.closest(
-    ".whatsapp-button"
-  );
+      event.target.closest(
+        ".whatsapp-button"
+      );
 
-if (whatsappButton) {
-  sendReportByWhatsApp(
-    whatsappButton.dataset.id
-  );
-
-  return;
-}
+    if (whatsappButton) {
+      sendReportByWhatsApp(
+        whatsappButton.dataset.id
+      );
+      return;
+    }
 
     const emailButton =
       event.target.closest(
@@ -1425,13 +1321,14 @@ if (whatsappButton) {
     }
 
     if (event.target.id === "nextPage") {
-      const totalPages = Math.max(
-        1,
-        Math.ceil(
-          getFilteredReports().length /
-          pageSize
-        )
-      );
+      const totalPages =
+        Math.max(
+          1,
+          Math.ceil(
+            getFilteredReports().length /
+            pageSize
+          )
+        );
 
       if (currentPage < totalPages) {
         currentPage++;
@@ -1443,83 +1340,72 @@ if (whatsappButton) {
 
 
 // =====================================================
-// LOGIN
+// ESQUECI MINHA SENHA
 // =====================================================
 
-$("loginForm")?.addEventListener(
-  "submit",
-  async (event) => {
-    event.preventDefault();
-
-    message(
-      "loginMessage",
-      "Entrando..."
-    );
+$("btnForgotPassword")?.addEventListener(
+  "click",
+  () => {
+    hide("loginView");
+    hide("registerView");
+    show("forgotPasswordView");
 
     const email =
       $("loginEmail")?.value.trim();
 
-    const password =
-      $("loginPassword")?.value;
+    if (
+      email &&
+      $("forgotPasswordEmail")
+    ) {
+      $("forgotPasswordEmail").value =
+        email;
+    }
+  }
+);
 
-    if (!email || !password) {
+$("btnBackToLogin")?.addEventListener(
+  "click",
+  () => {
+    hide("forgotPasswordView");
+    show("loginView");
+  }
+);
+
+$("forgotPasswordForm")?.addEventListener(
+  "submit",
+  async (event) => {
+    event.preventDefault();
+
+    const email =
+      $("forgotPasswordEmail")?.value.trim();
+
+    if (!email) {
       message(
-        "loginMessage",
-        "Informe o e-mail e a senha."
+        "forgotPasswordMessage",
+        "Informe seu e-mail."
       );
       return;
     }
 
+    message(
+      "forgotPasswordMessage",
+      "Enviando link de redefinição..."
+    );
+
     try {
-      await signInWithEmailAndPassword(
+      await sendPasswordResetEmail(
         auth,
-        email,
-        password
+        email
       );
 
-      const loggedUser = auth.currentUser;
-
-if (
-  loggedUser &&
-  loggedUser.email?.toLowerCase() ===
-    "rodrigokamunga@gmail.com"
-) {
-  window.location.href = "./admin-home.html";
-  return;
-}
-
-      const user = auth.currentUser;
-
-      if (
-        user &&
-        !isAdmin(user)
-      ) {
-        const userSnapshot =
-          await getDoc(
-            doc(db, "users", user.uid)
-          );
-
-        const userData =
-          userSnapshot.exists()
-            ? userSnapshot.data()
-            : {};
-
-        const status =
-          userData.status || "Pendente";
-
-        if (status !== "Aprovado") {
-          await signOut(auth);
-
-          throw new Error(
-            status === "Pendente"
-              ? "Seu cadastro ainda aguarda aprovação do administrador."
-              : "Seu cadastro não está autorizado a acessar o sistema."
-          );
-        }
-      }
+      message(
+        "forgotPasswordMessage",
+        "Se o e-mail estiver cadastrado, o link de redefinição foi enviado.",
+        true
+      );
     } catch (error) {
       message(
-        "loginMessage",
+        "forgotPasswordMessage",
         friendlyError(error)
       );
     }
@@ -1528,18 +1414,13 @@ if (
 
 
 // =====================================================
-// CADASTRO DO MORADOR
+// CADASTRO
 // =====================================================
 
 $("registerForm")?.addEventListener(
   "submit",
   async (event) => {
     event.preventDefault();
-
-    message(
-      "registerMessage",
-      "Criando cadastro..."
-    );
 
     const name =
       $("registerName")?.value.trim();
@@ -1557,20 +1438,57 @@ $("registerForm")?.addEventListener(
       $("registerEmail")?.value.trim();
 
     const password =
-      $("registerPassword")?.value;
+      $("registerPassword")?.value || "";
+
+    const passwordConfirm =
+      $("registerPasswordConfirm")
+        ?.value || "";
+
+    const acceptedTerms =
+      $("acceptTerms")?.checked || false;
 
     if (
       !name ||
       !unit ||
       !email ||
-      !password
+      !password ||
+      !passwordConfirm
     ) {
       message(
         "registerMessage",
-        "Preencha nome, unidade, e-mail e senha."
+        "Preencha todos os campos obrigatórios."
       );
       return;
     }
+
+    if (!isStrongPassword(password)) {
+      message(
+        "registerMessage",
+        "A senha deve ter pelo menos 8 caracteres, uma letra maiúscula, uma letra minúscula, um número e um caractere especial."
+      );
+      return;
+    }
+
+    if (password !== passwordConfirm) {
+      message(
+        "registerMessage",
+        "As senhas não são iguais."
+      );
+      return;
+    }
+
+    if (!acceptedTerms) {
+      message(
+        "registerMessage",
+        "Aceite os termos de uso e a política de privacidade."
+      );
+      return;
+    }
+
+    message(
+      "registerMessage",
+      "Criando cadastro..."
+    );
 
     try {
       const credential =
@@ -1603,10 +1521,17 @@ $("registerForm")?.addEventListener(
 
           status: "Pendente",
 
-          criadoEm: serverTimestamp(),
+          termosAceitos: true,
+          termosAceitosEm:
+            serverTimestamp(),
+
+          criadoEm:
+            serverTimestamp(),
+
           aprovadoEm: null,
           rejeitadoEm: null,
-          atualizadoEm: serverTimestamp()
+          atualizadoEm:
+            serverTimestamp()
         }
       );
 
@@ -1631,228 +1556,87 @@ $("registerForm")?.addEventListener(
 
 
 // =====================================================
-// ENVIO DE OCORRÊNCIA
+// LOGIN E APROVAÇÃO
 // =====================================================
 
-// =====================================================
-// ENVIO DE OCORRÊNCIA
-// =====================================================
-
-$("reportForm")?.addEventListener(
+$("loginForm")?.addEventListener(
   "submit",
   async (event) => {
     event.preventDefault();
 
-    const user = auth.currentUser;
+    const email =
+      $("loginEmail")?.value.trim();
 
-    if (!user) {
+    const password =
+      $("loginPassword")?.value;
+
+    if (!email || !password) {
       message(
-        "reportMessage",
-        "Faça login antes de enviar."
+        "loginMessage",
+        "Informe o e-mail e a senha."
       );
       return;
     }
 
-    const submitButton =
-      $("btnSubmitReport");
-
-    if (submitButton) {
-      submitButton.disabled = true;
-    }
-
     message(
-      "reportMessage",
-      "Enviando ocorrência..."
+      "loginMessage",
+      "Entrando..."
     );
 
     try {
-      const title =
-        $("reportTitle")?.value.trim() || "";
+      await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
 
-      const category =
-        $("reportCategory")?.value || "";
-
-      const priority =
-        $("reportPriority")?.value || "Normal";
-
-      const description =
-        $("reportDescription")?.value.trim() || "";
-
-      const file =
-        $("reportPhoto")?.files?.[0] || null;
-
-      const risk =
-        $("reportRisk")?.checked || false;
-
-      const noLocationRequired =
-        category === "Documentação" ||
-        category === "Jardinagem";
-
-      const location =
-        noLocationRequired
-          ? ""
-          : $("reportLocation")?.value || "";
-
-      const reference =
-        category === "Documentação"
-          ? ""
-          : $("reportReference")?.value.trim() || "";
+      const user =
+        auth.currentUser;
 
       if (
-        !title ||
-        !category ||
-        !priority ||
-        !description
+        user &&
+        !isAdmin(user)
       ) {
-        throw new Error(
-          "Preencha todos os campos obrigatórios."
-        );
-      }
+        const snapshot =
+          await getDoc(
+            doc(db, "users", user.uid)
+          );
 
-      if (
-        !noLocationRequired &&
-        !location
-      ) {
-        throw new Error(
-          "Selecione o local da ocorrência."
-        );
-      }
+        const data =
+          snapshot.exists()
+            ? snapshot.data()
+            : {};
 
-      if (description.length < 10) {
-        throw new Error(
-          "A descrição deve ter pelo menos 10 caracteres."
-        );
-      }
+        const status =
+          data.status || "Pendente";
 
-      let fotoData = "";
+        if (status !== "Aprovado") {
+          await signOut(auth);
 
-      if (file) {
-        if (file.size > 10 * 1024 * 1024) {
           throw new Error(
-            "A imagem original deve ter no máximo 10 MB."
+            status === "Pendente"
+              ? "Seu cadastro ainda aguarda aprovação do administrador."
+              : "Seu cadastro não está autorizado a acessar o sistema."
           );
         }
-
-        if (!file.type.startsWith("image/")) {
-          throw new Error(
-            "Selecione um arquivo de imagem válido."
-          );
-        }
-
-        message(
-          "reportMessage",
-          "Reduzindo o tamanho da foto..."
-        );
-
-        fotoData =
-          await compressImage(file);
       }
 
-      const userSnapshot =
-        await getDoc(
-          doc(db, "users", user.uid)
-        );
-
-      const profile =
-        userSnapshot.exists()
-          ? userSnapshot.data()
-          : {};
-
-      const now = new Date();
-
-      const protocol =
-        `COND-${now .toISOString() .slice(0, 10) .replaceAll("-", "")}-${String( Date.now() ).slice(-5)}`;
-
-      await addDoc(
-        collection(db, "reports"),
-        {
-          protocolo: protocol,
-
-          moradorId: user.uid,
-
-          nome:
-            profile.nome ||
-            user.displayName ||
-            "",
-
-          email:
-            user.email || "",
-
-          unidade:
-            profile.unidade || "",
-
-          bloco:
-            profile.bloco || "",
-
-          titulo: title,
-          categoria: category,
-          prioridade: priority,
-          local: location,
-          referenciaLocal: reference,
-          descricao: description,
-
-          ofereceRisco: risk,
-
-          status: "Aberto",
-
-          dataAbertura:
-            serverTimestamp(),
-
-          dataAnalise: null,
-
-          dataExecucao: null,
-
-          dataResolvido: null,
-
-          inicioEm:
-            serverTimestamp(),
-
-          fimEm: null,
-
-          fotoData: fotoData,
-
-          criadoEm:
-            serverTimestamp(),
-
-          atualizadoEm:
-            serverTimestamp()
-        }
-      );
-
-      const form =
-        $("reportForm");
-
-      if (form) {
-        form.reset();
+      if (user && isAdmin(user)) {
+        window.location.href =
+          "./admin-home.html";
       }
-
-      updateLocationFields();
-
-      hide("reportFormCard");
-
-      message(
-        "reportMessage",
-        ""
-      );
-
-      toast(
-        `Registro enviado com sucesso. Protocolo: ${protocol}`
-      );
     } catch (error) {
       message(
-        "reportMessage",
+        "loginMessage",
         friendlyError(error)
       );
-    } finally {
-      if (submitButton) {
-        submitButton.disabled = false;
-      }
     }
   }
 );
 
+
 // =====================================================
-// AUTENTICAÇÃO E CARREGAMENTO DOS REGISTROS
+// AUTENTICAÇÃO E CARREGAMENTO
 // =====================================================
 
 onAuthStateChanged(
@@ -1861,6 +1645,7 @@ onAuthStateChanged(
     if (!user) {
       hide("appView");
       hide("registerView");
+      hide("forgotPasswordView");
       show("loginView");
 
       $("btnLogout")?.classList.add(
@@ -1877,6 +1662,7 @@ onAuthStateChanged(
 
     hide("loginView");
     hide("registerView");
+    hide("forgotPasswordView");
     show("appView");
 
     $("btnLogout")?.classList.remove(
@@ -1908,13 +1694,11 @@ onAuthStateChanged(
       let reportsQuery;
 
       if (isAdmin(user)) {
-        // O administrador vê todos os registros no index.html
         reportsQuery = query(
           collection(db, "reports"),
           orderBy("criadoEm", "desc")
         );
       } else {
-        // O morador vê somente os próprios registros
         reportsQuery = query(
           collection(db, "reports"),
           where(
@@ -1941,10 +1725,12 @@ onAuthStateChanged(
                 }))
                 .sort((a, b) => {
                   const dateA =
-                    a.criadoEm?.toMillis?.() || 0;
+                    a.criadoEm?.toMillis?.() ||
+                    0;
 
                   const dateB =
-                    b.criadoEm?.toMillis?.() || 0;
+                    b.criadoEm?.toMillis?.() ||
+                    0;
 
                   return dateB - dateA;
                 });
@@ -1968,7 +1754,7 @@ onAuthStateChanged(
         );
     } catch (error) {
       console.error(
-        "Erro ao carregar dados do usuário:",
+        "Erro ao carregar dados:",
         error
       );
 
