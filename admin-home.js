@@ -15,7 +15,10 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
+// =====================================================
 // CONFIGURAÇÃO DO FIREBASE
+// =====================================================
+
 const firebaseConfig = {
   apiKey: "AIzaSyCmep_wIOuM3TF4yTUIaoU83oSTFydI8Ig",
   authDomain: "condominiomaui-5ecd0.firebaseapp.com",
@@ -28,12 +31,20 @@ const firebaseConfig = {
 const ADMIN_EMAIL =
   "rodrigokamunga@gmail.com";
 
+
+// =====================================================
+// INICIALIZAÇÃO
+// =====================================================
+
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
 
+// =====================================================
 // FUNÇÕES AUXILIARES
+// =====================================================
+
 const $ = (id) =>
   document.getElementById(id);
 
@@ -54,75 +65,109 @@ function hide(id) {
 }
 
 
-// LOGOUT
+// =====================================================
+// BOTÃO SAIR
+// =====================================================
+
 $("btnAdminHomeLogout")?.addEventListener(
   "click",
   async () => {
-    await signOut(auth);
-    window.location.href = "index.html";
+    const confirmed = confirm(
+      "Deseja realmente sair da área administrativa?"
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      await signOut(auth);
+
+      window.location.href =
+        "./index.html";
+    } catch (error) {
+      console.error(
+        "Erro ao sair:",
+        error
+      );
+
+      alert(
+        "Não foi possível sair do sistema."
+      );
+    }
   }
 );
 
 
+// =====================================================
 // AUTENTICAÇÃO
-onAuthStateChanged(auth, async (user) => {
-  hide("adminHomeLoading");
+// =====================================================
 
-  if (!user) {
-    show("adminHomeDenied");
-    hide("adminHomeContent");
-    return;
-  }
+onAuthStateChanged(
+  auth,
+  async (user) => {
+    hide("adminHomeLoading");
 
-  const email =
-    user.email?.toLowerCase() || "";
-
-  if (
-    email !== ADMIN_EMAIL.toLowerCase()
-  ) {
-    show("adminHomeDenied");
-    hide("adminHomeContent");
-    return;
-  }
-
-  try {
-    const userSnapshot = await getDoc(
-      doc(db, "users", user.uid)
-    );
-
-    const userData = userSnapshot.exists()
-      ? userSnapshot.data()
-      : {};
-
-    const name =
-      userData.nome ||
-      user.displayName ||
-      "Administrador";
-
-    const nameElement =
-      $("adminHomeName");
-
-    const emailElement =
-      $("adminHomeEmail");
-
-    if (nameElement) {
-      nameElement.textContent = name;
+    if (!user) {
+      show("adminHomeDenied");
+      hide("adminHomeContent");
+      return;
     }
 
-    if (emailElement) {
-      emailElement.textContent =
-        user.email;
+    const email =
+      user.email?.toLowerCase() || "";
+
+    if (
+      email !==
+      ADMIN_EMAIL.toLowerCase()
+    ) {
+      show("adminHomeDenied");
+      hide("adminHomeContent");
+      return;
     }
 
-    hide("adminHomeDenied");
-    show("adminHomeContent");
-  } catch (error) {
-    console.error(
-      "Erro ao carregar administrador:",
-      error
-    );
+    try {
+      const userSnapshot =
+        await getDoc(
+          doc(db, "users", user.uid)
+        );
 
-    show("adminHomeDenied");
-    hide("adminHomeContent");
+      const userData =
+        userSnapshot.exists()
+          ? userSnapshot.data()
+          : {};
+
+      const name =
+        userData.nome ||
+        user.displayName ||
+        "Administrador";
+
+      const nameElement =
+        $("adminHomeName");
+
+      const emailElement =
+        $("adminHomeEmail");
+
+      if (nameElement) {
+        nameElement.textContent =
+          name;
+      }
+
+      if (emailElement) {
+        emailElement.textContent =
+          user.email || "";
+      }
+
+      hide("adminHomeDenied");
+      show("adminHomeContent");
+    } catch (error) {
+      console.error(
+        "Erro ao carregar administrador:",
+        error
+      );
+
+      show("adminHomeDenied");
+      hide("adminHomeContent");
+    }
   }
-});
+);
