@@ -1880,3 +1880,31 @@ button:disabled {
     min-height: 18px !important;
   }
 }
+
+/* ===================================================== TELA DE ACESSO ===================================================== */
+
+/* Remove a barra de rolagem somente quando a tela de login estiver visível. */
+body:has(#loginView:not(.hidden)) {
+  overflow: hidden;
+  min-height: 100vh;
+}
+
+/* Reduz o espaço entre o cabeçalho e o card de acesso. */
+body:has(#loginView:not(.hidden)) .auth-card {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+/* Ajuste para celular. */
+@media (max-width: 650px) {
+  body:has(#loginView:not(.hidden)) {
+    overflow: hidden;
+  }
+
+  body:has(#loginView:not(.hidden)) .auth-card {
+    width: calc(100% - 20px);
+    margin-top: 12px;
+    margin-bottom: 12px;
+    padding: 20px 16px;
+  }
+}
