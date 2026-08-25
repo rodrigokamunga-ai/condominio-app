@@ -27,7 +27,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-// =====================================================
+/// =====================================================
 // CONFIGURAÇÃO
 // =====================================================
 
@@ -44,11 +44,13 @@ const ADMIN_EMAIL =
   "rodrigokamunga@gmail.com";
 
 const EMAIL_DESTINO =
-  "rodrigokamunga@gmail.com";
+  "atendimento@mauiunique.com.br";
+
+const EMAIL_COPIA =
+  "sindica@mauiunique.com.br;gerencia@mauiunique.com.br";
 
 const WHATSAPP_NUMERO =
-  "5521988386027";
-
+  "5521964827826";
 
 // =====================================================
 // INICIALIZAÇÃO
@@ -1131,12 +1133,12 @@ function getOrCreateTimelineModal() {
 // =====================================================
 
 function sendReportByEmail(reportId) {
-  const report =
-    allReports.find(
-      (item) => item.id === reportId
-    );
+  const report = allReports.find(
+    (item) => item.id === reportId
+  );
 
   if (!report) {
+    alert("Ocorrência não encontrada.");
     return;
   }
 
@@ -1165,7 +1167,8 @@ function sendReportByEmail(reportId) {
 
   const mailto =
     `mailto:${EMAIL_DESTINO}` +
-    `?subject=${encodeURIComponent(subject)}` +
+    `?cc=${encodeURIComponent(EMAIL_COPIA)}` +
+    `&subject=${encodeURIComponent(subject)}` +
     `&body=${encodeURIComponent(body)}`;
 
   window.location.href = mailto;
