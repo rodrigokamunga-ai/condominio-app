@@ -47,7 +47,7 @@ const EMAIL_DESTINO =
   "atendimento@mauiunique.com.br";
 
 const EMAIL_COPIA =
-  "sindica@mauiunique.com.br;gerencia@mauiunique.com.br";
+  "gerencia@mauiunique.com.br";
 
 const WHATSAPP_NUMERO =
   "5521964827826";
