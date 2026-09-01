@@ -2561,62 +2561,19 @@
     }
   }
 
-/* ===================================================== CORREÇÃO DEFINITIVA DOS LINKS DO CABEÇALHO NO CELULAR ===================================================== */
+/* Link do manual do usuário */
+
+#btnEditProfile + .link-button {
+  white-space: nowrap;
+}
 
 @media (max-width: 760px) {
-  header.topbar {
-    display: flex !important;
-    align-items: flex-start !important;
-    justify-content: space-between !important;
-    gap: 10px !important;
-
-    padding: 12px !important;
+  .top-actions {
+    width: 100%;
+    align-items: flex-end;
   }
 
-  header.topbar > .top-actions {
-    display: flex !important;
-    flex: 0 0 150px !important;
-
-    flex-direction: column !important;
-    flex-wrap: nowrap !important;
-
-    align-items: stretch !important;
-    justify-content: flex-start !important;
-
-    width: 150px !important;
-    min-width: 150px !important;
-    max-width: 150px !important;
-
-    gap: 4px !important;
-  }
-
-  header.topbar > .top-actions > .link-button {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-
-    width: 150px !important;
-    min-width: 150px !important;
-    max-width: 150px !important;
-
-    min-height: 36px !important;
-    margin: 0 !important;
-    padding: 8px 6px !important;
-
-    overflow: hidden;
+  .top-actions .link-button {
     white-space: nowrap;
-
-    text-align: center !important;
-  }
-
-  header.topbar > .top-actions > #btnLogout {
-    width: 150px !important;
-    min-width: 150px !important;
-    max-width: 150px !important;
-  }
-
-  header.topbar .brand {
-    flex: 1 1 auto !important;
-    min-width: 0 !important;
   }
 }
