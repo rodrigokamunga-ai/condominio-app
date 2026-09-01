@@ -20,6 +20,7 @@ import {
   onSnapshot,
   doc,
   getDoc,
+  getDocs,
   setDoc,
   updateDoc,
   deleteDoc,
@@ -27,7 +28,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-/// =====================================================
+// =====================================================
 // CONFIGURAÇÃO
 // =====================================================
 
@@ -52,13 +53,19 @@ const EMAIL_COPIA =
 const WHATSAPP_NUMERO =
   "5521964827826";
 
+
 // =====================================================
 // INICIALIZAÇÃO
 // =====================================================
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+const app =
+  initializeApp(firebaseConfig);
+
+const auth =
+  getAuth(app);
+
+const db =
+  getFirestore(app);
 
 
 // =====================================================
@@ -208,6 +215,13 @@ function statusClass(status) {
   return "open";
 }
 
+function reportEmailAlreadySent(report) {
+  return Boolean(
+    report?.emailEnviado === true ||
+    report?.emailEnviadoEm
+  );
+}
+
 function friendlyError(error) {
   console.error("Erro completo:", error);
 
@@ -314,7 +328,9 @@ function compressImage( file, maxWidth = 640, maxHeight = 480, quality = 0.6 ) {
 
       if (!context) {
         reject(
-          new Error("Não foi possível processar a imagem.")
+          new Error(
+            "Não foi possível processar a imagem."
+          )
         );
         return;
       }
@@ -360,6 +376,7 @@ function compressImage( file, maxWidth = 640, maxHeight = 480, quality = 0.6 ) {
   });
 }
 
+
 // =====================================================
 // NORMALIZAÇÃO DE TEXTO
 // =====================================================
@@ -377,7 +394,7 @@ function normalizeText(value = "") {
 // VERIFICAÇÃO DE OCORRÊNCIA SEMELHANTE
 // =====================================================
 
-function findSimilarOpenReport({ category, location, reference }) {
+function findSimilarOpenReport({ category, location, reference, ignoredReportId = null }) {
   const normalizedCategory =
     normalizeText(category);
 
@@ -388,6 +405,13 @@ function findSimilarOpenReport({ category, location, reference }) {
     normalizeText(reference);
 
   return allReports.find((report) => {
+    if (
+      ignoredReportId &&
+      report.id === ignoredReportId
+    ) {
+      return false;
+    }
+
     const status =
       report.status || "Aberto";
 
@@ -417,10 +441,6 @@ function findSimilarOpenReport({ category, location, reference }) {
     );
   });
 }
-
-// =====================================================
-// ALERTA DE OCORRÊNCIA SEMELHANTE
-// =====================================================
 
 function confirmSimilarReport(report) {
   const protocol =
@@ -549,6 +569,9 @@ function updateLocationFields() {
     location.disabled =
       disableLocation;
 
+    location.required =
+      !disableLocation;
+
     if (disableLocation) {
       location.value = "";
     }
@@ -585,6 +608,9 @@ function updateEditLocationFields() {
     location.disabled =
       disableLocation;
 
+    location.required =
+      !disableLocation;
+
     if (disableLocation) {
       location.value = "";
     }
@@ -618,6 +644,7 @@ function removeUpdatesField() {
   }
 }
 
+
 // =====================================================
 // ENVIO DE NOVA OCORRÊNCIA
 // =====================================================
@@ -627,7 +654,8 @@ $("reportForm")?.addEventListener(
   async (event) => {
     event.preventDefault();
 
-    const user = auth.currentUser;
+    const user =
+      auth.currentUser;
 
     if (!user) {
       message(
@@ -708,7 +736,6 @@ $("reportForm")?.addEventListener(
         );
       }
 
-      /* Verifica se existe uma ocorrência aberta com a mesma categoria, local e referência. */
       if (!noLocationRequired) {
         const similarReport =
           findSimilarOpenReport({
@@ -728,7 +755,6 @@ $("reportForm")?.addEventListener(
               "reportMessage",
               "Envio cancelado."
             );
-
             return;
           }
         }
@@ -777,7 +803,7 @@ $("reportForm")?.addEventListener(
         new Date();
 
       const protocol =
-        `COND-${now .toISOString() .slice(0, 10) .replaceAll("-", "")}-${String( Date.now() ).slice(-5)}`;
+        `COND-${now.toISOString().slice(0, 10).replaceAll("-", "")}-${String(Date.now()).slice(-5)}`;
 
       await addDoc(
         collection(db, "reports"),
@@ -824,13 +850,17 @@ $("reportForm")?.addEventListener(
 
           fimEm: null,
 
-          fotoData: fotoData,
+          fotoData,
 
           criadoEm:
             serverTimestamp(),
 
           atualizadoEm:
-            serverTimestamp()
+            serverTimestamp(),
+
+          emailEnviado: false,
+          emailEnviadoEm: null,
+          emailEnviadoPara: null
         }
       );
 
@@ -846,7 +876,7 @@ $("reportForm")?.addEventListener(
       );
 
       toast(
-        `Ocorrência enviada com sucesso. Protocolo: ${protocol}`
+        `Ocorrência incluída com sucesso. Protocolo: ${protocol}. Agora envie um e-mail para a administração usando a opção de e-mail.`
       );
     } catch (error) {
       message(
@@ -940,7 +970,7 @@ function renderReports() {
     1,
     Math.ceil(
       filteredReports.length /
-      pageSize
+        pageSize
     )
   );
 
@@ -961,12 +991,35 @@ function renderReports() {
     list.innerHTML = ` <div class="empty-state"> Nenhum registro encontrado. </div> `;
   } else {
     list.innerHTML =
-      visibleReports.map((report) => {
-        const status =
-          report.status || "Aberto";
+      visibleReports
+        .map((report) => {
+          const status =
+            report.status || "Aberto";
 
-        return ` <article class="report-item compact-report"> <div> <div class="report-title"> ${escapeHtml( report.titulo || "Sem título" )} </div> <div class="report-meta"> Protocolo: ${escapeHtml( report.protocolo || "Não informado" )} </div> <div class="report-meta"> Início: ${formatDate( openingDate(report) )} </div> ${ resolvedDate(report) ? ` <div class="report-meta"> Fim: ${formatDate( resolvedDate(report) )} </div> ` : "" } <span class="badge ${statusClass(status)}"> ${escapeHtml(status)} </span> </div> <div class="report-actions"> <button class="action-icon-button detail-button" data-id="${report.id}" type="button" title="Detalhar" aria-label="Detalhar ocorrência" > 🔍 </button> <button class="action-icon-button timeline-button" data-id="${report.id}" type="button" title="Linha do tempo" aria-label="Linha do tempo" > 🕒 </button> <button class="action-icon-button edit-button" data-id="${report.id}" type="button" title="Editar" aria-label="Editar ocorrência" > ✏️ </button> <button class="action-icon-button whatsapp-button" data-id="${report.id}" type="button" title="Enviar pelo WhatsApp" aria-label="Enviar pelo WhatsApp" > 💬 </button> <button class="action-icon-button email-button" data-id="${report.id}" type="button" title="Enviar por e-mail" aria-label="Enviar por e-mail" > ✉️ </button> <button class="action-icon-button delete-button" data-id="${report.id}" type="button" title="Excluir" aria-label="Excluir ocorrência" > 🗑️ </button> </div> </article> `;
-      }).join("");
+          const emailAlreadySent =
+            reportEmailAlreadySent(report);
+
+          const disabledAfterEmail =
+            emailAlreadySent
+              ? "disabled"
+              : "";
+
+          const emailSentMessage =
+            emailAlreadySent
+              ? ` <div class="email-sent-message"> E-mail já enviado para a administração. </div> `
+              : "";
+
+          return ` <article class="report-item compact-report"> <div> <div class="report-title"> ${escapeHtml( report.titulo || "Sem título" )} </div> <div class="report-meta"> Protocolo: ${escapeHtml( report.protocolo || "Não informado" )} </div> <div class="report-meta"> Início: ${formatDate( openingDate(report) )} </div> ${ resolvedDate(report) ? ` <div class="report-meta"> Fim: ${formatDate( resolvedDate(report) )} </div> ` : "" } <span class="badge ${statusClass(status)}"> ${escapeHtml(status)} </span> </div> <div class="report-actions"> <button class="action-icon-button detail-button" data-id="${report.id}" type="button" title="Detalhar" aria-label="Detalhar ocorrência" > 🔍 </button> <button class="action-icon-button timeline-button" data-id="${report.id}" type="button" title="Linha do tempo" aria-label="Linha do tempo" > 🕒 </button> <button
+  class="action-icon-button edit-button"
+  data-id="${report.id}"
+  type="button"
+  title="Editar ocorrência"
+  aria-label="Editar ocorrência"
+>
+  ✏️
+</button> <button class="action-icon-button whatsapp-button" data-id="${report.id}" type="button" title="Enviar pelo WhatsApp" aria-label="Enviar pelo WhatsApp" > 💬 </button> <button class="action-icon-button email-button" data-id="${report.id}" type="button" title="${ emailAlreadySent ? "E-mail já enviado" : "Enviar por e-mail" }" aria-label="Enviar por e-mail" ${disabledAfterEmail} > ✉️ </button> <button class="action-icon-button delete-button" data-id="${report.id}" type="button" title="${ emailAlreadySent ? "Exclusão bloqueada após envio do e-mail" : "Excluir ocorrência" }" aria-label="Excluir ocorrência" ${disabledAfterEmail} > 🗑️ </button> </div> ${emailSentMessage} </article> `;
+        })
+        .join("");
   }
 
   renderPagination(
@@ -1038,7 +1091,7 @@ function openDetails(reportId) {
   const status =
     report.status || "Aberto";
 
-  content.innerHTML = ` <span class="eyebrow"> DETALHAMENTO DA OCORRÊNCIA </span> <h2> ${escapeHtml( report.titulo || "Sem título" )} </h2> <p> <b>Protocolo:</b> ${escapeHtml( report.protocolo || "Não informado" )} </p> <p> <b>Status:</b> <span class="badge ${statusClass(status)}"> ${escapeHtml(status)} </span> </p> <p> <b>Categoria:</b> ${escapeHtml( report.categoria || "Não informada" )} </p> <p> <b>Prioridade:</b> ${escapeHtml( report.prioridade || "Não informada" )} </p> <p> <b>Local:</b> ${escapeHtml( report.local || "Não informado" )} </p> <p> <b>Referência:</b> ${escapeHtml( report.referenciaLocal || "Não informada" )} </p> <p> <b>Data de abertura:</b> ${formatDate( openingDate(report) )} </p> <p> <b>Data em análise:</b> ${formatDate( report.dataAnalise )} </p> <p> <b>Data em execução:</b> ${formatDate( report.dataExecucao )} </p> <p> <b>Data de resolução:</b> ${formatDate( resolvedDate(report) )} </p> <p> <b>Descrição:</b><br> ${escapeHtml( report.descricao || "Sem descrição" )} </p> ${ report.fotoData ? ` <div class="report-photo-container"> <img class="detail-photo" src="${report.fotoData}" alt="Foto da ocorrência" /> </div> ` : "" } `;
+  content.innerHTML = ` <span class="eyebrow"> DETALHAMENTO DA OCORRÊNCIA </span> <h2> ${escapeHtml( report.titulo || "Sem título" )} </h2> <p> <b>Protocolo:</b> ${escapeHtml( report.protocolo || "Não informado" )} </p> <p> <b>Status:</b> <span class="badge ${statusClass(status)}"> ${escapeHtml(status)} </span> </p> <p> <b>Categoria:</b> ${escapeHtml( report.categoria || "Não informada" )} </p> <p> <b>Prioridade:</b> ${escapeHtml( report.prioridade || "Não informada" )} </p> <p> <b>Local:</b> ${escapeHtml( report.local || "Não informado" )} </p> <p> <b>Referência:</b> ${escapeHtml( report.referenciaLocal || "Não informada" )} </p> <p> <b>Data de abertura:</b> ${formatDate( openingDate(report) )} </p> <p> <b>Data em análise:</b> ${formatDate( report.dataAnalise )} </p> <p> <b>Data em execução:</b> ${formatDate( report.dataExecucao )} </p> <p> <b>Data de resolução:</b> ${formatDate( resolvedDate(report) )} </p> <p> <b>Descrição:</b><br> ${escapeHtml( report.descricao || "Sem descrição" )} </p> ${ report.emailEnviado ? ` <p class="email-sent-message"> E-mail já enviado para a administração. </p> ` : "" } ${ report.fotoData ? ` <div class="report-photo-container"> <img class="detail-photo" src="${report.fotoData}" alt="Foto da ocorrência" /> </div> ` : "" } `;
 
   show("detailModal");
 }
@@ -1082,7 +1135,7 @@ function openTimeline(reportId) {
   const resolvido =
     resolvedDate(report);
 
-  content.innerHTML = ` <span class="eyebrow"> LINHA DO TEMPO </span> <h2> ${escapeHtml( report.titulo || "Ocorrência" )} </h2> <p> <b>Protocolo:</b> ${escapeHtml( report.protocolo || "Não informado" )} </p> <div class="timeline"> <div class="timeline-item completed"> <div class="timeline-dot">1</div> <div class="timeline-content"> <strong>Abertura</strong> <span> ${formatDate(abertura)} </span> <small> ${ analise ? `Aberta por ${calculateDays( abertura, analise )}` : `Aberta há ${calculateDays( abertura )}` } </small> </div> </div> <div class="timeline-item ${analise ? "completed" : "pending"}"> <div class="timeline-dot">2</div> <div class="timeline-content"> <strong>Em análise</strong> <span> ${formatDate(analise)} </span> <small> ${ analise ? execucao ? `Em análise por ${calculateDays( analise, execucao )}` : resolvido ? `Em análise por ${calculateDays( analise, resolvido )}` : `Em análise há ${calculateDays( analise )}` : "Ainda não entrou em análise" } </small> </div> </div> <div class="timeline-item ${execucao ? "completed" : "pending"}"> <div class="timeline-dot">3</div> <div class="timeline-content"> <strong>Em execução</strong> <span> ${formatDate(execucao)} </span> <small> ${ execucao ? resolvido ? `Em execução por ${calculateDays( execucao, resolvido )}` : `Em execução há ${calculateDays( execucao )}` : "Ainda não entrou em execução" } </small> </div> </div> <div class="timeline-item ${resolvido ? "completed" : "pending"}"> <div class="timeline-dot">4</div> <div class="timeline-content"> <strong>Resolvido</strong> <span> ${formatDate(resolvido)} </span> <small> ${ resolvido ? "Ocorrência finalizada" : "Ainda não resolvido" } </small> </div> </div> </div> `;
+  content.innerHTML = ` <span class="eyebrow"> LINHA DO TEMPO </span> <h2> ${escapeHtml( report.titulo || "Ocorrência" )} </h2> <p> <b>Protocolo:</b> ${escapeHtml( report.protocolo || "Não informado" )} </p> <div class="timeline"> <div class="timeline-item completed"> <div class="timeline-dot">1</div> <div class="timeline-content"> <strong>Abertura</strong> <span> ${formatDate(abertura)} </span> <small> ${ analise ? `Aberta por ${calculateDays( abertura, analise )}` : `Aberta há ${calculateDays( abertura )}` } </small> </div> </div> <div class="timeline-item ${ analise ? "completed" : "pending" }"> <div class="timeline-dot">2</div> <div class="timeline-content"> <strong>Em análise</strong> <span> ${formatDate(analise)} </span> <small> ${ analise ? execucao ? `Em análise por ${calculateDays( analise, execucao )}` : resolvido ? `Em análise por ${calculateDays( analise, resolvido )}` : `Em análise há ${calculateDays( analise )}` : "Ainda não entrou em análise" } </small> </div> </div> <div class="timeline-item ${ execucao ? "completed" : "pending" }"> <div class="timeline-dot">3</div> <div class="timeline-content"> <strong>Em execução</strong> <span> ${formatDate(execucao)} </span> <small> ${ execucao ? resolvido ? `Em execução por ${calculateDays( execucao, resolvido )}` : `Em execução há ${calculateDays( execucao )}` : "Ainda não entrou em execução" } </small> </div> </div> <div class="timeline-item ${ resolvido ? "completed" : "pending" }"> <div class="timeline-dot">4</div> <div class="timeline-content"> <strong>Resolvido</strong> <span> ${formatDate(resolvido)} </span> <small> ${ resolvido ? "Ocorrência finalizada" : "Ainda não resolvido" } </small> </div> </div> </div> `;
 
   show("timelineModal");
 }
@@ -1117,12 +1170,12 @@ function getOrCreateTimelineModal() {
     }
   );
 
-  modal.querySelector(
-    "#btnCloseTimeline"
-  )?.addEventListener(
-    "click",
-    () => hide("timelineModal")
-  );
+  modal
+    .querySelector("#btnCloseTimeline")
+    ?.addEventListener(
+      "click",
+      () => hide("timelineModal")
+    );
 
   return modal;
 }
@@ -1132,13 +1185,21 @@ function getOrCreateTimelineModal() {
 // E-MAIL
 // =====================================================
 
-function sendReportByEmail(reportId) {
-  const report = allReports.find(
-    (item) => item.id === reportId
-  );
+async function sendReportByEmail(reportId) {
+  const report =
+    allReports.find(
+      (item) => item.id === reportId
+    );
 
   if (!report) {
     alert("Ocorrência não encontrada.");
+    return;
+  }
+
+  if (reportEmailAlreadySent(report)) {
+    alert(
+      "O e-mail desta ocorrência já foi enviado para a administração."
+    );
     return;
   }
 
@@ -1149,20 +1210,25 @@ function sendReportByEmail(reportId) {
   const body = [
     "Prezados,",
     "",
-    "Venho, por meio deste, comunicar uma ocorrência no condomínio.",
+    "É necessário que esta ocorrência seja analisada pela administração.",
     "",
-    `Data e horário: ${formatDate( openingDate(report) )}`,
+    `Protocolo: ${report.protocolo || "Não informado"}`,
+    `Data e horário: ${formatDate(openingDate(report))}`,
+    `Categoria: ${report.categoria || "Não informada"}`,
+    `Prioridade: ${report.prioridade || "Não informada"}`,
     `Local: ${report.local || "Não informado"}`,
-    `Descrição da ocorrência: ${ report.descricao || "Não informada" }`,
+    `Referência: ${report.referenciaLocal || "Não informada"}`,
+    `Descrição da ocorrência: ${report.descricao || "Não informada"}`,
     "",
-    "Solicito, por gentileza, que a administração verifique a situação e tome as providências cabíveis, conforme as normas do condomínio. Caso necessário, coloco-me à disposição para fornecer informações adicionais.",
+    "Solicito, por gentileza, que a administração verifique a situação e tome as providências cabíveis.",
     "",
     "Agradeço a atenção.",
     "",
     "Atenciosamente,",
     "",
     report.nome || "Nome não informado",
-    `Bloco ${report.bloco || "Não informado"} / Apartamento ${report.unidade || "Não informado"}`
+    `Bloco ${report.bloco || "Não informado"} / Apartamento ${report.unidade || "Não informado"}`,
+    
   ].join("\r\n");
 
   const mailto =
@@ -1172,6 +1238,45 @@ function sendReportByEmail(reportId) {
     `&body=${encodeURIComponent(body)}`;
 
   window.location.href = mailto;
+
+  setTimeout(async () => {
+    const confirmed =
+      confirm(
+        "O aplicativo de e-mail foi aberto. Você enviou o e-mail para a administração?"
+      );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      await updateDoc(
+        doc(db, "reports", reportId),
+        {
+          emailEnviado: true,
+          emailEnviadoEm:
+            serverTimestamp(),
+          emailEnviadoPara:
+            EMAIL_DESTINO,
+          atualizadoEm:
+            serverTimestamp()
+        }
+      );
+
+      toast(
+        "E-mail registrado como enviado. As opções de editar, enviar por e-mail e excluir foram desabilitadas."
+      );
+    } catch (error) {
+      console.error(
+        "Erro ao registrar envio do e-mail:",
+        error
+      );
+
+      alert(
+        "O e-mail foi aberto, mas não foi possível registrar o envio no sistema."
+      );
+    }
+  }, 800);
 }
 
 
@@ -1191,9 +1296,11 @@ function sendReportByWhatsApp(reportId) {
 
   const messageText = [
     `Título: ${report.titulo || "Não informado"}`,
+    `Protocolo: ${report.protocolo || "Não informado"}`,
+    `Categoria: ${report.categoria || "Não informada"}`,
     `Local: ${report.local || "Não informado"}`,
     `Referência: ${report.referenciaLocal || "Não informada"}`,
-    `Descrição da ocorrência: ${ report.descricao || "Não informada" }`,
+    `Descrição da ocorrência: ${report.descricao || "Não informada"}`,
     `Morador: ${report.nome || "Não informado"}`,
     `Unidade: ${report.unidade || "Não informada"}`,
     `Bloco: ${report.bloco || "Não informado"}`
@@ -1225,6 +1332,8 @@ function openEditModal(reportId) {
     return;
   }
 
+  
+
   addEditCategoryOptions();
 
   $("editReportId").value =
@@ -1253,7 +1362,11 @@ function openEditModal(reportId) {
 
   updateEditLocationFields();
 
-  message("editMessage", "");
+  message(
+    "editMessage",
+    ""
+  );
+
   show("editModal");
 }
 
@@ -1278,8 +1391,13 @@ $("editForm")?.addEventListener(
       return;
     }
 
+    
+
+    const button =
+      $("btnSaveEdit");
+
     const category =
-      $("editCategory")?.value;
+      $("editCategory")?.value || "";
 
     const documentation =
       category === "Documentação";
@@ -1289,10 +1407,10 @@ $("editForm")?.addEventListener(
       category === "Jardinagem";
 
     const title =
-      $("editTitle")?.value.trim();
+      $("editTitle")?.value.trim() || "";
 
     const description =
-      $("editDescription")?.value.trim();
+      $("editDescription")?.value.trim() || "";
 
     const location =
       noLocationRequired
@@ -1303,35 +1421,6 @@ $("editForm")?.addEventListener(
       documentation
         ? ""
         : $("editReference")?.value.trim() || "";
-
-        // Verifica ocorrência semelhante somente quando
-// a categoria não for Documentação ou Jardinagem
-if (!noLocationRequired) {
-  const similarReport =
-    findSimilarOpenReport({
-      category,
-      location,
-      reference
-    });
-
-  if (similarReport) {
-    const continueSending =
-      confirmSimilarReport(similarReport);
-
-    if (!continueSending) {
-      message(
-        "reportMessage",
-        "Envio cancelado. Verifique a ocorrência semelhante."
-      );
-
-      if (submitButton) {
-        submitButton.disabled = false;
-      }
-
-      return;
-    }
-  }
-}
 
     const status =
       $("editStatus")?.value ||
@@ -1367,8 +1456,30 @@ if (!noLocationRequired) {
       return;
     }
 
-    const button =
-      $("btnSaveEdit");
+    if (!noLocationRequired) {
+      const similarReport =
+        findSimilarOpenReport({
+          category,
+          location,
+          reference,
+          ignoredReportId: reportId
+        });
+
+      if (similarReport) {
+        const continueSending =
+          confirmSimilarReport(
+            similarReport
+          );
+
+        if (!continueSending) {
+          message(
+            "editMessage",
+            "Edição cancelada."
+          );
+          return;
+        }
+      }
+    }
 
     if (button) {
       button.disabled = true;
@@ -1467,6 +1578,13 @@ async function deleteReport(reportId) {
     return;
   }
 
+  if (reportEmailAlreadySent(report)) {
+    alert(
+      "Esta ocorrência não pode mais ser excluída porque o e-mail já foi enviado para a administração."
+    );
+    return;
+  }
+
   if (
     !isAdmin(user) &&
     report.moradorId !== user.uid
@@ -1477,9 +1595,10 @@ async function deleteReport(reportId) {
     return;
   }
 
-  const confirmed = confirm(
-    "Deseja realmente excluir esta ocorrência?"
-  );
+  const confirmed =
+    confirm(
+      "Deseja realmente excluir esta ocorrência?"
+    );
 
   if (!confirmed) {
     return;
@@ -1555,7 +1674,10 @@ $("btnCancelReport")?.addEventListener(
     hide("reportFormCard");
     $("reportForm")?.reset();
     updateLocationFields();
-    message("reportMessage", "");
+    message(
+      "reportMessage",
+      ""
+    );
   }
 );
 
@@ -1596,9 +1718,10 @@ $("editModal")?.addEventListener(
 $("btnLogout")?.addEventListener(
   "click",
   async () => {
-    const confirmed = confirm(
-      "Deseja realmente sair do sistema?"
-    );
+    const confirmed =
+      confirm(
+        "Deseja realmente sair do sistema?"
+      );
 
     if (!confirmed) {
       return;
@@ -1664,6 +1787,10 @@ document.addEventListener(
       );
 
     if (editButton) {
+      if (editButton.disabled) {
+        return;
+      }
+
       openEditModal(
         editButton.dataset.id
       );
@@ -1688,6 +1815,10 @@ document.addEventListener(
       );
 
     if (emailButton) {
+      if (emailButton.disabled) {
+        return;
+      }
+
       sendReportByEmail(
         emailButton.dataset.id
       );
@@ -1700,13 +1831,20 @@ document.addEventListener(
       );
 
     if (deleteButton) {
+      if (deleteButton.disabled) {
+        return;
+      }
+
       deleteReport(
         deleteButton.dataset.id
       );
       return;
     }
 
-    if (event.target.id === "prevPage") {
+    if (
+      event.target.id ===
+      "prevPage"
+    ) {
       if (currentPage > 1) {
         currentPage--;
         renderReports();
@@ -1715,13 +1853,16 @@ document.addEventListener(
       return;
     }
 
-    if (event.target.id === "nextPage") {
+    if (
+      event.target.id ===
+      "nextPage"
+    ) {
       const totalPages =
         Math.max(
           1,
           Math.ceil(
             getFilteredReports().length /
-            pageSize
+              pageSize
           )
         );
 
@@ -1840,7 +1981,8 @@ $("registerForm")?.addEventListener(
         ?.value || "";
 
     const acceptedTerms =
-      $("acceptTerms")?.checked || false;
+      $("acceptTerms")?.checked ||
+      false;
 
     if (
       !name ||
@@ -1864,7 +2006,10 @@ $("registerForm")?.addEventListener(
       return;
     }
 
-    if (password !== passwordConfirm) {
+    if (
+      password !==
+      passwordConfirm
+    ) {
       message(
         "registerMessage",
         "As senhas não são iguais."
@@ -1925,6 +2070,7 @@ $("registerForm")?.addEventListener(
 
           aprovadoEm: null,
           rejeitadoEm: null,
+
           atualizadoEm:
             serverTimestamp()
         }
@@ -2016,7 +2162,10 @@ $("loginForm")?.addEventListener(
         }
       }
 
-      if (user && isAdmin(user)) {
+      if (
+        user &&
+        isAdmin(user)
+      ) {
         window.location.href =
           "./admin-home.html";
       }
@@ -2052,6 +2201,7 @@ onAuthStateChanged(
         unsubscribeReports = null;
       }
 
+      allReports = [];
       return;
     }
 
