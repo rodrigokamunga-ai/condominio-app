@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#117f75" />
+
+  <title>Meu perfil - Amigos do Maui</title>
+
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+
+<body>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-icon">🏢</span>
+
+      <div>
+        <strong>Amigos do Maui</strong>
+        <small>Meu perfil</small>
+      </div>
+    </div>
+
+    <div class="top-actions">
+      <a href="./index.html" class="link-button" >
+        Voltar para ocorrências
+      </a>
+
+      <button id="btnLogout" class="link-button" type="button" >
+        Sair
+      </button>
+    </div>
+  </header>
+
+
+  <main class="container profile-container">
+    <section class="card profile-card">
+
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">
+            DADOS DO USUÁRIO
+          </span>
+
+          <h1>Meu perfil</h1>
+
+          <p class="muted">
+            Atualize seus dados cadastrais.
+          </p>
+        </div>
+      </div>
+
+      <form id="profileForm" class="form" >
+        <label>
+          Nome completo *
+
+          <input id="profileName" type="text" required minlength="3" maxlength="100" autocomplete="name" placeholder="Digite seu nome completo" />
+        </label>
+
+
+        <label>
+          Unidade / apartamento *
+
+          <input id="profileUnit" type="text" required maxlength="30" placeholder="Ex.: 200" />
+        </label>
+
+
+        <label>
+          Bloco
+
+          <input id="profileBlock" type="text" maxlength="30" placeholder="Ex.: 1" />
+        </label>
+
+
+        <label>
+          Telefone
+
+          <input id="profilePhone" type="tel" maxlength="30" autocomplete="tel" placeholder="(00) 00000-0000" />
+        </label>
+
+
+        <label>
+          E-mail cadastrado
+
+          <input id="profileEmail" type="email" readonly disabled />
+
+          <small class="helper">
+            Para alterar o e-mail, será necessário realizar
+            uma validação adicional de segurança.
+          </small>
+        </label>
+
+
+        <div class="profile-actions">
+          <a href="./index.html" class="secondary-button button-link" >
+            Cancelar
+          </a>
+
+          <button id="btnSaveProfile" class="primary-button" type="submit" >
+            Salvar alterações
+          </button>
+        </div>
+
+        <p id="profileMessage" class="message" ></p>
+      </form>
+
+    </section>
+  </main>
+
+
+  <div id="toast" class="toast" ></div>
+
+
+  <script type="module" src="./perfil.js" ></script>
+</body>
+</html>
