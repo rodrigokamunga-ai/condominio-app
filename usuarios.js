@@ -110,6 +110,27 @@ function formatDate(value) {
   return "Não informada";
 }
 
+function normalizeWhatsAppPhone(phone) {
+  if (!phone) {
+    return "";
+  }
+
+  // Remove tudo que não for número
+  let normalizedPhone =
+    String(phone).replace(/\D/g, "");
+
+  // Adiciona o código do Brasil caso não exista
+  if (
+    normalizedPhone &&
+    !normalizedPhone.startsWith("55")
+  ) {
+    normalizedPhone =
+      `55${normalizedPhone}`;
+  }
+
+  return normalizedPhone;
+}
+
 function userStatusClass(status) {
   if (status === "Aprovado") {
     return "approved";
@@ -760,12 +781,25 @@ async function sendWhatsAppUser(userId) {
   }
 
   const telefone =
-    String(user.telefone)
-      .replace(/\D/g, "");
+    normalizeWhatsAppPhone(
+      user.telefone
+    );
 
   if (!telefone) {
     alert(
       "O telefone cadastrado é inválido."
+    );
+    return;
+  }
+
+  /* * Depois de adicionar o código 55, * um celular brasileiro deverá ter: * * 55 + DDD + número * * Exemplo: * 5521988386027 */
+
+  if (
+    telefone.length !== 12 &&
+    telefone.length !== 13
+  ) {
+    alert(
+      "O telefone deve conter DDD e número válido."
     );
     return;
   }
@@ -818,7 +852,7 @@ async function sendWhatsAppUser(userId) {
     );
 
     toast(
-      "Morador marcado como informado."
+      "WhatsApp aberto e morador marcado como informado."
     );
   } catch (error) {
     console.error(
@@ -831,7 +865,6 @@ async function sendWhatsAppUser(userId) {
     );
   }
 }
-
 
 // =====================================================
 // EXCLUSÃO
