@@ -346,12 +346,20 @@ function renderUsers() {
           const isPending =
             status === "Pendente";
 
+          const whatsappEnviado =
+            user.whatsappEnviado === true;
+
           const whatsappButton =
             status === "Aprovado"
-              ? ` <button class="user-icon-button whatsapp-user-button" data-user-id="${user.id}" type="button" title="Enviar WhatsApp" aria-label="Enviar WhatsApp" > <span>💬</span> </button> `
+              ? ` <button class="user-icon-button whatsapp-user-button" data-user-id="${user.id}" type="button" title="${ whatsappEnviado ? "Morador já informado" : "Enviar WhatsApp" }" aria-label="${ whatsappEnviado ? "Morador já informado" : "Enviar WhatsApp" }" ${whatsappEnviado ? "disabled" : ""} > <span>💬</span> </button> `
               : "";
 
-          return ` <article class="user-item"> <div class="user-card-header"> <div class="user-name"> ${escapeHtml( user.nome || "Nome não informado" )} </div> </div> <div class="user-main"> <div class="user-meta"> E-mail: ${escapeHtml( user.email || "Não informado" )} </div> <div class="user-meta"> Unidade: ${escapeHtml( user.unidade || "Não informada" )} </div> ${ user.bloco ? ` <div class="user-meta"> Bloco: ${escapeHtml(user.bloco)} </div> ` : "" } ${ user.telefone ? ` <div class="user-meta"> Telefone: ${escapeHtml(user.telefone)} </div> ` : "" } <div class="user-meta"> Cadastro: ${formatDate(user.criadoEm)} </div> ${ user.aprovadoEm ? ` <div class="user-meta"> Aprovação: ${formatDate(user.aprovadoEm)} </div> ` : "" } ${ user.rejeitadoEm ? ` <div class="user-meta"> Rejeição: ${formatDate(user.rejeitadoEm)} </div> ` : "" } </div> <div class="user-card-status"> <span class="user-status ${userStatusClass(status)}" > ${escapeHtml(status)} </span> </div> <div class="user-actions"> <button class="user-icon-button detail-user-button" data-user-id="${user.id}" type="button" title="Visualizar usuário" aria-label="Visualizar usuário" > <span>🔍</span> </button> <button class="user-icon-button edit-user-button" data-user-id="${user.id}" type="button" title="Editar usuário" aria-label="Editar usuário" > <span>✏️</span> </button> ${whatsappButton} ${ isPending ? ` <button class="user-icon-button approve-button" data-user-id="${user.id}" type="button" title="Aprovar usuário" aria-label="Aprovar usuário" > <span>✓</span> </button> <button class="user-icon-button reject-button" data-user-id="${user.id}" type="button" title="Rejeitar usuário" aria-label="Rejeitar usuário" > <span>✕</span> </button> ` : "" } <button class="user-icon-button delete-user-button" data-user-id="${user.id}" type="button" title="Excluir usuário" aria-label="Excluir usuário" > <span>🗑️</span> </button> </div> </article> `;
+          const informedMessage =
+            whatsappEnviado
+              ? ` <div class="whatsapp-informed-message"> Morador já informado sobre a situação. </div> `
+              : "";
+
+          return ` <article class="user-item"> <div class="user-card-header"> <div class="user-name"> ${escapeHtml( user.nome || "Nome não informado" )} </div> </div> <div class="user-main"> <div class="user-meta"> E-mail: ${escapeHtml( user.email || "Não informado" )} </div> <div class="user-meta"> Unidade: ${escapeHtml( user.unidade || "Não informada" )} </div> ${ user.bloco ? ` <div class="user-meta"> Bloco: ${escapeHtml(user.bloco)} </div> ` : "" } ${ user.telefone ? ` <div class="user-meta"> Telefone: ${escapeHtml(user.telefone)} </div> ` : "" } <div class="user-meta"> Cadastro: ${formatDate(user.criadoEm)} </div> ${ user.aprovadoEm ? ` <div class="user-meta"> Aprovação: ${formatDate(user.aprovadoEm)} </div> ` : "" } ${ user.rejeitadoEm ? ` <div class="user-meta"> Rejeição: ${formatDate(user.rejeitadoEm)} </div> ` : "" } </div> <div class="user-card-status"> <span class="user-status ${userStatusClass(status)}" > ${escapeHtml(status)} </span> </div> <div class="user-actions"> <button class="user-icon-button detail-user-button" data-user-id="${user.id}" type="button" title="Visualizar usuário" aria-label="Visualizar usuário" > <span>🔍</span> </button> <button class="user-icon-button edit-user-button" data-user-id="${user.id}" type="button" title="Editar usuário" aria-label="Editar usuário" > <span>✏️</span> </button> ${whatsappButton} ${ isPending ? ` <button class="user-icon-button approve-button" data-user-id="${user.id}" type="button" title="Aprovar usuário" aria-label="Aprovar usuário" > <span>✓</span> </button> <button class="user-icon-button reject-button" data-user-id="${user.id}" type="button" title="Rejeitar usuário" aria-label="Rejeitar usuário" > <span>✕</span> </button> ` : "" } <button class="user-icon-button delete-user-button" data-user-id="${user.id}" type="button" title="Excluir usuário" aria-label="Excluir usuário" > <span>🗑️</span> </button> </div> ${informedMessage} </article> `;
         })
         .join("");
   }
@@ -405,7 +413,7 @@ function openUserDetails(userId) {
     return;
   }
 
-  content.innerHTML = ` <span class="eyebrow"> DETALHAMENTO DO MORADOR </span> <h2> ${escapeHtml( user.nome || "Nome não informado" )} </h2> <div class="admin-detail-grid"> <div class="admin-detail-field"> <strong>E-mail</strong> <span> ${escapeHtml( user.email || "Não informado" )} </span> </div> <div class="admin-detail-field"> <strong>Telefone</strong> <span> ${escapeHtml( user.telefone || "Não informado" )} </span> </div> <div class="admin-detail-field"> <strong>Unidade</strong> <span> ${escapeHtml( user.unidade || "Não informada" )} </span> </div> <div class="admin-detail-field"> <strong>Bloco</strong> <span> ${escapeHtml( user.bloco || "Não informado" )} </span> </div> <div class="admin-detail-field"> <strong>Situação</strong> <span> <span class="user-status ${userStatusClass(status)}" > ${escapeHtml(status)} </span> </span> </div> <div class="admin-detail-field"> <strong>Data do cadastro</strong> <span> ${formatDate(user.criadoEm)} </span> </div> ${ user.aprovadoEm ? ` <div class="admin-detail-field"> <strong>Data da aprovação</strong> <span> ${formatDate(user.aprovadoEm)} </span> </div> ` : "" } ${ user.rejeitadoEm ? ` <div class="admin-detail-field"> <strong>Data da rejeição</strong> <span> ${formatDate(user.rejeitadoEm)} </span> </div> ` : "" } </div> `;
+  content.innerHTML = ` <span class="eyebrow"> DETALHAMENTO DO MORADOR </span> <h2> ${escapeHtml( user.nome || "Nome não informado" )} </h2> <div class="admin-detail-grid"> <div class="admin-detail-field"> <strong>E-mail</strong> <span> ${escapeHtml( user.email || "Não informado" )} </span> </div> <div class="admin-detail-field"> <strong>Telefone</strong> <span> ${escapeHtml( user.telefone || "Não informado" )} </span> </div> <div class="admin-detail-field"> <strong>Unidade</strong> <span> ${escapeHtml( user.unidade || "Não informada" )} </span> </div> <div class="admin-detail-field"> <strong>Bloco</strong> <span> ${escapeHtml( user.bloco || "Não informado" )} </span> </div> <div class="admin-detail-field"> <strong>Situação</strong> <span> <span class="user-status ${userStatusClass(status)}" > ${escapeHtml(status)} </span> </span> </div> <div class="admin-detail-field"> <strong>Data do cadastro</strong> <span> ${formatDate(user.criadoEm)} </span> </div> ${ user.aprovadoEm ? ` <div class="admin-detail-field"> <strong>Data da aprovação</strong> <span> ${formatDate(user.aprovadoEm)} </span> </div> ` : "" } ${ user.rejeitadoEm ? ` <div class="admin-detail-field"> <strong>Data da rejeição</strong> <span> ${formatDate(user.rejeitadoEm)} </span> </div> ` : "" } ${ user.whatsappEnviado ? ` <div class="admin-detail-field"> <strong>WhatsApp</strong> <span> Morador já informado </span> </div> ` : "" } </div> `;
 
   show("userDetailModal");
 }
@@ -498,6 +506,11 @@ $("userEditForm")?.addEventListener(
     const status =
       $("editUserStatus")?.value;
 
+    const currentUser =
+      users.find(
+        (item) => item.id === userId
+      );
+
     if (!userId) {
       showEditMessage(
         "Usuário não identificado."
@@ -534,6 +547,12 @@ $("userEditForm")?.addEventListener(
     }
 
     try {
+      const statusAnterior =
+        currentUser?.status || "Pendente";
+
+      const statusFoiAlterado =
+        statusAnterior !== status;
+
       const data = {
         nome: name,
         unidade: unit,
@@ -561,6 +580,23 @@ $("userEditForm")?.addEventListener(
       if (status === "Pendente") {
         data.aprovadoEm = null;
         data.rejeitadoEm = null;
+      }
+
+      /* * Se o status foi alterado, permite * um novo aviso pelo WhatsApp. */
+      if (
+        statusFoiAlterado &&
+        status === "Aprovado"
+      ) {
+        data.whatsappEnviado = false;
+        data.whatsappEnviadoEm = null;
+      }
+
+      if (
+        statusFoiAlterado &&
+        status !== "Aprovado"
+      ) {
+        data.whatsappEnviado = false;
+        data.whatsappEnviadoEm = null;
       }
 
       await updateDoc(
@@ -613,11 +649,19 @@ async function approveUser(userId) {
       doc(db, "users", userId),
       {
         status: "Aprovado",
+
         aprovadoEm:
           serverTimestamp(),
+
         rejeitadoEm: null,
+
         atualizadoEm:
-          serverTimestamp()
+          serverTimestamp(),
+
+        /* * Libera o botão WhatsApp * para o novo status aprovado. */
+        whatsappEnviado: false,
+
+        whatsappEnviadoEm: null
       }
     );
 
@@ -654,11 +698,18 @@ async function rejectUser(userId) {
       doc(db, "users", userId),
       {
         status: "Rejeitado",
+
         rejeitadoEm:
           serverTimestamp(),
+
         aprovadoEm: null,
+
         atualizadoEm:
-          serverTimestamp()
+          serverTimestamp(),
+
+        whatsappEnviado: false,
+
+        whatsappEnviadoEm: null
       }
     );
 
@@ -677,7 +728,7 @@ async function rejectUser(userId) {
 // WHATSAPP
 // =====================================================
 
-function sendWhatsAppUser(userId) {
+async function sendWhatsAppUser(userId) {
   const user =
     users.find(
       (item) => item.id === userId
@@ -690,6 +741,13 @@ function sendWhatsAppUser(userId) {
   if (user.status !== "Aprovado") {
     alert(
       "O WhatsApp só pode ser enviado para moradores aprovados."
+    );
+    return;
+  }
+
+  if (user.whatsappEnviado === true) {
+    alert(
+      "Este morador já foi informado sobre a situação."
     );
     return;
   }
@@ -731,11 +789,47 @@ function sendWhatsAppUser(userId) {
     `https://wa.me/${telefone}` +
     `?text=${encodeURIComponent(mensagem)}`;
 
-  window.open(
-    whatsappUrl,
-    "_blank",
-    "noopener,noreferrer"
-  );
+  const whatsappWindow =
+    window.open(
+      whatsappUrl,
+      "_blank",
+      "noopener,noreferrer"
+    );
+
+  if (!whatsappWindow) {
+    alert(
+      "O navegador bloqueou a abertura do WhatsApp. Autorize pop-ups para este site."
+    );
+    return;
+  }
+
+  try {
+    await updateDoc(
+      doc(db, "users", userId),
+      {
+        whatsappEnviado: true,
+
+        whatsappEnviadoEm:
+          serverTimestamp(),
+
+        atualizadoEm:
+          serverTimestamp()
+      }
+    );
+
+    toast(
+      "Morador marcado como informado."
+    );
+  } catch (error) {
+    console.error(
+      "Erro ao registrar o WhatsApp:",
+      error
+    );
+
+    alert(
+      "O WhatsApp foi aberto, mas não foi possível registrar o envio."
+    );
+  }
 }
 
 
@@ -814,9 +908,16 @@ document.addEventListener(
       );
 
     if (whatsappButton) {
+      if (
+        whatsappButton.disabled
+      ) {
+        return;
+      }
+
       sendWhatsAppUser(
         whatsappButton.dataset.userId
       );
+
       return;
     }
 
