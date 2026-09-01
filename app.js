@@ -1295,16 +1295,20 @@ function sendReportByWhatsApp(reportId) {
   }
 
   const messageText = [
-    `Título: ${report.titulo || "Não informado"}`,
-    `Protocolo: ${report.protocolo || "Não informado"}`,
-    `Categoria: ${report.categoria || "Não informada"}`,
-    `Local: ${report.local || "Não informado"}`,
-    `Referência: ${report.referenciaLocal || "Não informada"}`,
-    `Descrição da ocorrência: ${report.descricao || "Não informada"}`,
-    `Morador: ${report.nome || "Não informado"}`,
-    `Unidade: ${report.unidade || "Não informada"}`,
-    `Bloco: ${report.bloco || "Não informado"}`
-  ].join("\n");
+  report.titulo || "Ocorrência sem título",
+
+  `Local: ${ report.local || "Não informado" }`,
+
+  `Referência: ${ report.referenciaLocal || "Não informada" }`,
+
+  `Descrição da ocorrência: ${ report.descricao || "Não informada" }`,
+
+  `Morador: ${ report.nome || "Não informado" }`,
+
+  `Unidade: ${ report.unidade || "Não informada" }`,
+
+  `Bloco: ${ report.bloco || "Não informado" }`
+].join("\n");
 
   const whatsappUrl =
     `https://wa.me/${WHATSAPP_NUMERO}` +
