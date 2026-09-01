@@ -980,3 +980,14 @@
     margin-top: 7px !important;
   }
 }
+
+/* WHATSAPP */
+
+.user-icon-button.whatsapp-user-button {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.user-icon-button.whatsapp-user-button:hover {
+  background: #bbf7d0;
+}
