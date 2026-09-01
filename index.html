@@ -11,6 +11,7 @@
 </head>
 
 <body>
+
   <!-- CABEÇALHO -->
   <header class="topbar">
     <div class="brand">
@@ -23,14 +24,18 @@
     </div>
 
     <div class="top-actions">
-      <a href="./public.html" class="link-button" >
-        Registros públicos
-      </a>
+  <a href="./public.html" class="link-button" >
+    Registros públicos
+  </a>
 
-      <button id="btnLogout" class="link-button hidden" type="button" >
-        Sair
-      </button>
-    </div>
+  <a href="./perfil.html" id="btnEditProfile" class="link-button" >
+    Meu perfil
+  </a>
+
+  <button id="btnLogout" class="link-button hidden" type="button" >
+    Sair
+  </button>
+</div>
   </header>
 
 
@@ -45,140 +50,143 @@
       </p>
 
       <form id="loginForm" class="form" >
-  <label>
-    E-mail
+        <label>
+          E-mail
 
-    <input id="loginEmail" type="email" required autocomplete="email" placeholder="voce@email.com" />
-  </label>
+          <input id="loginEmail" type="email" required autocomplete="email" placeholder="voce@email.com" />
+        </label>
 
-  <label>
-    Senha
+        <label>
+          Senha
 
-    <input id="loginPassword" type="password" required minlength="8" autocomplete="current-password" placeholder="Digite sua senha" />
-  </label>
+          <input id="loginPassword" type="password" required minlength="8" autocomplete="current-password" placeholder="Digite sua senha" />
+        </label>
 
-  <button id="btnForgotPassword" class="link-button" type="button" >
-    Esqueci minha senha
-  </button>
+        <button id="btnForgotPassword" class="link-button" type="button" >
+          Esqueci minha senha
+        </button>
 
-  <button class="primary-button" type="submit" >
-    Entrar
-  </button>
+        <button class="primary-button" type="submit" >
+          Entrar
+        </button>
 
-  <button id="btnShowRegister" class="secondary-button" type="button" >
-    Criar cadastro
-  </button>
-</form>
+        <button id="btnShowRegister" class="secondary-button" type="button" >
+          Criar cadastro
+        </button>
+      </form>
 
-<p id="loginMessage" class="message" ></p>
+      <p id="loginMessage" class="message" ></p>
     </section>
 
 
     <!-- CADASTRO -->
     <section id="registerView" class="card auth-card hidden" >
-  <h1>Criar cadastro</h1>
+      <h1>Criar cadastro</h1>
 
-  <p class="muted">
-    Informe seus dados para abrir chamados no condomínio.
-  </p>
+      <p class="muted">
+        Informe seus dados para abrir chamados no condomínio.
+      </p>
 
-  <form id="registerForm" class="form" >
-    <label>
-      Nome completo
+      <form id="registerForm" class="form" >
+        <label>
+          Nome completo
 
-      <input id="registerName" type="text" required minlength="3" autocomplete="name" placeholder="Digite seu nome completo" />
-    </label>
+          <input id="registerName" type="text" required minlength="3" autocomplete="name" placeholder="Digite seu nome completo" />
+        </label>
 
-    <label>
-      Unidade / apartamento
+        <label>
+          Unidade / apartamento
 
-      <input id="registerUnit" type="text" required placeholder="Ex.: 200" />
-    </label>
+          <input id="registerUnit" type="text" required placeholder="Ex.: 200" />
+        </label>
 
-    <label>
-      Bloco 
+        <label>
+          Bloco
 
-      <input id="registerBlock" type="text" placeholder="Ex.: 1" />
-    </label>
+          <input id="registerBlock" type="text" placeholder="Ex.: 1" />
+        </label>
 
-    <label>
-      Telefone
+        <label>
+          Telefone
 
-      <input id="registerPhone" type="tel" autocomplete="tel" placeholder="(00) 00000-0000" />
-    </label>
+          <input id="registerPhone" type="tel" autocomplete="tel" placeholder="(00) 00000-0000" />
+        </label>
 
-    <label>
-      E-mail
+        <label>
+          E-mail
 
-      <input id="registerEmail" type="email" required autocomplete="email" placeholder="voce@email.com" />
-    </label>
+          <input id="registerEmail" type="email" required autocomplete="email" placeholder="voce@email.com" />
+        </label>
 
-    <label>
-      Senha 
+        <label>
+          Senha
 
-      <input id="registerPassword" type="password" required minlength="8" autocomplete="new-password" placeholder="Crie uma senha forte" />
+          <input id="registerPassword" type="password" required minlength="8" autocomplete="new-password" placeholder="Crie uma senha forte" />
 
-      <small id="passwordRequirements" class="helper" >
-        A senha deve ter pelo menos 8 caracteres, uma letra maiúscula,
-        uma letra minúscula, um número e um caractere especial.
-      </small>
-    </label>
+          <small id="passwordRequirements" class="helper" >
+            A senha deve ter pelo menos 8 caracteres,
+            uma letra maiúscula, uma letra minúscula,
+            um número e um caractere especial.
+          </small>
+        </label>
 
-    <label>
-      Confirmar senha
+        <label>
+          Confirmar senha
 
-      <input id="registerPasswordConfirm" type="password" required minlength="8" autocomplete="new-password" placeholder="Digite a senha novamente" />
-    </label>
+          <input id="registerPasswordConfirm" type="password" required minlength="8" autocomplete="new-password" placeholder="Digite a senha novamente" />
+        </label>
 
-    <label class="terms-box">
-      <input id="acceptTerms" type="checkbox" required />
+        <label class="terms-box">
+          <input id="acceptTerms" type="checkbox" required />
 
-      <span>
-        Li e aceito os termos de uso e a política de privacidade.
-        Estou ciente de que os dados informados serão utilizados
-        para identificação, comunicação e gerenciamento das ocorrências
-        do condomínio, sendo tratados com sigilo e segurança, conforme
-        a legislação aplicável e os princípios da LGPD.
-      </span>
-    </label>
+          <span>
+            Li e aceito os termos de uso e a política de privacidade.
+            Estou ciente de que os dados informados serão utilizados
+            para identificação, comunicação e gerenciamento das ocorrências
+            do condomínio, sendo tratados com sigilo e segurança, conforme
+            a legislação aplicável e os princípios da LGPD.
+          </span>
+        </label>
 
-    <button class="primary-button" type="submit" >
-      Cadastrar
-    </button>
+        <button class="primary-button" type="submit" >
+          Cadastrar
+        </button>
 
-    <button id="btnBackLogin" class="secondary-button" type="button" >
-      Voltar para login
-    </button>
-  </form>
+        <button id="btnBackLogin" class="secondary-button" type="button" >
+          Voltar para login
+        </button>
+      </form>
 
-  <p id="registerMessage" class="message" ></p>
-</section>
+      <p id="registerMessage" class="message" ></p>
+    </section>
 
-<section id="forgotPasswordView" class="card auth-card hidden" >
-  <h1>Redefinir senha</h1>
 
-  <p class="muted">
-    Informe seu e-mail. Enviaremos um link para criar uma nova senha.
-  </p>
+    <!-- ESQUECI MINHA SENHA -->
+    <section id="forgotPasswordView" class="card auth-card hidden" >
+      <h1>Redefinir senha</h1>
 
-  <form id="forgotPasswordForm" class="form" >
-    <label>
-      E-mail cadastrado
+      <p class="muted">
+        Informe seu e-mail. Enviaremos um link para criar uma nova senha.
+      </p>
 
-      <input id="forgotPasswordEmail" type="email" required autocomplete="email" placeholder="voce@email.com" />
-    </label>
+      <form id="forgotPasswordForm" class="form" >
+        <label>
+          E-mail cadastrado
 
-    <button class="primary-button" type="submit" >
-      Resetar senha
-    </button>
+          <input id="forgotPasswordEmail" type="email" required autocomplete="email" placeholder="voce@email.com" />
+        </label>
 
-    <button id="btnBackToLogin" class="secondary-button" type="button" >
-      Voltar para login
-    </button>
-  </form>
+        <button class="primary-button" type="submit" >
+          Resetar senha
+        </button>
 
-  <p id="forgotPasswordMessage" class="message" ></p>
-</section>
+        <button id="btnBackToLogin" class="secondary-button" type="button" >
+          Voltar para login
+        </button>
+      </form>
+
+      <p id="forgotPasswordMessage" class="message" ></p>
+    </section>
 
 
     <!-- ÁREA DO MORADOR -->
@@ -232,16 +240,27 @@
       <section id="reportFormCard" class="card hidden" >
         <div class="section-heading">
           <div>
-            <h2>Novo registro</h2>
+            <h2>Nova ocorrência</h2>
 
             <p class="muted">
               Descreva o problema encontrado.
+              Após incluir a ocorrência, será necessário enviar
+              um e-mail para a administração.
             </p>
           </div>
 
           <button id="btnCancelReport" class="icon-button" type="button" aria-label="Fechar formulário" >
             ×
           </button>
+        </div>
+
+        <div class="notice-box">
+          <strong>Atenção:</strong>
+          depois de incluir a ocorrência, utilize o botão
+          <strong>✉️ Enviar por e-mail</strong> para encaminhar
+          os dados à administração. Não esqueça de anexar a foto da ocorrência. Após a confirmação do envio, as opções de enviar por e-mail
+e excluir serão desabilitadas. A edição continuará
+disponível para atualização da situação da ocorrência.
         </div>
 
         <form id="reportForm" class="form" >
@@ -254,67 +273,78 @@
 
           <div class="two-columns">
             <label>
-  Categoria *
+              Categoria *
 
-  <select id="reportCategory" required >
-    <option value="">
-      Selecione
-    </option>
+              <select id="reportCategory" required >
+                <option value="">
+                  Selecione
+                </option>
 
-    <option value="Áreas comuns">
-      Áreas comuns
-    </option>
+                <option value="Áreas comuns">
+                  Áreas comuns
+                </option>
 
-    <option value="Barulho">
-      Barulho
-    </option>
+                <option value="Barulho">
+                  Barulho
+                </option>
 
-    <option value="Documentação">
-      Documentação
-    </option>
+                <option value="Documentação">
+                  Documentação
+                </option>
 
-    <option value="Elétrica">
-      Elétrica
-    </option>
+                <option value="Elétrica">
+                  Elétrica
+                </option>
 
-    <option value="Estrutura">
-      Estrutura
-    </option>
+                <option value="Estrutura">
+                  Estrutura
+                </option>
 
-    <option value="Garagem">
-      Garagem
-    </option>
+                <option value="Garagem">
+                  Garagem
+                </option>
 
-    <option value="Hidráulica">
-      Hidráulica
-    </option>
+                <option value="Hidráulica">
+                  Hidráulica
+                </option>
 
-    <option value="Jardinagem">
-      Jardinagem
-    </option>
+                <option value="Jardinagem">
+                  Jardinagem
+                </option>
 
-    <option value="Limpeza">
-      Limpeza
-    </option>
+                <option value="Limpeza">
+                  Limpeza
+                </option>
 
-    <option value="Outros">
-      Outros
-    </option>
+                <option value="Outros">
+                  Outros
+                </option>
 
-    <option value="Segurança">
-      Segurança
-    </option>
-  </select>
-</label>
+                <option value="Segurança">
+                  Segurança
+                </option>
+              </select>
+            </label>
 
             <label>
               Prioridade *
 
               <select id="reportPriority" required >
-                <option value="Normal">Normal</option>
-                <option value="Baixa">Baixa</option>
-                <option value="Alta">Alta</option>
-                <option value="Emergência">Emergência</option>
+                <option value="Normal">
+                  Normal
+                </option>
+
+                <option value="Baixa">
+                  Baixa
+                </option>
+
+                <option value="Alta">
+                  Alta
+                </option>
+
+                <option value="Emergência">
+                  Emergência
+                </option>
               </select>
             </label>
           </div>
@@ -322,142 +352,143 @@
 
           <div class="two-columns">
             <label>
-  Local *
+              Local *
 
-  <select id="reportLocation" required >
-    <option value="">
-      Selecione o local
-    </option>
+              <select id="reportLocation" required >
+                <option value="">
+                  Selecione o local
+                </option>
 
-    <option value="Academia">
-      Academia
-    </option>
+                <option value="Academia">
+                  Academia
+                </option>
 
-    <option value="Área Externa">
-      Área Externa
-    </option>
+                <option value="Área Externa">
+                  Área Externa
+                </option>
 
-    <option value="Bloco 1">
-      Bloco 1
-    </option>
+                <option value="Bloco 1">
+                  Bloco 1
+                </option>
 
-    <option value="Bloco 2">
-      Bloco 2
-    </option>
+                <option value="Bloco 2">
+                  Bloco 2
+                </option>
 
-    <option value="Bloco 3">
-      Bloco 3
-    </option>
+                <option value="Bloco 3">
+                  Bloco 3
+                </option>
 
-    <option value="Bloco 4">
-      Bloco 4
-    </option>
+                <option value="Bloco 4">
+                  Bloco 4
+                </option>
 
-    <option value="Bloco 5">
-      Bloco 5
-    </option>
+                <option value="Bloco 5">
+                  Bloco 5
+                </option>
 
-    <option value="Bloco 6">
-      Bloco 6
-    </option>
+                <option value="Bloco 6">
+                  Bloco 6
+                </option>
 
-    <option value="Bloco 7">
-      Bloco 7
-    </option>
+                <option value="Bloco 7">
+                  Bloco 7
+                </option>
 
-    <option value="Bloco 8">
-      Bloco 8
-    </option>
+                <option value="Bloco 8">
+                  Bloco 8
+                </option>
 
-    <option value="Brinquedoteca">
-      Brinquedoteca
-    </option>
+                <option value="Brinquedoteca">
+                  Brinquedoteca
+                </option>
 
-    <option value="Churrasqueira 1">
-      Churrasqueira 1
-    </option>
+                <option value="Churrasqueira 1">
+                  Churrasqueira 1
+                </option>
 
-    <option value="Churrasqueira 2">
-      Churrasqueira 2
-    </option>
+                <option value="Churrasqueira 2">
+                  Churrasqueira 2
+                </option>
 
-    <option value="Churrasqueira 3">
-      Churrasqueira 3
-    </option>
+                <option value="Churrasqueira 3">
+                  Churrasqueira 3
+                </option>
 
-    <option value="Churrasqueira 4">
-      Churrasqueira 4
-    </option>
+                <option value="Churrasqueira 4">
+                  Churrasqueira 4
+                </option>
 
-    <option value="Espaço do Conhecimento">
-      Espaço do Conhecimento
-    </option>
+                <option value="Espaço do Conhecimento">
+                  Espaço do Conhecimento
+                </option>
 
-    <option value="Garagem">
-      Garagem
-    </option>
+                <option value="Garagem">
+                  Garagem
+                </option>
 
-    <option value="Garagem subsolo">
-      Garagem subsolo
-    </option>
+                <option value="Garagem subsolo">
+                  Garagem subsolo
+                </option>
 
-    <option value="Parquinho">
-      Parquinho
-    </option>
+                <option value="Parquinho">
+                  Parquinho
+                </option>
 
-    <option value="Piscina">
-      Piscina
-    </option>
+                <option value="Piscina">
+                  Piscina
+                </option>
 
-    <option value="Portaria">
-      Portaria
-    </option>
+                <option value="Portaria">
+                  Portaria
+                </option>
 
-    <option value="Quadra de Tênis">
-      Quadra de Tênis
-    </option>
+                <option value="Quadra de Tênis">
+                  Quadra de Tênis
+                </option>
 
-    <option value="Quadra Poliesportiva">
-      Quadra Poliesportiva
-    </option>
+                <option value="Quadra Poliesportiva">
+                  Quadra Poliesportiva
+                </option>
 
-    <option value="Sala de Jogos Adulto">
-      Sala de Jogos Adulto
-    </option>
+                <option value="Sala de Jogos Adulto">
+                  Sala de Jogos Adulto
+                </option>
 
-    <option value="Sala de Jogos Infantil">
-      Sala de Jogos Infantil
-    </option>
+                <option value="Sala de Jogos Infantil">
+                  Sala de Jogos Infantil
+                </option>
 
-    <option value="Sala de Lutas">
-      Sala de Lutas
-    </option>
+                <option value="Sala de Lutas">
+                  Sala de Lutas
+                </option>
 
-    <option value="Salão de Festas">
-      Salão de Festas
-    </option>
+                <option value="Salão de Festas">
+                  Salão de Festas
+                </option>
 
-    <option value="Salão de Jogos Adulto">
-      Salão de Jogos Adulto
-    </option>
+                <option value="Salão de Jogos Adulto">
+                  Salão de Jogos Adulto
+                </option>
 
-    <option value="Salão Gourmet">
-      Salão Gourmet
-    </option>
+                <option value="Salão Gourmet">
+                  Salão Gourmet
+                </option>
 
-    <option value="Salão Teen">
-      Salão Teen
-    </option>
+                <option value="Salão Teen">
+                  Salão Teen
+                </option>
 
-    <option value="SPA">
-      SPA
-    </option>
+                <option value="SPA">
+                  SPA
+                </option>
 
-    <option value="Spinning">
-      Spinning
-    </option>
-  </select>
-</label>
+                <option value="Spinning">
+                  Spinning
+                </option>
+              </select>
+            </label>
+
             <label>
               Referência do local
 
@@ -484,9 +515,6 @@
           </label>
 
 
-          
-
-
           <label class="checkbox-label">
             <input id="reportUpdates" type="checkbox" checked />
 
@@ -495,7 +523,7 @@
 
 
           <button id="btnSubmitReport" class="primary-button" type="submit" >
-            Enviar registro
+            Incluir ocorrência
           </button>
 
           <p id="reportMessage" class="message" ></p>
@@ -510,16 +538,33 @@
             <h2>Meus registros</h2>
 
             <p class="muted">
-              Apenas ocorrências abertas por você.
+              Acompanhe as ocorrências abertas por você.
+              Depois que o e-mail for enviado, as opções
+              enviar por e-mail e excluir serão
+              desabilitadas.
             </p>
           </div>
 
           <select id="statusFilter" class="compact-select" >
-            <option value="Todos">Todos</option>
-            <option value="Aberto">Aberto</option>
-            <option value="Em análise">Em análise</option>
-            <option value="Em execução">Em execução</option>
-            <option value="Resolvido">Resolvido</option>
+            <option value="Todos">
+              Todos
+            </option>
+
+            <option value="Aberto">
+              Aberto
+            </option>
+
+            <option value="Em análise">
+              Em análise
+            </option>
+
+            <option value="Em execução">
+              Em execução
+            </option>
+
+            <option value="Resolvido">
+              Resolvido
+            </option>
           </select>
         </div>
 
@@ -559,7 +604,16 @@
 
       <p class="muted">
         Atualize os dados da ocorrência selecionada.
+        Você poderá continuar atualizando a situação da ocorrência
+mesmo depois que o e-mail for enviado. A exclusão e o reenvio
+do e-mail ficarão bloqueados após o envio.
       </p>
+
+      <div class="notice-box">
+        <strong>Atenção:</strong>
+        depois que o e-mail da ocorrência for enviado,
+        não será mais possível excluir este registro.
+      </div>
 
       <form id="editForm" class="form" >
         <input id="editReportId" type="hidden" />
@@ -576,17 +630,49 @@
             Categoria *
 
             <select id="editCategory" required >
-              <option value="Elétrica">Elétrica</option>
-              <option value="Hidráulica">Hidráulica</option>
-              <option value="Jardinagem">jardinagem</option>
-              <option value="Limpeza">Limpeza</option>
-              <option value="Segurança">Segurança</option>
-              <option value="Elevador">Elevador</option>
-              <option value="Garagem">Garagem</option>
-              <option value="Áreas comuns">Áreas comuns</option>
-              <option value="Barulho">Barulho</option>
-              <option value="Estrutura">Estrutura</option>
-              <option value="Outros">Outros</option>
+              <option value="Áreas comuns">
+                Áreas comuns
+              </option>
+
+              <option value="Barulho">
+                Barulho
+              </option>
+
+              <option value="Documentação">
+                Documentação
+              </option>
+
+              <option value="Elétrica">
+                Elétrica
+              </option>
+
+              <option value="Estrutura">
+                Estrutura
+              </option>
+
+              <option value="Garagem">
+                Garagem
+              </option>
+
+              <option value="Hidráulica">
+                Hidráulica
+              </option>
+
+              <option value="Jardinagem">
+                Jardinagem
+              </option>
+
+              <option value="Limpeza">
+                Limpeza
+              </option>
+
+              <option value="Segurança">
+                Segurança
+              </option>
+
+              <option value="Outros">
+                Outros
+              </option>
             </select>
           </label>
 
@@ -594,10 +680,21 @@
             Prioridade *
 
             <select id="editPriority" required >
-              <option value="Normal">Normal</option>
-              <option value="Baixa">Baixa</option>
-              <option value="Alta">Alta</option>
-              <option value="Emergência">Emergência</option>
+              <option value="Normal">
+                Normal
+              </option>
+
+              <option value="Baixa">
+                Baixa
+              </option>
+
+              <option value="Alta">
+                Alta
+              </option>
+
+              <option value="Emergência">
+                Emergência
+              </option>
             </select>
           </label>
         </div>
@@ -608,44 +705,152 @@
             Local *
 
             <select id="editLocation" required >
-              <option value="Bloco 1">Bloco 1</option>
-              <option value="Bloco 2">Bloco 2</option>
-              <option value="Bloco 3">Bloco 3</option>
-              <option value="Bloco 4">Bloco 4</option>
-              <option value="Bloco 5">Bloco 5</option>
-              <option value="Bloco 6">Bloco 6</option>
-              <option value="Bloco 7">Bloco 7</option>
-              <option value="Bloco 8">Bloco 8</option>
-              <option value="Garagem">Garagem</option>
-              <option value="Garagem subsolo">Garagem subsolo</option>
-              <option value="Piscina">Piscina</option>
-              <option value="Quadra Poliesportiva">Quadra Poliesportiva</option>
-              <option value="Quadra de Tênis">Quadra de Tênis</option>
-              <option value="Churrasqueira 1">Churrasqueira 1</option>
-              <option value="Churrasqueira 2">Churrasqueira 2</option>
-              <option value="Churrasqueira 3">Churrasqueira 3</option>
-              <option value="Churrasqueira 4">Churrasqueira 4</option>
-              <option value="Salão de Festas">Salão de Festas</option>
-              <option value="Salão Gourmet">Salão Gourmet</option>
-              <option value="Espaço do Conhecimento">Espaço do Conhecimento</option>
-              <option value="Spinning">Spinning</option>
-              <option value="Academia">Academia</option>
-              <option value="Sala de Lutas">Sala de Lutas</option>
-              <option value="Sala de Jogos Infantil">Salão de Jogos Infantil</option>
-              <option value="SPA">SPA</option>
-              <option value="Salão de Jogos Adulto">Salão de Jogos Adulto</option>
-              <option value="Salão Teen">Salão Teen</option>
-              <option value="Brinquedoteca">Brinquedoteca</option>
-              <option value="Parquinho">Parquinho</option>
-              <option value="Portaria">Portaria</option>
-              <option value="Área Externa">Área Externa</option>
+              <option value="">
+                Selecione o local
+              </option>
+
+              <option value="Academia">
+                Academia
+              </option>
+
+              <option value="Área Externa">
+                Área Externa
+              </option>
+
+              <option value="Bloco 1">
+                Bloco 1
+              </option>
+
+              <option value="Bloco 2">
+                Bloco 2
+              </option>
+
+              <option value="Bloco 3">
+                Bloco 3
+              </option>
+
+              <option value="Bloco 4">
+                Bloco 4
+              </option>
+
+              <option value="Bloco 5">
+                Bloco 5
+              </option>
+
+              <option value="Bloco 6">
+                Bloco 6
+              </option>
+
+              <option value="Bloco 7">
+                Bloco 7
+              </option>
+
+              <option value="Bloco 8">
+                Bloco 8
+              </option>
+
+              <option value="Academia">
+                Academia
+              </option>
+
+              <option value="Área Externa">
+                Área Externa
+              </option>
+
+              <option value="Brinquedoteca">
+                Brinquedoteca
+              </option>
+
+              <option value="Churrasqueira 1">
+                Churrasqueira 1
+              </option>
+
+              <option value="Churrasqueira 2">
+                Churrasqueira 2
+              </option>
+
+              <option value="Churrasqueira 3">
+                Churrasqueira 3
+              </option>
+
+              <option value="Churrasqueira 4">
+                Churrasqueira 4
+              </option>
+
+              <option value="Espaço do Conhecimento">
+                Espaço do Conhecimento
+              </option>
+
+              <option value="Garagem">
+                Garagem
+              </option>
+
+              <option value="Garagem subsolo">
+                Garagem subsolo
+              </option>
+
+              <option value="Parquinho">
+                Parquinho
+              </option>
+
+              <option value="Piscina">
+                Piscina
+              </option>
+
+              <option value="Portaria">
+                Portaria
+              </option>
+
+              <option value="Quadra de Tênis">
+                Quadra de Tênis
+              </option>
+
+              <option value="Quadra Poliesportiva">
+                Quadra Poliesportiva
+              </option>
+
+              <option value="Sala de Jogos Adulto">
+                Sala de Jogos Adulto
+              </option>
+
+              <option value="Sala de Jogos Infantil">
+                Sala de Jogos Infantil
+              </option>
+
+              <option value="Sala de Lutas">
+                Sala de Lutas
+              </option>
+
+              <option value="Salão de Festas">
+                Salão de Festas
+              </option>
+
+              <option value="Salão de Jogos Adulto">
+                Salão de Jogos Adulto
+              </option>
+
+              <option value="Salão Gourmet">
+                Salão Gourmet
+              </option>
+
+              <option value="Salão Teen">
+                Salão Teen
+              </option>
+
+              <option value="SPA">
+                SPA
+              </option>
+
+              <option value="Spinning">
+                Spinning
+              </option>
             </select>
           </label>
 
           <label>
             Referência do local
 
-            <input id="editReference" type="text" />
+            <input id="editReference" type="text" placeholder="Ex.: vaga 32, 2º andar" />
           </label>
         </div>
 
@@ -653,7 +858,7 @@
         <label>
           Descrição detalhada *
 
-          <textarea id="editDescription" required minlength="10" maxlength="2000" rows="5" ></textarea>
+          <textarea id="editDescription" required minlength="10" maxlength="2000" rows="5" placeholder="Explique o que aconteceu." ></textarea>
         </label>
 
 
@@ -661,10 +866,21 @@
           Situação *
 
           <select id="editStatus" required >
-            <option value="Aberto">Aberto</option>
-            <option value="Em análise">Em análise</option>
-            <option value="Em execução">Em execução</option>
-            <option value="Resolvido">Resolvido</option>
+            <option value="Aberto">
+              Aberto
+            </option>
+
+            <option value="Em análise">
+              Em análise
+            </option>
+
+            <option value="Em execução">
+              Em execução
+            </option>
+
+            <option value="Resolvido">
+              Resolvido
+            </option>
           </select>
         </label>
 
