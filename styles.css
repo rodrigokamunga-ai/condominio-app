@@ -2046,3 +2046,518 @@ body:has(#loginView:not(.hidden)) .auth-card {
   background: #fee2e2;
   color: #b91c1c;
 }
+
+/* ===================================================== AVISO SOBRE ENVIO DE E-MAIL ===================================================== */
+
+.notice-box {
+  display: block;
+
+  margin: 16px 0;
+  padding: 14px 16px;
+
+  background: var(--blue-light);
+  border: 1px solid #bae6fd;
+  border-left: 4px solid var(--blue);
+  border-radius: 10px;
+
+  color: #1e3a8a;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.notice-box strong {
+  color: #1e40af;
+}
+
+
+/* ===================================================== MENSAGEM DE E-MAIL JÁ ENVIADO ===================================================== */
+
+.email-sent-message {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px 12px;
+
+  background: var(--success-light);
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+
+  color: var(--success);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+
+/* ===================================================== AJUSTE DO CARD DE OCORRÊNCIA COM AVISO DE E-MAIL ===================================================== */
+
+.report-item {
+  flex-wrap: wrap;
+}
+
+.report-item > div:first-child {
+  flex: 1 1 280px;
+  min-width: 0;
+}
+
+.report-item .report-actions {
+  flex: 0 0 auto;
+}
+
+
+/* ===================================================== BOTÕES DESABILITADOS APÓS ENVIO DO E-MAIL ===================================================== */
+
+.report-actions button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+  filter: grayscale(0.75);
+
+  box-shadow: none;
+  transform: none;
+}
+
+.report-actions button:disabled:hover,
+.report-actions button:disabled:active {
+  transform: none;
+  filter: grayscale(0.75);
+}
+
+
+/* Mantém a identificação visual de cada botão desabilitado */
+
+.report-actions .edit-button:disabled {
+  background: var(--warning-light);
+  color: var(--warning);
+}
+
+.report-actions .email-button:disabled {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+}
+
+.report-actions .delete-button:disabled {
+  background: var(--danger-light);
+  color: var(--danger);
+}
+
+
+/* ===================================================== CORES DOS BOTÕES DE AÇÃO ===================================================== */
+
+.report-actions .detail-button {
+  background: var(--blue-light);
+  color: #0369a1;
+}
+
+.report-actions .timeline-button {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+
+.report-actions .edit-button {
+  background: var(--warning-light);
+  color: var(--warning);
+}
+
+.report-actions .whatsapp-button {
+  background: var(--success-light);
+  color: var(--success);
+}
+
+.report-actions .email-button {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+}
+
+.report-actions .delete-button {
+  background: var(--danger-light);
+  color: var(--danger);
+}
+
+
+/* ===================================================== MELHORIA DO TEXTO DE ORIENTAÇÃO ===================================================== */
+
+#reportFormCard .muted,
+#editModal .muted {
+  line-height: 1.55;
+}
+
+
+/* ===================================================== RESPONSIVIDADE DO AVISO E DA MENSAGEM ===================================================== */
+
+@media (max-width: 650px) {
+  .notice-box {
+    margin: 14px 0;
+    padding: 12px 13px;
+
+    font-size: 13px;
+  }
+
+  .email-sent-message {
+    margin-top: 8px;
+    padding: 9px 10px;
+
+    font-size: 12px;
+  }
+
+  .report-item {
+    align-items: stretch;
+  }
+
+  .report-item .report-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 400px) {
+  .notice-box {
+    font-size: 12px;
+  }
+
+  .email-sent-message {
+    font-size: 11px;
+  }
+}
+
+/* ===================================================== AJUSTE DOS CARDS COMPACTOS DE OCORRÊNCIA ===================================================== */
+
+.report-item.compact-report {
+  display: grid;
+
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+
+  align-items: start;
+  justify-content: initial;
+
+  min-height: 0 !important;
+  height: auto !important;
+
+  gap: 10px 14px;
+  padding: 16px;
+}
+
+.report-item.compact-report > div:first-child {
+  grid-column: 1;
+  grid-row: 1;
+
+  min-width: 0;
+  flex: initial;
+}
+
+.report-item.compact-report .report-actions {
+  grid-column: 2;
+  grid-row: 1;
+
+  align-self: start;
+  justify-content: flex-end;
+
+  margin: 0;
+}
+
+.report-item.compact-report .email-sent-message {
+  grid-column: 1 / -1;
+  grid-row: 2;
+
+  margin-top: 2px;
+}
+
+
+/* ===================================================== AJUSTE DOS BOTÕES DO CARD ===================================================== */
+
+.report-item.compact-report .action-icon-button {
+  width: 42px;
+  height: 42px;
+  min-height: 42px;
+
+  padding: 0;
+
+  font-size: 19px;
+  border-radius: 10px;
+}
+
+
+/* ===================================================== CELULAR ===================================================== */
+
+@media (max-width: 650px) {
+  .report-item.compact-report {
+    display: grid;
+
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+
+    gap: 10px;
+    padding: 14px;
+  }
+
+  .report-item.compact-report > div:first-child {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .report-item.compact-report .report-actions {
+    grid-column: 1;
+    grid-row: 2;
+
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .report-item.compact-report .email-sent-message {
+    grid-column: 1;
+    grid-row: 3;
+
+    margin-top: 0;
+  }
+}
+
+/* ===================================================== TELA DE PERFIL DO USUÁRIO ===================================================== */
+
+.profile-container {
+  width: min(100%, 720px);
+}
+
+.profile-card {
+  margin: 32px auto 60px;
+}
+
+.profile-card h1 {
+  margin-bottom: 8px;
+}
+
+.profile-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.profile-actions .button-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#profileEmail:disabled {
+  background: #f1f5f9;
+  color: #64748b;
+  cursor: not-allowed;
+}
+
+@media (max-width: 650px) {
+  .profile-card {
+    margin-top: 20px;
+    padding: 22px 16px;
+  }
+
+  .profile-actions {
+    align-items: stretch;
+    flex-direction: column-reverse;
+  }
+
+  .profile-actions button,
+  .profile-actions .button-link {
+    width: 100%;
+  }
+}
+
+/* ===================================================== AJUSTE DOS CARDS DA TELA PÚBLICA ===================================================== */
+
+.public-report {
+  display: grid !important;
+
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+
+  align-items: start !important;
+  justify-content: initial !important;
+
+  min-height: 0 !important;
+  height: auto !important;
+
+  gap: 10px 16px;
+  padding: 16px;
+}
+
+.public-report > div:first-child {
+  grid-column: 1;
+  grid-row: 1;
+
+  min-width: 0;
+}
+
+.public-report .public-report-actions {
+  grid-column: 2;
+  grid-row: 1;
+
+  align-self: start;
+
+  display: flex !important;
+  align-items: center;
+  justify-content: flex-start !important;
+  gap: 8px;
+
+  width: auto !important;
+  margin: 0 !important;
+}
+
+.public-report .badge {
+  margin-top: 8px;
+}
+
+.public-report .public-icon-button {
+  width: 42px;
+  height: 42px;
+  min-height: 42px;
+
+  padding: 0;
+
+  font-size: 18px;
+}
+
+
+/* ===================================================== TELA PÚBLICA NO CELULAR ===================================================== */
+
+@media (max-width: 760px) {
+  .public-report {
+    display: grid !important;
+
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+
+    align-items: start !important;
+    gap: 10px;
+
+    min-height: 0 !important;
+  }
+
+  .public-report > div:first-child {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .public-report .public-report-actions {
+    grid-column: 1;
+    grid-row: 2;
+
+    width: 100% !important;
+    margin: 0 !important;
+
+    justify-content: flex-start !important;
+  }
+}
+
+/* ===================================================== AJUSTE DOS CARDS DE OCORRÊNCIA DA ÁREA ADMINISTRATIVA ===================================================== */
+
+.admin-report-item {
+  position: static !important;
+
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+
+  align-items: start !important;
+  justify-content: initial !important;
+
+  min-height: 0 !important;
+  height: auto !important;
+
+  gap: 12px 18px;
+
+  padding: 16px !important;
+}
+
+.admin-report-item .admin-report-header {
+  grid-column: 1 / -1;
+  grid-row: 1;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  min-height: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.admin-report-item .admin-report-main {
+  grid-column: 1;
+  grid-row: 2;
+
+  min-width: 0;
+}
+
+.admin-report-item .admin-report-actions {
+  position: static !important;
+
+  grid-column: 2;
+  grid-row: 2;
+
+  display: flex !important;
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 8px;
+
+  margin: 0 !important;
+}
+
+.admin-report-item .admin-report-actions .action-icon-button {
+  width: 42px;
+  height: 42px;
+  min-height: 42px;
+
+  padding: 0;
+  font-size: 18px;
+}
+
+
+/* ===================================================== MENSAGEM DE E-MAIL ENVIADO NA ÁREA ADMINISTRATIVA ===================================================== */
+
+.admin-report-item .email-sent-message {
+  grid-column: 1 / -1;
+  grid-row: 3;
+
+  margin-top: 0;
+}
+
+
+/* ===================================================== RESPONSIVIDADE DA ÁREA ADMINISTRATIVA ===================================================== */
+
+@media (max-width: 760px) {
+  .admin-report-item {
+    display: grid !important;
+
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+
+    gap: 10px;
+    padding: 16px !important;
+  }
+
+  .admin-report-item .admin-report-header {
+    grid-column: 1;
+    grid-row: 1;
+
+    width: 100%;
+  }
+
+  .admin-report-item .admin-report-main {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .admin-report-item .admin-report-actions {
+    grid-column: 1;
+    grid-row: 3;
+
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .admin-report-item .email-sent-message {
+    grid-column: 1;
+    grid-row: 4;
+  }
+}
+
