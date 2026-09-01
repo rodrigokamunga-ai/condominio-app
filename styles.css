@@ -2561,3 +2561,35 @@ body:has(#loginView:not(.hidden)) .auth-card {
   }
 }
 
+/* ===================================================== ALINHAMENTO DOS LINKS DO CABEÇALHO NO CELULAR ===================================================== */
+
+@media (max-width: 650px) {
+  .topbar {
+    align-items: flex-start;
+  }
+
+  .top-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch !important;
+    justify-content: flex-start;
+
+    width: 150px;
+    min-width: 150px;
+
+    gap: 4px;
+  }
+
+  .top-actions > .link-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    min-height: 38px;
+    padding: 8px 10px;
+
+    text-align: center;
+    white-space: nowrap;
+  }
+}
