@@ -1238,7 +1238,7 @@ async function sendReportByEmail(reportId) {
     "",
     "É necessário que esta ocorrência seja analisada pela administração.",
     "",
-    `Protocolo: ${report.protocolo || "Não informado"}`,
+    
     `Data e horário: ${formatDate(openingDate(report))}`,
     `Categoria: ${report.categoria || "Não informada"}`,
     `Prioridade: ${report.prioridade || "Não informada"}`,
