@@ -807,7 +807,7 @@ async function sendWhatsAppUser(userId) {
   const mensagem = [
     `Olá, ${user.nome || "morador"}!`,
     "",
-    "Seu cadastro no sistema Amigos do Maui foi aprovado.",
+    "Seu cadastro no Portal Amigos do Maui foi aprovado.",
     "",
     `Unidade: ${ user.unidade || "Não informada" }`,
     user.bloco
