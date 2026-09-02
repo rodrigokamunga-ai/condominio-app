@@ -110,6 +110,32 @@ function setText(id, text) {
   }
 }
 
+function clearLoginFields() {
+  const loginForm = $("loginForm");
+
+  if (loginForm) {
+    loginForm.reset();
+  }
+
+  const loginEmail = $("loginEmail");
+  const loginPassword = $("loginPassword");
+
+  if (loginEmail) {
+    loginEmail.value = "";
+  }
+
+  if (loginPassword) {
+    loginPassword.value = "";
+  }
+
+  const forgotPasswordEmail =
+    $("forgotPasswordEmail");
+
+  if (forgotPasswordEmail) {
+    forgotPasswordEmail.value = "";
+  }
+}
+
 function message(id, text, success = false) {
   const element = $(id);
 
@@ -1734,6 +1760,8 @@ $("btnLogout")?.addEventListener(
     try {
       await signOut(auth);
 
+      clearLoginFields();
+
       message(
         "loginMessage",
         "Você saiu do sistema.",
@@ -2191,23 +2219,25 @@ onAuthStateChanged(
   auth,
   async (user) => {
     if (!user) {
-      hide("appView");
-      hide("registerView");
-      hide("forgotPasswordView");
-      show("loginView");
+  hide("appView");
+  hide("registerView");
+  hide("forgotPasswordView");
+  show("loginView");
 
-      $("btnLogout")?.classList.add(
-        "hidden"
-      );
+  $("btnLogout")?.classList.add(
+    "hidden"
+  );
 
-      if (unsubscribeReports) {
-        unsubscribeReports();
-        unsubscribeReports = null;
-      }
+  clearLoginFields();
 
-      allReports = [];
-      return;
-    }
+  if (unsubscribeReports) {
+    unsubscribeReports();
+    unsubscribeReports = null;
+  }
+
+  allReports = [];
+  return;
+}
 
     hide("loginView");
     hide("registerView");
