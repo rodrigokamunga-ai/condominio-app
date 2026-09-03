@@ -1861,3 +1861,390 @@ button:disabled {
     font-size: 11px;
   }
 }
+
+/* ===================================================== CABEÇALHO EM UMA ÚNICA LINHA ===================================================== */
+
+.top-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+
+.top-actions .link-button {
+  white-space: nowrap;
+}
+
+
+/* ===================================================== FILTRO DA PÁGINA PÚBLICA ===================================================== */
+
+.status-filter-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  width: 100%;
+  overflow-x: auto;
+
+  padding: 4px 2px 8px;
+
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+.status-filter-button {
+  flex: 0 0 auto;
+
+  min-height: 40px;
+  padding: 9px 13px;
+
+  border: 1px solid var(--border);
+  border-radius: 10px;
+
+  background: #ffffff;
+  color: var(--muted);
+
+  font-size: 13px;
+  font-weight: 800;
+
+  white-space: nowrap;
+}
+
+.status-filter-button:hover {
+  background: var(--blue-light);
+  color: #164e63;
+}
+
+.status-filter-button.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #ffffff;
+
+  box-shadow:
+    0 4px 10px rgba(17, 127, 117, 0.18);
+}
+
+
+/* ===================================================== CELULAR ===================================================== */
+
+@media (max-width: 760px) {
+  .topbar {
+    align-items: center;
+    gap: 8px;
+
+    padding: 10px 8px;
+  }
+
+  .brand {
+    flex: 0 0 auto;
+    gap: 7px;
+  }
+
+  .brand-icon {
+    width: 34px;
+    height: 34px;
+    font-size: 19px;
+    border-radius: 9px;
+  }
+
+  .brand strong {
+    font-size: 13px;
+  }
+
+  .brand small {
+    margin-top: 1px;
+    font-size: 9px;
+  }
+
+  .top-actions {
+    flex: 1 1 auto;
+    justify-content: flex-end;
+    gap: 2px;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    scrollbar-width: none;
+  }
+
+  .top-actions::-webkit-scrollbar {
+    display: none;
+  }
+
+  .top-actions .link-button {
+    min-height: 34px;
+    padding: 6px 5px;
+
+    font-size: 10px;
+    line-height: 1.1;
+  }
+
+  .status-filter-buttons {
+    justify-content: flex-start;
+  }
+
+  .status-filter-button {
+    min-height: 38px;
+    padding: 8px 11px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 430px) {
+  .topbar {
+    padding: 9px 6px;
+  }
+
+  .brand-icon {
+    width: 30px;
+    height: 30px;
+    font-size: 17px;
+  }
+
+  .brand strong {
+    font-size: 11px;
+  }
+
+  .brand small {
+    font-size: 8px;
+  }
+
+  .top-actions {
+    gap: 1px;
+  }
+
+  .top-actions .link-button {
+    padding: 5px 3px;
+    font-size: 9px;
+  }
+}
+
+/* ===================================================== CORREÇÃO FINAL DO CABEÇALHO Links sempre lado a lado ===================================================== */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  gap: 8px;
+}
+
+.top-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+
+  flex: 1 1 auto;
+  min-width: 0;
+
+  gap: 5px !important;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  white-space: nowrap;
+  scrollbar-width: none;
+}
+
+.top-actions::-webkit-scrollbar {
+  display: none;
+}
+
+.top-actions .link-button,
+.top-actions button {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+
+/* ===================================================== CABEÇALHO NO CELULAR ===================================================== */
+
+@media (max-width: 760px) {
+  .topbar {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+
+    width: 100%;
+    min-height: 58px;
+    padding: 8px 10px;
+    gap: 6px;
+  }
+
+  .brand {
+    display: flex !important;
+    align-items: center !important;
+    flex: 0 0 auto;
+    min-width: max-content;
+    gap: 7px;
+  }
+
+  .brand-icon {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 auto;
+
+    border-radius: 9px;
+    font-size: 18px;
+  }
+
+  .brand strong {
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .brand small {
+    font-size: 9px;
+    white-space: nowrap;
+  }
+
+  .top-actions {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+
+    width: auto;
+    min-width: 0;
+    margin-left: auto;
+
+    gap: 3px !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .top-actions .link-button,
+  .top-actions button {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 auto;
+
+    min-height: 32px;
+    width: auto !important;
+    padding: 6px 5px;
+
+    font-size: 10px;
+    line-height: 1.1;
+    white-space: nowrap;
+  }
+}
+
+
+/* ===================================================== TELAS MUITO PEQUENAS ===================================================== */
+
+@media (max-width: 430px) {
+  .topbar {
+    padding: 7px 6px;
+    gap: 4px;
+  }
+
+  .brand {
+    gap: 5px;
+  }
+
+  .brand-icon {
+    width: 29px;
+    height: 29px;
+    font-size: 16px;
+  }
+
+  .brand strong {
+    font-size: 10px;
+  }
+
+  .brand small {
+    font-size: 8px;
+  }
+
+  .top-actions {
+    gap: 2px !important;
+  }
+
+  .top-actions .link-button,
+  .top-actions button {
+    min-height: 30px;
+    padding: 5px 3px;
+    font-size: 9px;
+  }
+}
+
+
+/* ===================================================== FILTRO DA PÁGINA PÚBLICA ===================================================== */
+
+.status-filter-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  width: 100%;
+  overflow-x: auto;
+
+  padding: 4px 2px 8px;
+
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+.status-filter-buttons::-webkit-scrollbar {
+  height: 4px;
+}
+
+.status-filter-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  flex: 0 0 auto;
+
+  min-height: 40px;
+  padding: 9px 13px;
+
+  border: 1px solid var(--border);
+  border-radius: 10px;
+
+  background: #ffffff;
+  color: var(--muted);
+
+  font-size: 13px;
+  font-weight: 800;
+
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.status-filter-button:hover {
+  background: var(--blue-light);
+  color: #164e63;
+}
+
+.status-filter-button.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #ffffff;
+
+  box-shadow:
+    0 4px 10px rgba(17, 127, 117, 0.18);
+}
+
+@media (max-width: 650px) {
+  .status-filter-buttons {
+    justify-content: flex-start;
+    gap: 6px;
+  }
+
+  .status-filter-button {
+    min-height: 38px;
+    padding: 8px 11px;
+    font-size: 12px;
+  }
+}
