@@ -2,12 +2,16 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <meta name="theme-color" content="#2563eb" />
 
-  <title>Amigos do Maui - Portal do Morador</title>
+  <title>
+    Amigos do Maui - Portal do Morador
+  </title>
 
-  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./styles.css?v=2" />
 </head>
 
 <body>
@@ -23,23 +27,23 @@
       </div>
     </div>
 
-   <div class="top-actions">
-  <a href="./public.html" class="link-button">
-    Registros públicos
-  </a>
+    <div class="top-actions">
+      <a href="./public.html" class="link-button" >
+        Registros públicos
+      </a>
 
-  <a href="./perfil.html" id="btnEditProfile" class="link-button">
-    Meu perfil
-  </a>
+      <a href="./perfil.html" id="btnEditProfile" class="link-button" >
+        Meu perfil
+      </a>
 
-  <a href="./manual-portal-morador.pdf" class="link-button" download="manual-portal-morador.pdf" >
-    Manual do usuário
-  </a>
+      <a href="./manual-portal-morador.pdf" class="link-button" download="manual-portal-morador.pdf" >
+        Manual do usuário
+      </a>
 
-  <button id="btnLogout" class="link-button hidden" type="button">
-    Sair
-  </button>
-</div>
+      <button id="btnLogout" class="link-button hidden" type="button" >
+        Sair
+      </button>
+    </div>
   </header>
 
 
@@ -53,7 +57,7 @@
         Entre para registrar e acompanhar ocorrências.
       </p>
 
-      <form id="loginForm" class="form" autocomplete="off">
+      <form id="loginForm" class="form" autocomplete="off" >
         <label>
           E-mail
 
@@ -91,7 +95,7 @@
         Informe seus dados para abrir chamados no condomínio.
       </p>
 
-      <form id="registerForm" class="form" >
+      <form id="registerForm" class="form" autocomplete="off" >
         <label>
           Nome completo
 
@@ -147,8 +151,8 @@
             Li e aceito os termos de uso e a política de privacidade.
             Estou ciente de que os dados informados serão utilizados
             para identificação, comunicação e gerenciamento das ocorrências
-            do condomínio, sendo tratados com sigilo e segurança, conforme
-            a legislação aplicável e os princípios da LGPD.
+            do condomínio, sendo tratados com sigilo e segurança,
+            conforme a legislação aplicável e os princípios da LGPD.
           </span>
         </label>
 
@@ -173,11 +177,11 @@
         Informe seu e-mail. Enviaremos um link para criar uma nova senha.
       </p>
 
-      <form id="forgotPasswordForm" class="form" >
+      <form id="forgotPasswordForm" class="form" autocomplete="off" >
         <label>
           E-mail cadastrado
 
-          <input id="forgotPasswordEmail" type="email" required autocomplete="email" placeholder="voce@email.com" />
+          <input id="forgotPasswordEmail" type="email" required autocomplete="off" placeholder="voce@email.com" />
         </label>
 
         <button class="primary-button" type="submit" >
@@ -261,19 +265,21 @@
         <div class="notice-box">
           <strong>Atenção:</strong>
           depois de incluir a ocorrência, utilize o botão
-          <strong>✉️ Enviar por e-mail</strong> para encaminhar
-          os dados à administração. Não esqueça de anexar a foto da ocorrência. Após a confirmação do envio, as opções de enviar por e-mail
-e excluir serão desabilitadas. A edição continuará
-disponível para atualização da situação da ocorrência.
+          <strong>✉️ Enviar por e-mail</strong>
+          para encaminhar os dados à administração.
+          Não esqueça de anexar a foto da ocorrência.
+          Após a confirmação do envio, as opções de enviar
+          por e-mail e excluir serão desabilitadas.
+          A edição continuará disponível para atualização
+          da situação da ocorrência.
         </div>
 
-        <form id="reportForm" class="form" >
+        <form id="reportForm" class="form" autocomplete="off" >
           <label>
             Título do problema *
 
             <input id="reportTitle" type="text" required maxlength="100" placeholder="Ex.: Lâmpada queimada" />
           </label>
-
 
           <div class="two-columns">
             <label>
@@ -352,7 +358,6 @@ disponível para atualização da situação da ocorrência.
               </select>
             </label>
           </div>
-
 
           <div class="two-columns">
             <label>
@@ -500,13 +505,11 @@ disponível para atualização da situação da ocorrência.
             </label>
           </div>
 
-
           <label>
             Descrição detalhada *
 
             <textarea id="reportDescription" required minlength="10" maxlength="2000" rows="5" placeholder="Explique o que aconteceu." ></textarea>
           </label>
-
 
           <label>
             Foto
@@ -517,14 +520,6 @@ disponível para atualização da situação da ocorrência.
               A foto será reduzida automaticamente.
             </small>
           </label>
-
-
-          <label class="checkbox-label">
-            <input id="reportUpdates" type="checkbox" checked />
-
-            Quero receber atualizações.
-          </label>
-
 
           <button id="btnSubmitReport" class="primary-button" type="submit" >
             Incluir ocorrência
@@ -544,12 +539,11 @@ disponível para atualização da situação da ocorrência.
             <p class="muted">
               Acompanhe as ocorrências abertas por você.
               Depois que o e-mail for enviado, as opções
-              enviar por e-mail e excluir serão
-              desabilitadas.
+              enviar por e-mail e excluir serão desabilitadas.
             </p>
           </div>
 
-          <select id="statusFilter" class="compact-select" >
+          <select id="statusFilter" class="compact-select" aria-label="Filtrar meus registros" >
             <option value="Todos">
               Todos
             </option>
@@ -609,8 +603,9 @@ disponível para atualização da situação da ocorrência.
       <p class="muted">
         Atualize os dados da ocorrência selecionada.
         Você poderá continuar atualizando a situação da ocorrência
-mesmo depois que o e-mail for enviado. A exclusão e o reenvio
-do e-mail ficarão bloqueados após o envio.
+        mesmo depois que o e-mail for enviado.
+        A exclusão e o reenvio do e-mail ficarão bloqueados
+        após o envio.
       </p>
 
       <div class="notice-box">
@@ -619,7 +614,7 @@ do e-mail ficarão bloqueados após o envio.
         não será mais possível excluir este registro.
       </div>
 
-      <form id="editForm" class="form" >
+      <form id="editForm" class="form" autocomplete="off" >
         <input id="editReportId" type="hidden" />
 
         <label>
@@ -627,7 +622,6 @@ do e-mail ficarão bloqueados após o envio.
 
           <input id="editTitle" type="text" required maxlength="100" />
         </label>
-
 
         <div class="two-columns">
           <label>
@@ -703,7 +697,6 @@ do e-mail ficarão bloqueados após o envio.
           </label>
         </div>
 
-
         <div class="two-columns">
           <label>
             Local *
@@ -751,14 +744,6 @@ do e-mail ficarão bloqueados após o envio.
 
               <option value="Bloco 8">
                 Bloco 8
-              </option>
-
-              <option value="Academia">
-                Academia
-              </option>
-
-              <option value="Área Externa">
-                Área Externa
               </option>
 
               <option value="Brinquedoteca">
@@ -858,13 +843,11 @@ do e-mail ficarão bloqueados após o envio.
           </label>
         </div>
 
-
         <label>
           Descrição detalhada *
 
           <textarea id="editDescription" required minlength="10" maxlength="2000" rows="5" placeholder="Explique o que aconteceu." ></textarea>
         </label>
-
 
         <label>
           Situação *
@@ -888,7 +871,6 @@ do e-mail ficarão bloqueados após o envio.
           </select>
         </label>
 
-
         <button id="btnSaveEdit" class="primary-button" type="submit" >
           Salvar alterações
         </button>
@@ -899,10 +881,38 @@ do e-mail ficarão bloqueados após o envio.
   </div>
 
 
+  <!-- MODAL PERSONALIZADO DE CONFIRMAÇÃO DE SAÍDA -->
+  <div id="logoutModal" class="modal hidden" >
+    <div class="modal-card logout-modal-card">
+      <button id="btnCloseLogout" class="modal-close" type="button" aria-label="Fechar confirmação" >
+        ×
+      </button>
+
+      <h2>Confirmar saída</h2>
+
+      <p class="muted">
+        Deseja realmente sair do sistema?
+      </p>
+
+      <div class="logout-actions">
+        <button id="btnCancelLogout" class="secondary-button" type="button" >
+          Cancelar
+        </button>
+
+        <button id="btnConfirmLogout" class="danger-button" type="button" >
+          Sair do sistema
+        </button>
+      </div>
+    </div>
+  </div>
+
+
   <!-- NOTIFICAÇÃO -->
   <div id="toast" class="toast" ></div>
 
 
-  <script type="module" src="./app.js" ></script>
+  <!-- JAVASCRIPT DA PÁGINA -->
+  <script type="module" src="./app.js?v=2" ></script>
+
 </body>
 </html>
