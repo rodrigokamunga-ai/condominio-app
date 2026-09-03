@@ -95,6 +95,52 @@ function show(id) {
   }
 }
 
+function showMenu() {
+  const menuButton =
+    $("btnMenu");
+
+  const menu =
+    $("mainMenu");
+
+  if (menuButton) {
+    menuButton.classList.remove(
+      "hidden"
+    );
+  }
+
+  if (menu) {
+    menu.classList.add(
+      "hidden"
+    );
+  }
+}
+
+
+function hideMenu() {
+  const menuButton =
+    $("btnMenu");
+
+  const menu =
+    $("mainMenu");
+
+  if (menuButton) {
+    menuButton.classList.add(
+      "hidden"
+    );
+  }
+
+  if (menu) {
+    menu.classList.add(
+      "hidden"
+    );
+  }
+
+  menuButton?.setAttribute(
+    "aria-expanded",
+    "false"
+  );
+}
+
 
 function hide(id) {
   const element = $(id);
@@ -2014,30 +2060,32 @@ $("btnConfirmLogout")?.addEventListener(
     }
 
     try {
-      await signOut(auth);
+  await signOut(auth);
 
-      clearLoginFields();
+  hideMenu();
 
-      hide("logoutModal");
+  clearLoginFields();
 
-      message(
-        "loginMessage",
-        "Você saiu do sistema.",
-        true
-      );
-    } catch (error) {
-      console.error(
-        "Erro ao sair:",
-        error
-      );
+  hide("logoutModal");
 
-      hide("logoutModal");
+  message(
+    "loginMessage",
+    "Você saiu do sistema.",
+    true
+  );
+} catch (error) {
+  console.error(
+    "Erro ao sair:",
+    error
+  );
 
-      message(
-        "loginMessage",
-        "Não foi possível sair do sistema."
-      );
-    } finally {
+  hide("logoutModal");
+
+  message(
+    "loginMessage",
+    "Não foi possível sair do sistema."
+  );
+} finally {
       if (button) {
         button.disabled =
           false;
@@ -2535,6 +2583,50 @@ onAuthStateChanged(
 
       show("loginView");
 
+      hideMenu();
+
+      $("btnLogout")?.classList.add(
+        "hidden"
+      );
+
+      clearLoginFields();
+
+      if (unsubscribeReports) {
+        unsubscribeReports();
+
+        unsubscribeReports =
+          null;
+      }
+
+      allReports =
+        [];
+
+      return;
+    }
+
+    hide("loginView");
+    hide("registerView");
+    hide("forgotPasswordView");
+
+    show("appView");
+
+    showMenu();
+
+    $("btnLogout")?.classList.remove(
+      "hidden"
+    );
+
+    addCategoryOptions();
+    updateLocationFields();
+
+    // restante do código continua igual
+    if (!user) {
+      hide("appView");
+      hide("registerView");
+      hide("forgotPasswordView");
+
+      show("loginView");
+
       $("btnLogout")?.classList.add(
         "hidden"
       );
@@ -2679,3 +2771,37 @@ onAuthStateChanged(
     }
   }
 );
+
+// =====================================================
+// MENU SUSPENSO
+// =====================================================
+
+const menuButton = $("btnMenu");
+const mainMenu = $("mainMenu");
+
+menuButton?.addEventListener("click", (event) => {
+  event.stopPropagation();
+
+  const isOpen =
+    !mainMenu?.classList.contains("hidden");
+
+  if (isOpen) {
+    mainMenu.classList.add("hidden");
+    menuButton.setAttribute("aria-expanded", "false");
+  } else {
+    mainMenu?.classList.remove("hidden");
+    menuButton.setAttribute("aria-expanded", "true");
+  }
+});
+
+document.addEventListener("click", (event) => {
+  if (
+    mainMenu &&
+    menuButton &&
+    !mainMenu.contains(event.target) &&
+    !menuButton.contains(event.target)
+  ) {
+    mainMenu.classList.add("hidden");
+    menuButton.setAttribute("aria-expanded", "false");
+  }
+});
