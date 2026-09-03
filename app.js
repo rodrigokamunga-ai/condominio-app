@@ -1114,10 +1114,20 @@ $("reportForm")?.addEventListener(
 // LISTAGEM E FILTROS
 // =====================================================
 
+function getSelectedStatus() {
+  const activeButton =
+    document.querySelector(
+      "#statusFilter .status-filter-button.active"
+    );
+
+  return activeButton?.dataset.status ||
+    "Todos";
+}
+
+
 function getFilteredReports() {
   const selectedStatus =
-    $("statusFilter")?.value ||
-    "Todos";
+    getSelectedStatus();
 
   if (
     selectedStatus ===
@@ -1206,30 +1216,35 @@ function renderReports() {
     totalPages
   );
 
-  setText(
-    "statTotal",
-    allReports.length
-  );
-
-  setText(
-    "statOpen",
+  const countStatus =
+  (status) =>
     allReports.filter(
       (report) =>
         (report.status ||
-          "Aberto") !==
-        "Resolvido"
-    ).length
-  );
+          "Aberto") ===
+        status
+    ).length;
 
-  setText(
-    "statResolved",
-    allReports.filter(
-      (report) =>
-        report.status ===
-        "Resolvido"
-    ).length
-  );
-}
+
+setText(
+  "statOpen",
+  countStatus("Aberto")
+);
+
+setText(
+  "statAnalysis",
+  countStatus("Em análise")
+);
+
+setText(
+  "statExecution",
+  countStatus("Em execução")
+);
+
+setText(
+  "statResolved",
+  countStatus("Resolvido")
+);}
 
 
 function renderPagination( totalItems, totalPages ) {
@@ -1920,9 +1935,36 @@ $("editCategory")?.addEventListener(
 );
 
 $("statusFilter")?.addEventListener(
-  "change",
-  () => {
-    currentPage = 1;
+  "click",
+  (event) => {
+    const button =
+      event.target.closest(
+        ".status-filter-button"
+      );
+
+    if (!button) {
+      return;
+    }
+
+    document
+      .querySelectorAll(
+        "#statusFilter .status-filter-button"
+      )
+      .forEach(
+        (item) => {
+          item.classList.remove(
+            "active"
+          );
+        }
+      );
+
+    button.classList.add(
+      "active"
+    );
+
+    currentPage =
+      1;
+
     renderReports();
   }
 );
