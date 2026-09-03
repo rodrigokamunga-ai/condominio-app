@@ -11,7 +11,7 @@
     Amigos do Maui - Mural de Ocorrências
   </title>
 
-  <link rel="stylesheet" href="./styles.css?v=2" />
+  <link rel="stylesheet" href="./styles.css?v=3" />
 </head>
 
 <body class="public-page">
@@ -70,7 +70,7 @@
     <!-- PÁGINA PÚBLICA -->
     <section id="publicView" class="hidden" >
 
-      <!-- CABEÇALHO DA PÁGINA -->
+      <!-- CABEÇALHO DO MURAL -->
       <section class="public-hero">
         <div>
           <span class="eyebrow">
@@ -173,31 +173,34 @@
               Para preservar a privacidade, os dados pessoais dos moradores não são exibidos.
             </p>
           </div>
-
-          <select id="publicStatusFilter" class="compact-select" aria-label="Filtrar ocorrências por situação" >
-            <option value="Todos">
-              Todos
-            </option>
-
-            <option value="Aberto">
-              Abertos
-            </option>
-
-            <option value="Em análise">
-              Em análise
-            </option>
-
-            <option value="Em execução">
-              Em execução
-            </option>
-
-            <option value="Resolvido">
-              Resolvidos
-            </option>
-          </select>
         </div>
 
 
+        <!-- FILTRO POR BOTÕES -->
+        <div id="publicStatusFilter" class="status-filter-buttons" role="group" aria-label="Filtrar ocorrências por situação" >
+          <button type="button" class="status-filter-button active" data-status="Todos" >
+            Todos
+          </button>
+
+          <button type="button" class="status-filter-button" data-status="Aberto" >
+            Abertos
+          </button>
+
+          <button type="button" class="status-filter-button" data-status="Em análise" >
+            Em análise
+          </button>
+
+          <button type="button" class="status-filter-button" data-status="Em execução" >
+            Em execução
+          </button>
+
+          <button type="button" class="status-filter-button" data-status="Resolvido" >
+            Resolvidos
+          </button>
+        </div>
+
+
+        <!-- LISTAGEM -->
         <div id="publicReportsList" class="reports-list" >
           <div class="empty-state">
             Carregando ocorrências...
@@ -205,6 +208,7 @@
         </div>
 
 
+        <!-- PAGINAÇÃO -->
         <div id="publicPagination" class="pagination" ></div>
 
       </section>
@@ -249,7 +253,7 @@
 
 
   <!-- JAVASCRIPT DA PÁGINA -->
-  <script type="module" src="./public.js?v=2" ></script>
+  <script type="module" src="./public.js?v=3" ></script>
 
 </body>
 </html>
