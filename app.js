@@ -1,4 +1,6 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
   getAuth,
@@ -20,7 +22,6 @@ import {
   onSnapshot,
   doc,
   getDoc,
-  getDocs,
   setDoc,
   updateDoc,
   deleteDoc,
@@ -94,6 +95,7 @@ function show(id) {
   }
 }
 
+
 function hide(id) {
   const element = $(id);
 
@@ -101,6 +103,7 @@ function hide(id) {
     element.classList.add("hidden");
   }
 }
+
 
 function setText(id, text) {
   const element = $(id);
@@ -110,60 +113,71 @@ function setText(id, text) {
   }
 }
 
-function clearLoginFields() {
-  const loginForm = $("loginForm");
 
-  if (loginForm) {
-    loginForm.reset();
-  }
-
-  const loginEmail = $("loginEmail");
-  const loginPassword = $("loginPassword");
-
-  if (loginEmail) {
-    loginEmail.value = "";
-  }
-
-  if (loginPassword) {
-    loginPassword.value = "";
-  }
-
-  const forgotPasswordEmail =
-    $("forgotPasswordEmail");
-
-  if (forgotPasswordEmail) {
-    forgotPasswordEmail.value = "";
-  }
-}
-
-function message(id, text, success = false) {
+function message( id, text, success = false ) {
   const element = $(id);
 
   if (!element) {
     return;
   }
 
-  element.textContent = text;
-  element.className = success
-    ? "message success"
-    : "message";
+  element.textContent =
+    text || "";
+
+  element.className =
+    success
+      ? "message success"
+      : "message";
 }
 
+
 function toast(text) {
-  const element = $("toast");
+  const element =
+    $("toast");
 
   if (!element) {
     alert(text);
     return;
   }
 
-  element.textContent = text;
-  element.classList.add("show");
+  element.textContent =
+    text;
+
+  element.classList.add(
+    "show"
+  );
 
   setTimeout(() => {
-    element.classList.remove("show");
+    element.classList.remove(
+      "show"
+    );
   }, 3500);
 }
+
+
+function clearLoginFields() {
+  const loginForm =
+    $("loginForm");
+
+  if (loginForm) {
+    loginForm.reset();
+  }
+
+  const fields = [
+    "loginEmail",
+    "loginPassword",
+    "forgotPasswordEmail"
+  ];
+
+  fields.forEach((id) => {
+    const element = $(id);
+
+    if (element) {
+      element.value = "";
+    }
+  });
+}
+
 
 function escapeHtml(value = "") {
   return String(value).replace(
@@ -177,6 +191,7 @@ function escapeHtml(value = "") {
     }[character])
   );
 }
+
 
 function formatDate(value) {
   if (!value) {
@@ -199,6 +214,7 @@ function formatDate(value) {
   return "Não informada";
 }
 
+
 function toDate(value) {
   if (!value) {
     return null;
@@ -218,6 +234,7 @@ function toDate(value) {
   return null;
 }
 
+
 function isAdmin(user) {
   return Boolean(
     user?.email &&
@@ -225,6 +242,7 @@ function isAdmin(user) {
       ADMIN_EMAIL.toLowerCase()
   );
 }
+
 
 function statusClass(status) {
   if (status === "Resolvido") {
@@ -241,6 +259,7 @@ function statusClass(status) {
   return "open";
 }
 
+
 function reportEmailAlreadySent(report) {
   return Boolean(
     report?.emailEnviado === true ||
@@ -248,8 +267,12 @@ function reportEmailAlreadySent(report) {
   );
 }
 
+
 function friendlyError(error) {
-  console.error("Erro completo:", error);
+  console.error(
+    "Erro completo:",
+    error
+  );
 
   const errors = {
     "auth/invalid-credential":
@@ -265,7 +288,7 @@ function friendlyError(error) {
       "Este e-mail já está cadastrado.",
 
     "auth/weak-password":
-      "A senha deve ter pelo menos 6 caracteres.",
+      "A senha deve ter pelo menos 8 caracteres.",
 
     "auth/invalid-email":
       "Informe um e-mail válido.",
@@ -305,106 +328,153 @@ function isStrongPassword(password) {
 
 
 // =====================================================
-// COMPACTAÇÃO DA IMAGEM
+// COMPACTAÇÃO DE IMAGEM
 // =====================================================
 
 function compressImage( file, maxWidth = 640, maxHeight = 480, quality = 0.6 ) {
-  return new Promise((resolve, reject) => {
-    if (!file || !file.type.startsWith("image/")) {
-      reject(
-        new Error("Selecione uma imagem válida.")
+  return new Promise(
+    (resolve, reject) => {
+      if (
+        !file ||
+        !file.type.startsWith("image/")
+      ) {
+        reject(
+          new Error(
+            "Selecione uma imagem válida."
+          )
+        );
+
+        return;
+      }
+
+      const reader =
+        new FileReader();
+
+      const image =
+        new Image();
+
+      reader.onload =
+        (event) => {
+          image.src =
+            event.target.result;
+        };
+
+      reader.onerror =
+        () => {
+          reject(
+            new Error(
+              "Não foi possível ler a imagem."
+            )
+          );
+        };
+
+      image.onload =
+        () => {
+          let width =
+            image.width;
+
+          let height =
+            image.height;
+
+          const scale =
+            Math.min(
+              maxWidth / width,
+              maxHeight / height,
+              1
+            );
+
+          width =
+            Math.round(
+              width * scale
+            );
+
+          height =
+            Math.round(
+              height * scale
+            );
+
+          const canvas =
+            document.createElement(
+              "canvas"
+            );
+
+          canvas.width =
+            width;
+
+          canvas.height =
+            height;
+
+          const context =
+            canvas.getContext(
+              "2d"
+            );
+
+          if (!context) {
+            reject(
+              new Error(
+                "Não foi possível processar a imagem."
+              )
+            );
+
+            return;
+          }
+
+          context.drawImage(
+            image,
+            0,
+            0,
+            width,
+            height
+          );
+
+          const imageData =
+            canvas.toDataURL(
+              "image/jpeg",
+              quality
+            );
+
+          const approximateSize =
+            Math.round(
+              imageData.length * 3 / 4
+            );
+
+          if (
+            approximateSize >
+            350000
+          ) {
+            reject(
+              new Error(
+                "A imagem ficou muito grande. Escolha outra foto."
+              )
+            );
+
+            return;
+          }
+
+          resolve(
+            imageData
+          );
+        };
+
+      image.onerror =
+        () => {
+          reject(
+            new Error(
+              "Imagem inválida."
+            )
+          );
+        };
+
+      reader.readAsDataURL(
+        file
       );
-      return;
     }
-
-    const reader = new FileReader();
-    const image = new Image();
-
-    reader.onload = (event) => {
-      image.src = event.target.result;
-    };
-
-    reader.onerror = () => {
-      reject(
-        new Error("Não foi possível ler a imagem.")
-      );
-    };
-
-    image.onload = () => {
-      let width = image.width;
-      let height = image.height;
-
-      const scale = Math.min(
-        maxWidth / width,
-        maxHeight / height,
-        1
-      );
-
-      width = Math.round(width * scale);
-      height = Math.round(height * scale);
-
-      const canvas =
-        document.createElement("canvas");
-
-      canvas.width = width;
-      canvas.height = height;
-
-      const context =
-        canvas.getContext("2d");
-
-      if (!context) {
-        reject(
-          new Error(
-            "Não foi possível processar a imagem."
-          )
-        );
-        return;
-      }
-
-      context.drawImage(
-        image,
-        0,
-        0,
-        width,
-        height
-      );
-
-      const imageData =
-        canvas.toDataURL(
-          "image/jpeg",
-          quality
-        );
-
-      const approximateSize =
-        Math.round(
-          (imageData.length * 3) / 4
-        );
-
-      if (approximateSize > 350000) {
-        reject(
-          new Error(
-            "A imagem ficou muito grande. Escolha outra foto."
-          )
-        );
-        return;
-      }
-
-      resolve(imageData);
-    };
-
-    image.onerror = () => {
-      reject(
-        new Error("Imagem inválida.")
-      );
-    };
-
-    reader.readAsDataURL(file);
-  });
+  );
 }
 
 
 // =====================================================
-// NORMALIZAÇÃO DE TEXTO
+// NORMALIZAÇÃO E DATAS
 // =====================================================
 
 function normalizeText(value = "") {
@@ -416,8 +486,51 @@ function normalizeText(value = "") {
 }
 
 
+function openingDate(report) {
+  return report.dataAbertura ||
+    report.inicioEm ||
+    report.criadoEm;
+}
+
+
+function resolvedDate(report) {
+  return report.dataResolvido ||
+    report.fimEm;
+}
+
+
+function calculateDays( startValue, endValue = null ) {
+  const start =
+    toDate(startValue);
+
+  if (!start) {
+    return "Não informado";
+  }
+
+  const end =
+    toDate(endValue) ||
+    new Date();
+
+  const difference =
+    end.getTime() -
+    start.getTime();
+
+  const days =
+    Math.floor(
+      difference /
+      (1000 * 60 * 60 * 24)
+    );
+
+  if (days <= 0) {
+    return "menos de 1 dia";
+  }
+
+  return `${days} dia${days === 1 ? "" : "s"}`;
+}
+
+
 // =====================================================
-// VERIFICAÇÃO DE OCORRÊNCIA SEMELHANTE
+// OCORRÊNCIA SEMELHANTE
 // =====================================================
 
 function findSimilarOpenReport({ category, location, reference, ignoredReportId = null }) {
@@ -430,77 +543,71 @@ function findSimilarOpenReport({ category, location, reference, ignoredReportId 
   const normalizedReference =
     normalizeText(reference);
 
-  return allReports.find((report) => {
-    if (
-      ignoredReportId &&
-      report.id === ignoredReportId
-    ) {
-      return false;
+  return allReports.find(
+    (report) => {
+      if (
+        ignoredReportId &&
+        report.id ===
+          ignoredReportId
+      ) {
+        return false;
+      }
+
+      const status =
+        report.status ||
+        "Aberto";
+
+      const sameCategory =
+        normalizeText(
+          report.categoria
+        ) ===
+        normalizedCategory;
+
+      const sameLocation =
+        normalizeText(
+          report.local
+        ) ===
+        normalizedLocation;
+
+      const sameReference =
+        normalizeText(
+          report.referenciaLocal
+        ) ===
+        normalizedReference;
+
+      return (
+        status !== "Resolvido" &&
+        sameCategory &&
+        sameLocation &&
+        sameReference
+      );
     }
-
-    const status =
-      report.status || "Aberto";
-
-    const isOpen =
-      status !== "Resolvido";
-
-    const sameCategory =
-      normalizeText(
-        report.categoria
-      ) === normalizedCategory;
-
-    const sameLocation =
-      normalizeText(
-        report.local
-      ) === normalizedLocation;
-
-    const sameReference =
-      normalizeText(
-        report.referenciaLocal
-      ) === normalizedReference;
-
-    return (
-      isOpen &&
-      sameCategory &&
-      sameLocation &&
-      sameReference
-    );
-  });
+  );
 }
 
+
 function confirmSimilarReport(report) {
-  const protocol =
-    report.protocolo ||
-    "Não informado";
+  const messageText = [
+    "Encontramos uma ocorrência semelhante já cadastrada:",
+    "",
+    `Título: ${report.titulo || "Sem título"}`,
+    `Protocolo: ${report.protocolo || "Não informado"}`,
+    `Categoria: ${report.categoria || "Não informada"}`,
+    `Local: ${report.local || "Não informado"}`,
+    `Referência: ${report.referenciaLocal || "Não informada"}`,
+    `Status: ${report.status || "Aberto"}`,
+    "",
+    "Deseja continuar registrando uma nova ocorrência?"
+  ].join("\n");
 
-  const title =
-    report.titulo ||
-    "Sem título";
-
-  const category =
-    report.categoria ||
-    "Não informada";
-
-  const location =
-    report.local ||
-    "Não informado";
-
-  const reference =
-    report.referenciaLocal ||
-    "Não informada";
-
-  const status =
-    report.status ||
-    "Aberto";
-
-  const messageText = ` Encontramos uma ocorrência semelhante já cadastrada: Título: ${title} Protocolo: ${protocol} Categoria: ${category} Local: ${location} Referência: ${reference} Status: ${status} Deseja continuar registrando uma nova ocorrência? `.trim();
-
-  return confirm(messageText);
+  return confirm(
+    messageText
+  );
 }
 
 
 // =====================================================
-// CATEGORIAS
+// CATEGORIAS E CAMPOS DE LOCAL
 // =====================================================
 
 function addCategoryOptions() {
@@ -511,30 +618,38 @@ function addCategoryOptions() {
     return;
   }
 
-  const options = [
+  [
     "Documentação",
     "Jardinagem"
-  ];
-
-  options.forEach((value) => {
+  ].forEach((value) => {
     const exists =
-      Array.from(category.options)
-        .some(
-          (option) =>
-            option.value === value
-        );
+      Array.from(
+        category.options
+      ).some(
+        (option) =>
+          option.value ===
+          value
+      );
 
     if (!exists) {
       const option =
-        document.createElement("option");
+        document.createElement(
+          "option"
+        );
 
-      option.value = value;
-      option.textContent = value;
+      option.value =
+        value;
 
-      category.appendChild(option);
+      option.textContent =
+        value;
+
+      category.appendChild(
+        option
+      );
     }
   });
 }
+
 
 function addEditCategoryOptions() {
   const category =
@@ -544,45 +659,49 @@ function addEditCategoryOptions() {
     return;
   }
 
-  const options = [
+  [
     "Documentação",
     "Jardinagem"
-  ];
-
-  options.forEach((value) => {
+  ].forEach((value) => {
     const exists =
-      Array.from(category.options)
-        .some(
-          (option) =>
-            option.value === value
-        );
+      Array.from(
+        category.options
+      ).some(
+        (option) =>
+          option.value ===
+          value
+      );
 
     if (!exists) {
       const option =
-        document.createElement("option");
+        document.createElement(
+          "option"
+        );
 
-      option.value = value;
-      option.textContent = value;
+      option.value =
+        value;
 
-      category.appendChild(option);
+      option.textContent =
+        value;
+
+      category.appendChild(
+        option
+      );
     }
   });
 }
 
 
-// =====================================================
-// CAMPOS DE LOCAL
-// =====================================================
-
 function updateLocationFields() {
   const category =
-    $("reportCategory")?.value || "";
+    $("reportCategory")?.value ||
+    "";
 
-  const disableLocation =
+  const noLocation =
     category === "Documentação" ||
     category === "Jardinagem";
 
-  const disableReference =
+  const noReference =
     category === "Documentação";
 
   const location =
@@ -593,35 +712,39 @@ function updateLocationFields() {
 
   if (location) {
     location.disabled =
-      disableLocation;
+      noLocation;
 
     location.required =
-      !disableLocation;
+      !noLocation;
 
-    if (disableLocation) {
-      location.value = "";
+    if (noLocation) {
+      location.value =
+        "";
     }
   }
 
   if (reference) {
     reference.disabled =
-      disableReference;
+      noReference;
 
-    if (disableReference) {
-      reference.value = "";
+    if (noReference) {
+      reference.value =
+        "";
     }
   }
 }
 
+
 function updateEditLocationFields() {
   const category =
-    $("editCategory")?.value || "";
+    $("editCategory")?.value ||
+    "";
 
-  const disableLocation =
+  const noLocation =
     category === "Documentação" ||
     category === "Jardinagem";
 
-  const disableReference =
+  const noReference =
     category === "Documentação";
 
   const location =
@@ -632,47 +755,31 @@ function updateEditLocationFields() {
 
   if (location) {
     location.disabled =
-      disableLocation;
+      noLocation;
 
     location.required =
-      !disableLocation;
+      !noLocation;
 
-    if (disableLocation) {
-      location.value = "";
+    if (noLocation) {
+      location.value =
+        "";
     }
   }
 
   if (reference) {
     reference.disabled =
-      disableReference;
+      noReference;
 
-    if (disableReference) {
-      reference.value = "";
+    if (noReference) {
+      reference.value =
+        "";
     }
-  }
-}
-
-function removeUpdatesField() {
-  const updates =
-    $("reportUpdates");
-
-  if (!updates) {
-    return;
-  }
-
-  const label =
-    updates.closest("label");
-
-  if (label) {
-    label.remove();
-  } else {
-    updates.remove();
   }
 }
 
 
 // =====================================================
-// ENVIO DE NOVA OCORRÊNCIA
+// NOVA OCORRÊNCIA
 // =====================================================
 
 $("reportForm")?.addEventListener(
@@ -688,6 +795,7 @@ $("reportForm")?.addEventListener(
         "reportMessage",
         "Você precisa estar logado para enviar uma ocorrência."
       );
+
       return;
     }
 
@@ -695,7 +803,8 @@ $("reportForm")?.addEventListener(
       $("btnSubmitReport");
 
     if (submitButton) {
-      submitButton.disabled = true;
+      submitButton.disabled =
+        true;
     }
 
     message(
@@ -705,36 +814,40 @@ $("reportForm")?.addEventListener(
 
     try {
       const title =
-        $("reportTitle")?.value.trim() || "";
+        $("reportTitle")?.value.trim() ||
+        "";
 
       const category =
-        $("reportCategory")?.value || "";
+        $("reportCategory")?.value ||
+        "";
 
       const priority =
-        $("reportPriority")?.value || "Normal";
+        $("reportPriority")?.value ||
+        "Normal";
 
       const description =
-        $("reportDescription")?.value.trim() || "";
+        $("reportDescription")?.value.trim() ||
+        "";
 
       const file =
-        $("reportPhoto")?.files?.[0] || null;
+        $("reportPhoto")?.files?.[0] ||
+        null;
 
-      const noLocationRequired =
+      const noLocation =
         category === "Documentação" ||
         category === "Jardinagem";
 
-      const isDocumentation =
-        category === "Documentação";
-
       const location =
-        noLocationRequired
+        noLocation
           ? ""
-          : $("reportLocation")?.value || "";
+          : $("reportLocation")?.value ||
+            "";
 
       const reference =
-        isDocumentation
+        category === "Documentação"
           ? ""
-          : $("reportReference")?.value.trim() || "";
+          : $("reportReference")?.value.trim() ||
+            "";
 
       if (
         !title ||
@@ -748,7 +861,7 @@ $("reportForm")?.addEventListener(
       }
 
       if (
-        !noLocationRequired &&
+        !noLocation &&
         !location
       ) {
         throw new Error(
@@ -756,37 +869,40 @@ $("reportForm")?.addEventListener(
         );
       }
 
-      if (description.length < 10) {
+      if (
+        description.length <
+        10
+      ) {
         throw new Error(
           "A descrição deve ter pelo menos 10 caracteres."
         );
       }
 
-      if (!noLocationRequired) {
-        const similarReport =
+      if (!noLocation) {
+        const similar =
           findSimilarOpenReport({
             category,
             location,
             reference
           });
 
-        if (similarReport) {
-          const continueSending =
-            confirmSimilarReport(
-              similarReport
-            );
+        if (
+          similar &&
+          !confirmSimilarReport(
+            similar
+          )
+        ) {
+          message(
+            "reportMessage",
+            "Envio cancelado."
+          );
 
-          if (!continueSending) {
-            message(
-              "reportMessage",
-              "Envio cancelado."
-            );
-            return;
-          }
+          return;
         }
       }
 
-      let fotoData = "";
+      let fotoData =
+        "";
 
       if (file) {
         if (
@@ -798,26 +914,24 @@ $("reportForm")?.addEventListener(
           );
         }
 
-        if (
-          !file.type.startsWith("image/")
-        ) {
-          throw new Error(
-            "Selecione um arquivo de imagem válido."
-          );
-        }
-
         message(
           "reportMessage",
           "Reduzindo o tamanho da foto..."
         );
 
         fotoData =
-          await compressImage(file);
+          await compressImage(
+            file
+          );
       }
 
       const userSnapshot =
         await getDoc(
-          doc(db, "users", user.uid)
+          doc(
+            db,
+            "users",
+            user.uid
+          )
         );
 
       const profile =
@@ -832,11 +946,16 @@ $("reportForm")?.addEventListener(
         `COND-${now.toISOString().slice(0, 10).replaceAll("-", "")}-${String(Date.now()).slice(-5)}`;
 
       await addDoc(
-        collection(db, "reports"),
+        collection(
+          db,
+          "reports"
+        ),
         {
-          protocolo: protocol,
+          protocolo:
+            protocol,
 
-          moradorId: user.uid,
+          moradorId:
+            user.uid,
 
           nome:
             profile.nome ||
@@ -855,28 +974,47 @@ $("reportForm")?.addEventListener(
             profile.bloco ||
             "",
 
-          titulo: title,
-          categoria: category,
-          prioridade: priority,
-          local: location,
-          referenciaLocal: reference,
-          descricao: description,
+          titulo:
+            title,
 
-          status: "Aberto",
+          categoria:
+            category,
+
+          prioridade:
+            priority,
+
+          local:
+            location,
+
+          referenciaLocal:
+            reference,
+
+          descricao:
+            description,
+
+          status:
+            "Aberto",
 
           dataAbertura:
             serverTimestamp(),
 
-          dataAnalise: null,
-          dataExecucao: null,
-          dataResolvido: null,
+          dataAnalise:
+            null,
+
+          dataExecucao:
+            null,
+
+          dataResolvido:
+            null,
 
           inicioEm:
             serverTimestamp(),
 
-          fimEm: null,
+          fimEm:
+            null,
 
-          fotoData,
+          fotoData:
+            fotoData,
 
           criadoEm:
             serverTimestamp(),
@@ -884,9 +1022,14 @@ $("reportForm")?.addEventListener(
           atualizadoEm:
             serverTimestamp(),
 
-          emailEnviado: false,
-          emailEnviadoEm: null,
-          emailEnviadoPara: null
+          emailEnviado:
+            false,
+
+          emailEnviadoEm:
+            null,
+
+          emailEnviadoPara:
+            null
         }
       );
 
@@ -894,7 +1037,9 @@ $("reportForm")?.addEventListener(
 
       updateLocationFields();
 
-      hide("reportFormCard");
+      hide(
+        "reportFormCard"
+      );
 
       message(
         "reportMessage",
@@ -902,7 +1047,7 @@ $("reportForm")?.addEventListener(
       );
 
       toast(
-        `Ocorrência incluída com sucesso. Protocolo: ${protocol}. Agora envie um e-mail para a administração usando a opção de e-mail.`
+        `Ocorrência incluída com sucesso. Protocolo: ${protocol}. Agora envie um e-mail para a administração.`
       );
     } catch (error) {
       message(
@@ -911,7 +1056,8 @@ $("reportForm")?.addEventListener(
       );
     } finally {
       if (submitButton) {
-        submitButton.disabled = false;
+        submitButton.disabled =
+          false;
       }
     }
   }
@@ -919,67 +1065,29 @@ $("reportForm")?.addEventListener(
 
 
 // =====================================================
-// DATAS E LINHA DO TEMPO
-// =====================================================
-
-function openingDate(report) {
-  return report.dataAbertura ||
-    report.inicioEm ||
-    report.criadoEm;
-}
-
-function resolvedDate(report) {
-  return report.dataResolvido ||
-    report.fimEm;
-}
-
-function calculateDays( startValue, endValue = null ) {
-  const start =
-    toDate(startValue);
-
-  if (!start) {
-    return "Não informado";
-  }
-
-  const end =
-    toDate(endValue) ||
-    new Date();
-
-  const difference =
-    end.getTime() -
-    start.getTime();
-
-  const days = Math.floor(
-    difference /
-      (1000 * 60 * 60 * 24)
-  );
-
-  if (days <= 0) {
-    return "menos de 1 dia";
-  }
-
-  return `${days} dia${days === 1 ? "" : "s"}`;
-}
-
-
-// =====================================================
-// FILTRO E LISTAGEM
+// LISTAGEM E FILTROS
 // =====================================================
 
 function getFilteredReports() {
   const selectedStatus =
-    $("statusFilter")?.value || "Todos";
+    $("statusFilter")?.value ||
+    "Todos";
 
-  if (selectedStatus === "Todos") {
+  if (
+    selectedStatus ===
+    "Todos"
+  ) {
     return allReports;
   }
 
   return allReports.filter(
     (report) =>
-      (report.status || "Aberto") ===
+      (report.status ||
+        "Aberto") ===
       selectedStatus
   );
 }
+
 
 function renderReports() {
   const list =
@@ -992,20 +1100,26 @@ function renderReports() {
   const filteredReports =
     getFilteredReports();
 
-  const totalPages = Math.max(
-    1,
-    Math.ceil(
-      filteredReports.length /
+  const totalPages =
+    Math.max(
+      1,
+      Math.ceil(
+        filteredReports.length /
         pageSize
-    )
-  );
+      )
+    );
 
-  if (currentPage > totalPages) {
-    currentPage = totalPages;
+  if (
+    currentPage >
+    totalPages
+  ) {
+    currentPage =
+      totalPages;
   }
 
   const start =
-    (currentPage - 1) * pageSize;
+    (currentPage - 1) *
+    pageSize;
 
   const visibleReports =
     filteredReports.slice(
@@ -1013,37 +1127,30 @@ function renderReports() {
       start + pageSize
     );
 
-  if (visibleReports.length === 0) {
+  if (
+    visibleReports.length ===
+    0
+  ) {
     list.innerHTML = ` <div class="empty-state"> Nenhum registro encontrado. </div> `;
   } else {
     list.innerHTML =
       visibleReports
         .map((report) => {
           const status =
-            report.status || "Aberto";
+            report.status ||
+            "Aberto";
 
-          const emailAlreadySent =
-            reportEmailAlreadySent(report);
+          const alreadySent =
+            reportEmailAlreadySent(
+              report
+            );
 
-          const disabledAfterEmail =
-            emailAlreadySent
+          const disabled =
+            alreadySent
               ? "disabled"
               : "";
 
-          const emailSentMessage =
-            emailAlreadySent
-              ? ` <div class="email-sent-message"> E-mail já enviado para a administração. </div> `
-              : "";
-
-          return ` <article class="report-item compact-report"> <div> <div class="report-title"> ${escapeHtml( report.titulo || "Sem título" )} </div> <div class="report-meta"> Protocolo: ${escapeHtml( report.protocolo || "Não informado" )} </div> <div class="report-meta"> Início: ${formatDate( openingDate(report) )} </div> ${ resolvedDate(report) ? ` <div class="report-meta"> Fim: ${formatDate( resolvedDate(report) )} </div> ` : "" } <span class="badge ${statusClass(status)}"> ${escapeHtml(status)} </span> </div> <div class="report-actions"> <button class="action-icon-button detail-button" data-id="${report.id}" type="button" title="Detalhar" aria-label="Detalhar ocorrência" > 🔍 </button> <button class="action-icon-button timeline-button" data-id="${report.id}" type="button" title="Linha do tempo" aria-label="Linha do tempo" > 🕒 </button> <button
-  class="action-icon-button edit-button"
-  data-id="${report.id}"
-  type="button"
-  title="Editar ocorrência"
-  aria-label="Editar ocorrência"
->
-  ✏️
-</button> <button class="action-icon-button whatsapp-button" data-id="${report.id}" type="button" title="Enviar pelo WhatsApp" aria-label="Enviar pelo WhatsApp" > 💬 </button> <button class="action-icon-button email-button" data-id="${report.id}" type="button" title="${ emailAlreadySent ? "E-mail já enviado" : "Enviar por e-mail" }" aria-label="Enviar por e-mail" ${disabledAfterEmail} > ✉️ </button> <button class="action-icon-button delete-button" data-id="${report.id}" type="button" title="${ emailAlreadySent ? "Exclusão bloqueada após envio do e-mail" : "Excluir ocorrência" }" aria-label="Excluir ocorrência" ${disabledAfterEmail} > 🗑️ </button> </div> ${emailSentMessage} </article> `;
+          return ` <article class="report-item compact-report" > <div> <div class="report-title"> ${escapeHtml( report.titulo || "Sem título" )} </div> <div class="report-meta"> Protocolo: ${escapeHtml( report.protocolo || "Não informado" )} </div> <div class="report-meta"> Início: ${formatDate( openingDate(report) )} </div> ${ resolvedDate(report) ? ` <div class="report-meta"> Fim: ${formatDate( resolvedDate(report) )} </div> ` : "" } <span class="badge ${statusClass(status)}" > ${escapeHtml(status)} </span> </div> <div class="report-actions"> <button class="action-icon-button detail-button" data-id="${report.id}" type="button" title="Detalhar" aria-label="Detalhar ocorrência" > 🔍 </button> <button class="action-icon-button timeline-button" data-id="${report.id}" type="button" title="Linha do tempo" aria-label="Linha do tempo" > 🕒 </button> <button class="action-icon-button edit-button" data-id="${report.id}" type="button" title="Editar ocorrência" aria-label="Editar ocorrência" > ✏️ </button> <button class="action-icon-button whatsapp-button" data-id="${report.id}" type="button" title="Enviar pelo WhatsApp" aria-label="Enviar pelo WhatsApp" > 💬 </button> <button class="action-icon-button email-button" data-id="${report.id}" type="button" title="${ alreadySent ? "E-mail já enviado" : "Enviar por e-mail" }" aria-label="Enviar por e-mail" ${disabled} > ✉️ </button> <button class="action-icon-button delete-button" data-id="${report.id}" type="button" title="${ alreadySent ? "Exclusão bloqueada após envio do e-mail" : "Excluir ocorrência" }" aria-label="Excluir ocorrência" ${disabled} > 🗑️ </button> </div> ${ alreadySent ? ` <div class="email-sent-message"> E-mail já enviado para a administração. </div> ` : "" } </article> `;
         })
         .join("");
   }
@@ -1062,7 +1169,8 @@ function renderReports() {
     "statOpen",
     allReports.filter(
       (report) =>
-        (report.status || "Aberto") !==
+        (report.status ||
+          "Aberto") !==
         "Resolvido"
     ).length
   );
@@ -1071,10 +1179,12 @@ function renderReports() {
     "statResolved",
     allReports.filter(
       (report) =>
-        report.status === "Resolvido"
+        report.status ===
+        "Resolvido"
     ).length
   );
 }
+
 
 function renderPagination( totalItems, totalPages ) {
   const pagination =
@@ -1085,11 +1195,13 @@ function renderPagination( totalItems, totalPages ) {
   }
 
   if (totalItems === 0) {
-    pagination.innerHTML = "";
+    pagination.innerHTML =
+      "";
+
     return;
   }
 
-  pagination.innerHTML = ` <button id="prevPage" class="secondary-button" type="button" ${currentPage <= 1 ? "disabled" : ""} > Anterior </button> <span> Página ${currentPage} de ${totalPages} </span> <button id="nextPage" class="secondary-button" type="button" ${currentPage >= totalPages ? "disabled" : ""} > Próxima </button> `;
+  pagination.innerHTML = ` <button id="prevPage" class="secondary-button" type="button" ${ currentPage <= 1 ? "disabled" : "" } > Anterior </button> <span> Página ${currentPage} de ${totalPages} </span> <button id="nextPage" class="secondary-button" type="button" ${ currentPage >= totalPages ? "disabled" : "" } > Próxima </button> `;
 }
 
 
@@ -1100,7 +1212,8 @@ function renderPagination( totalItems, totalPages ) {
 function openDetails(reportId) {
   const report =
     allReports.find(
-      (item) => item.id === reportId
+      (item) =>
+        item.id === reportId
     );
 
   if (!report) {
@@ -1115,9 +1228,10 @@ function openDetails(reportId) {
   }
 
   const status =
-    report.status || "Aberto";
+    report.status ||
+    "Aberto";
 
-  content.innerHTML = ` <span class="eyebrow"> DETALHAMENTO DA OCORRÊNCIA </span> <h2> ${escapeHtml( report.titulo || "Sem título" )} </h2> <p> <b>Protocolo:</b> ${escapeHtml( report.protocolo || "Não informado" )} </p> <p> <b>Status:</b> <span class="badge ${statusClass(status)}"> ${escapeHtml(status)} </span> </p> <p> <b>Categoria:</b> ${escapeHtml( report.categoria || "Não informada" )} </p> <p> <b>Prioridade:</b> ${escapeHtml( report.prioridade || "Não informada" )} </p> <p> <b>Local:</b> ${escapeHtml( report.local || "Não informado" )} </p> <p> <b>Referência:</b> ${escapeHtml( report.referenciaLocal || "Não informada" )} </p> <p> <b>Data de abertura:</b> ${formatDate( openingDate(report) )} </p> <p> <b>Data em análise:</b> ${formatDate( report.dataAnalise )} </p> <p> <b>Data em execução:</b> ${formatDate( report.dataExecucao )} </p> <p> <b>Data de resolução:</b> ${formatDate( resolvedDate(report) )} </p> <p> <b>Descrição:</b><br> ${escapeHtml( report.descricao || "Sem descrição" )} </p> ${ report.emailEnviado ? ` <p class="email-sent-message"> E-mail já enviado para a administração. </p> ` : "" } ${ report.fotoData ? ` <div class="report-photo-container"> <img class="detail-photo" src="${report.fotoData}" alt="Foto da ocorrência" /> </div> ` : "" } `;
+  content.innerHTML = ` <span class="eyebrow"> DETALHAMENTO DA OCORRÊNCIA </span> <h2> ${escapeHtml( report.titulo || "Sem título" )} </h2> <p> <b>Protocolo:</b> ${escapeHtml( report.protocolo || "Não informado" )} </p> <p> <b>Status:</b> <span class="badge ${statusClass(status)}"> ${escapeHtml(status)} </span> </p> <p> <b>Categoria:</b> ${escapeHtml( report.categoria || "Não informada" )} </p> <p> <b>Prioridade:</b> ${escapeHtml( report.prioridade || "Não informada" )} </p> <p> <b>Local:</b> ${escapeHtml( report.local || "Não informado" )} </p> <p> <b>Referência:</b> ${escapeHtml( report.referenciaLocal || "Não informada" )} </p> <p> <b>Data de abertura:</b> ${formatDate( openingDate(report) )} </p> <p> <b>Data em análise:</b> ${formatDate( report.dataAnalise )} </p> <p> <b>Data em execução:</b> ${formatDate( report.dataExecucao )} </p> <p> <b>Data de resolução:</b> ${formatDate( resolvedDate(report) )} </p> <p> <b>Descrição:</b><br> ${escapeHtml( report.descricao || "Sem descrição" )} </p> ${ report.emailEnviado ? ` <p class="email-sent-message"> E-mail já enviado para a administração. </p> ` : "" } ${ report.fotoData ? ` <div class="report-photo-container"> <img class="detail-photo" src="${report.fotoData}" alt="Foto da ocorrência" loading="lazy" /> </div> ` : "" } `;
 
   show("detailModal");
 }
@@ -1130,7 +1244,8 @@ function openDetails(reportId) {
 function openTimeline(reportId) {
   const report =
     allReports.find(
-      (item) => item.id === reportId
+      (item) =>
+        item.id === reportId
     );
 
   if (!report) {
@@ -1149,22 +1264,23 @@ function openTimeline(reportId) {
     return;
   }
 
-  const abertura =
+  const opening =
     openingDate(report);
 
-  const analise =
+  const analysis =
     report.dataAnalise;
 
-  const execucao =
+  const execution =
     report.dataExecucao;
 
-  const resolvido =
+  const resolved =
     resolvedDate(report);
 
-  content.innerHTML = ` <span class="eyebrow"> LINHA DO TEMPO </span> <h2> ${escapeHtml( report.titulo || "Ocorrência" )} </h2> <p> <b>Protocolo:</b> ${escapeHtml( report.protocolo || "Não informado" )} </p> <div class="timeline"> <div class="timeline-item completed"> <div class="timeline-dot">1</div> <div class="timeline-content"> <strong>Abertura</strong> <span> ${formatDate(abertura)} </span> <small> ${ analise ? `Aberta por ${calculateDays( abertura, analise )}` : `Aberta há ${calculateDays( abertura )}` } </small> </div> </div> <div class="timeline-item ${ analise ? "completed" : "pending" }"> <div class="timeline-dot">2</div> <div class="timeline-content"> <strong>Em análise</strong> <span> ${formatDate(analise)} </span> <small> ${ analise ? execucao ? `Em análise por ${calculateDays( analise, execucao )}` : resolvido ? `Em análise por ${calculateDays( analise, resolvido )}` : `Em análise há ${calculateDays( analise )}` : "Ainda não entrou em análise" } </small> </div> </div> <div class="timeline-item ${ execucao ? "completed" : "pending" }"> <div class="timeline-dot">3</div> <div class="timeline-content"> <strong>Em execução</strong> <span> ${formatDate(execucao)} </span> <small> ${ execucao ? resolvido ? `Em execução por ${calculateDays( execucao, resolvido )}` : `Em execução há ${calculateDays( execucao )}` : "Ainda não entrou em execução" } </small> </div> </div> <div class="timeline-item ${ resolvido ? "completed" : "pending" }"> <div class="timeline-dot">4</div> <div class="timeline-content"> <strong>Resolvido</strong> <span> ${formatDate(resolvido)} </span> <small> ${ resolvido ? "Ocorrência finalizada" : "Ainda não resolvido" } </small> </div> </div> </div> `;
+  content.innerHTML = ` <span class="eyebrow"> LINHA DO TEMPO </span> <h2> ${escapeHtml( report.titulo || "Ocorrência" )} </h2> <p> <b>Protocolo:</b> ${escapeHtml( report.protocolo || "Não informado" )} </p> <div class="timeline"> <div class="timeline-item completed"> <div class="timeline-dot">1</div> <div class="timeline-content"> <strong>Abertura</strong> <span> ${formatDate(opening)} </span> <small> ${ analysis ? `Aberta por ${calculateDays( opening, analysis )}` : `Aberta há ${calculateDays( opening )}` } </small> </div> </div> <div class="timeline-item ${ analysis ? "completed" : "pending" }" > <div class="timeline-dot">2</div> <div class="timeline-content"> <strong>Em análise</strong> <span> ${formatDate(analysis)} </span> <small> ${ analysis ? execution ? `Em análise por ${calculateDays( analysis, execution )}` : resolved ? `Em análise por ${calculateDays( analysis, resolved )}` : `Em análise há ${calculateDays( analysis )}` : "Ainda não entrou em análise" } </small> </div> </div> <div class="timeline-item ${ execution ? "completed" : "pending" }" > <div class="timeline-dot">3</div> <div class="timeline-content"> <strong>Em execução</strong> <span> ${formatDate(execution)} </span> <small> ${ execution ? resolved ? `Em execução por ${calculateDays( execution, resolved )}` : `Em execução há ${calculateDays( execution )}` : "Ainda não entrou em execução" } </small> </div> </div> <div class="timeline-item ${ resolved ? "completed" : "pending" }" > <div class="timeline-dot">4</div> <div class="timeline-content"> <strong>Resolvido</strong> <span> ${formatDate(resolved)} </span> <small> ${ resolved ? "Ocorrência finalizada" : "Ainda não resolvido" } </small> </div> </div> </div> `;
 
   show("timelineModal");
 }
+
 
 function getOrCreateTimelineModal() {
   let modal =
@@ -1175,14 +1291,21 @@ function getOrCreateTimelineModal() {
   }
 
   modal =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
 
-  modal.id = "timelineModal";
-  modal.className = "modal hidden";
+  modal.id =
+    "timelineModal";
+
+  modal.className =
+    "modal hidden";
 
   modal.innerHTML = ` <div class="modal-card"> <button id="btnCloseTimeline" class="modal-close" type="button" aria-label="Fechar linha do tempo" > × </button> <div id="timelineContent"></div> </div> `;
 
-  document.body.appendChild(modal);
+  document.body.appendChild(
+    modal
+  );
 
   modal.addEventListener(
     "click",
@@ -1191,16 +1314,24 @@ function getOrCreateTimelineModal() {
         event.target.id ===
         "timelineModal"
       ) {
-        hide("timelineModal");
+        hide(
+          "timelineModal"
+        );
       }
     }
   );
 
   modal
-    .querySelector("#btnCloseTimeline")
+    .querySelector(
+      "#btnCloseTimeline"
+    )
     ?.addEventListener(
       "click",
-      () => hide("timelineModal")
+      () => {
+        hide(
+          "timelineModal"
+        );
+      }
     );
 
   return modal;
@@ -1208,24 +1339,33 @@ function getOrCreateTimelineModal() {
 
 
 // =====================================================
-// E-MAIL
+// ENVIO POR E-MAIL
 // =====================================================
 
 async function sendReportByEmail(reportId) {
   const report =
     allReports.find(
-      (item) => item.id === reportId
+      (item) =>
+        item.id === reportId
     );
 
   if (!report) {
-    alert("Ocorrência não encontrada.");
+    alert(
+      "Ocorrência não encontrada."
+    );
+
     return;
   }
 
-  if (reportEmailAlreadySent(report)) {
+  if (
+    reportEmailAlreadySent(
+      report
+    )
+  ) {
     alert(
       "O e-mail desta ocorrência já foi enviado para a administração."
     );
+
     return;
   }
 
@@ -1238,8 +1378,7 @@ async function sendReportByEmail(reportId) {
     "",
     "É necessário que esta ocorrência seja analisada pela administração.",
     "",
-    
-    `Data e horário: ${formatDate(openingDate(report))}`,
+    `Data e horário: ${formatDate( openingDate(report) )}`,
     `Categoria: ${report.categoria || "Não informada"}`,
     `Prioridade: ${report.prioridade || "Não informada"}`,
     `Local: ${report.local || "Não informado"}`,
@@ -1252,68 +1391,82 @@ async function sendReportByEmail(reportId) {
     "",
     "Atenciosamente,",
     "",
-    report.nome || "Nome não informado",
-    `Bloco ${report.bloco || "Não informado"} / Apartamento ${report.unidade || "Não informado"}`,
-    
+    report.nome ||
+      "Nome não informado",
+
+    `Bloco ${report.bloco || "Não informado"} / Apartamento ${report.unidade || "Não informado"}`
   ].join("\r\n");
 
   const mailto =
     `mailto:${EMAIL_DESTINO}` +
-    `?cc=${encodeURIComponent(EMAIL_COPIA)}` +
-    `&subject=${encodeURIComponent(subject)}` +
-    `&body=${encodeURIComponent(body)}`;
+    `?cc=${encodeURIComponent( EMAIL_COPIA )}` +
+    `&subject=${encodeURIComponent( subject )}` +
+    `&body=${encodeURIComponent( body )}`;
 
-  window.location.href = mailto;
+  window.location.href =
+    mailto;
 
-  setTimeout(async () => {
-    const confirmed =
-      confirm(
-        "O aplicativo de e-mail foi aberto. Você enviou o e-mail para a administração?"
-      );
+  setTimeout(
+    async () => {
+      const confirmed =
+        confirm(
+          "O aplicativo de e-mail foi aberto. Você enviou o e-mail para a administração?"
+        );
 
-    if (!confirmed) {
-      return;
-    }
+      if (!confirmed) {
+        return;
+      }
 
-    try {
-      await updateDoc(
-        doc(db, "reports", reportId),
-        {
-          emailEnviado: true,
-          emailEnviadoEm:
-            serverTimestamp(),
-          emailEnviadoPara:
-            EMAIL_DESTINO,
-          atualizadoEm:
-            serverTimestamp()
-        }
-      );
+      try {
+        await updateDoc(
+          doc(
+            db,
+            "reports",
+            reportId
+          ),
+          {
+            emailEnviado:
+              true,
 
-      toast(
-        "E-mail registrado como enviado. As opções de editar, enviar por e-mail e excluir foram desabilitadas."
-      );
-    } catch (error) {
-      console.error(
-        "Erro ao registrar envio do e-mail:",
-        error
-      );
+            emailEnviadoEm:
+              serverTimestamp(),
 
-      alert(
-        "O e-mail foi aberto, mas não foi possível registrar o envio no sistema."
-      );
-    }
-  }, 800);
+            emailEnviadoPara:
+              EMAIL_DESTINO,
+
+            atualizadoEm:
+              serverTimestamp()
+          }
+        );
+
+        toast(
+          "E-mail registrado como enviado. As opções de envio e exclusão foram desabilitadas."
+        );
+      } catch (error) {
+        console.error(
+          "Erro ao registrar envio:",
+          error
+        );
+
+        alert(
+          "O e-mail foi aberto, mas não foi possível registrar o envio no sistema."
+        );
+      }
+    },
+    800
+  );
 }
 
 
 // =====================================================
-// WHATSAPP
+// ENVIO POR WHATSAPP
 // =====================================================
 
 function sendReportByWhatsApp(reportId) {
   const report =
     allReports.find(
-      (item) => item.id === reportId
+      (item) =>
+        item.id === reportId
     );
 
   if (!report) {
@@ -1321,24 +1474,25 @@ function sendReportByWhatsApp(reportId) {
   }
 
   const messageText = [
-  report.titulo || "Ocorrência sem título",
+    report.titulo ||
+      "Ocorrência sem título",
 
-  `Local: ${ report.local || "Não informado" }`,
+    `Local: ${ report.local || "Não informado" }`,
 
-  `Referência: ${ report.referenciaLocal || "Não informada" }`,
+    `Referência: ${ report.referenciaLocal || "Não informada" }`,
 
-  `Descrição da ocorrência: ${ report.descricao || "Não informada" }`,
+    `Descrição da ocorrência: ${ report.descricao || "Não informada" }`,
 
-  `Morador: ${ report.nome || "Não informado" }`,
+    `Morador: ${ report.nome || "Não informado" }`,
 
-  `Unidade: ${ report.unidade || "Não informada" }`,
+    `Unidade: ${ report.unidade || "Não informada" }`,
 
-  `Bloco: ${ report.bloco || "Não informado" }`
-].join("\n");
+    `Bloco: ${ report.bloco || "Não informado" }`
+  ].join("\n");
 
   const whatsappUrl =
     `https://wa.me/${WHATSAPP_NUMERO}` +
-    `?text=${encodeURIComponent(messageText)}`;
+    `?text=${encodeURIComponent( messageText )}`;
 
   window.open(
     whatsappUrl,
@@ -1355,14 +1509,13 @@ function sendReportByWhatsApp(reportId) {
 function openEditModal(reportId) {
   const report =
     allReports.find(
-      (item) => item.id === reportId
+      (item) =>
+        item.id === reportId
     );
 
   if (!report) {
     return;
   }
-
-  
 
   addEditCategoryOptions();
 
@@ -1376,19 +1529,22 @@ function openEditModal(reportId) {
     report.categoria || "";
 
   $("editPriority").value =
-    report.prioridade || "Normal";
+    report.prioridade ||
+    "Normal";
 
   $("editLocation").value =
     report.local || "";
 
   $("editReference").value =
-    report.referenciaLocal || "";
+    report.referenciaLocal ||
+    "";
 
   $("editDescription").value =
     report.descricao || "";
 
   $("editStatus").value =
-    report.status || "Aberto";
+    report.status ||
+    "Aberto";
 
   updateEditLocationFields();
 
@@ -1400,6 +1556,7 @@ function openEditModal(reportId) {
   show("editModal");
 }
 
+
 $("editForm")?.addEventListener(
   "submit",
   async (event) => {
@@ -1410,7 +1567,8 @@ $("editForm")?.addEventListener(
 
     const report =
       allReports.find(
-        (item) => item.id === reportId
+        (item) =>
+          item.id === reportId
       );
 
     if (!report) {
@@ -1418,60 +1576,70 @@ $("editForm")?.addEventListener(
         "editMessage",
         "Ocorrência não encontrada."
       );
+
       return;
     }
-
-    
 
     const button =
       $("btnSaveEdit");
 
     const category =
-      $("editCategory")?.value || "";
+      $("editCategory")?.value ||
+      "";
 
-    const documentation =
-      category === "Documentação";
-
-    const noLocationRequired =
-      documentation ||
-      category === "Jardinagem";
+    const priority =
+      $("editPriority")?.value ||
+      "Normal";
 
     const title =
-      $("editTitle")?.value.trim() || "";
+      $("editTitle")?.value.trim() ||
+      "";
 
     const description =
-      $("editDescription")?.value.trim() || "";
+      $("editDescription")?.value.trim() ||
+      "";
+
+    const noLocation =
+      category === "Documentação" ||
+      category === "Jardinagem";
 
     const location =
-      noLocationRequired
+      noLocation
         ? ""
-        : $("editLocation")?.value || "";
+        : $("editLocation")?.value ||
+          "";
 
     const reference =
-      documentation
+      category === "Documentação"
         ? ""
-        : $("editReference")?.value.trim() || "";
+        : $("editReference")?.value.trim() ||
+          "";
 
     const status =
       $("editStatus")?.value ||
       "Aberto";
 
-    if (!title || title.length < 3) {
+    if (
+      !title ||
+      title.length < 3
+    ) {
       message(
         "editMessage",
         "Informe um título válido."
       );
+
       return;
     }
 
     if (
-      !noLocationRequired &&
+      !noLocation &&
       !location
     ) {
       message(
         "editMessage",
         "Informe o local da ocorrência."
       );
+
       return;
     }
 
@@ -1483,79 +1651,98 @@ $("editForm")?.addEventListener(
         "editMessage",
         "A descrição deve ter pelo menos 10 caracteres."
       );
+
       return;
     }
 
-    if (!noLocationRequired) {
-      const similarReport =
+    if (!noLocation) {
+      const similar =
         findSimilarOpenReport({
           category,
           location,
           reference,
-          ignoredReportId: reportId
+          ignoredReportId:
+            reportId
         });
 
-      if (similarReport) {
-        const continueSending =
-          confirmSimilarReport(
-            similarReport
-          );
+      if (
+        similar &&
+        !confirmSimilarReport(
+          similar
+        )
+      ) {
+        message(
+          "editMessage",
+          "Edição cancelada."
+        );
 
-        if (!continueSending) {
-          message(
-            "editMessage",
-            "Edição cancelada."
-          );
-          return;
-        }
+        return;
       }
     }
 
     if (button) {
-      button.disabled = true;
+      button.disabled =
+        true;
+
+      button.textContent =
+        "Salvando...";
     }
 
     try {
       await updateDoc(
-        doc(db, "reports", reportId),
+        doc(
+          db,
+          "reports",
+          reportId
+        ),
         {
-          titulo: title,
-          categoria: category,
+          titulo:
+            title,
+
+          categoria:
+            category,
+
           prioridade:
-            $("editPriority")?.value ||
-            "Normal",
-          local: location,
-          referenciaLocal: reference,
-          descricao: description,
-          status,
+            priority,
+
+          local:
+            location,
+
+          referenciaLocal:
+            reference,
+
+          descricao:
+            description,
+
+          status:
+            status,
 
           dataAnalise:
-            status === "Em análise"
+            status === "Em análise" ||
+            status === "Em execução" ||
+            status === "Resolvido"
               ? report.dataAnalise ||
                 serverTimestamp()
-              : report.dataAnalise ||
-                null,
+              : null,
 
           dataExecucao:
-            status === "Em execução"
+            status === "Em execução" ||
+            status === "Resolvido"
               ? report.dataExecucao ||
                 serverTimestamp()
-              : report.dataExecucao ||
-                null,
+              : null,
 
           dataResolvido:
             status === "Resolvido"
               ? report.dataResolvido ||
                 serverTimestamp()
-              : report.dataResolvido ||
-                null,
+              : null,
 
           fimEm:
             status === "Resolvido"
               ? report.fimEm ||
                 serverTimestamp()
-              : report.fimEm ||
-                null,
+              : null,
 
           atualizadoEm:
             serverTimestamp()
@@ -1568,13 +1755,22 @@ $("editForm")?.addEventListener(
         "Ocorrência atualizada com sucesso."
       );
     } catch (error) {
+      console.error(
+        "Erro ao salvar alteração:",
+        error
+      );
+
       message(
         "editMessage",
         friendlyError(error)
       );
     } finally {
       if (button) {
-        button.disabled = false;
+        button.disabled =
+          false;
+
+        button.textContent =
+          "Salvar alterações";
       }
     }
   }
@@ -1593,25 +1789,33 @@ async function deleteReport(reportId) {
     alert(
       "Você precisa estar autenticado."
     );
+
     return;
   }
 
   const report =
     allReports.find(
-      (item) => item.id === reportId
+      (item) =>
+        item.id === reportId
     );
 
   if (!report) {
     alert(
       "Ocorrência não encontrada."
     );
+
     return;
   }
 
-  if (reportEmailAlreadySent(report)) {
+  if (
+    reportEmailAlreadySent(
+      report
+    )
+  ) {
     alert(
       "Esta ocorrência não pode mais ser excluída porque o e-mail já foi enviado para a administração."
     );
+
     return;
   }
 
@@ -1622,6 +1826,7 @@ async function deleteReport(reportId) {
     alert(
       "Você só pode excluir suas próprias ocorrências."
     );
+
     return;
   }
 
@@ -1636,7 +1841,11 @@ async function deleteReport(reportId) {
 
   try {
     await deleteDoc(
-      doc(db, "reports", reportId)
+      doc(
+        db,
+        "reports",
+        reportId
+      )
     );
 
     toast(
@@ -1651,7 +1860,7 @@ async function deleteReport(reportId) {
 
 
 // =====================================================
-// EVENTOS
+// EVENTOS GERAIS
 // =====================================================
 
 $("reportCategory")?.addEventListener(
@@ -1702,8 +1911,11 @@ $("btnCancelReport")?.addEventListener(
   "click",
   () => {
     hide("reportFormCard");
+
     $("reportForm")?.reset();
+
     updateLocationFields();
+
     message(
       "reportMessage",
       ""
@@ -1713,7 +1925,9 @@ $("btnCancelReport")?.addEventListener(
 
 $("btnCloseDetail")?.addEventListener(
   "click",
-  () => hide("detailModal")
+  () => {
+    hide("detailModal");
+  }
 );
 
 $("detailModal")?.addEventListener(
@@ -1730,7 +1944,9 @@ $("detailModal")?.addEventListener(
 
 $("btnCloseEdit")?.addEventListener(
   "click",
-  () => hide("editModal")
+  () => {
+    hide("editModal");
+  }
 );
 
 $("editModal")?.addEventListener(
@@ -1745,22 +1961,64 @@ $("editModal")?.addEventListener(
   }
 );
 
+
+// =====================================================
+// MODAL PERSONALIZADO DE LOGOUT
+// =====================================================
+
 $("btnLogout")?.addEventListener(
   "click",
-  async () => {
-    const confirmed =
-      confirm(
-        "Deseja realmente sair do sistema?"
-      );
+  () => {
+    show("logoutModal");
+  }
+);
 
-    if (!confirmed) {
-      return;
+$("btnCloseLogout")?.addEventListener(
+  "click",
+  () => {
+    hide("logoutModal");
+  }
+);
+
+$("btnCancelLogout")?.addEventListener(
+  "click",
+  () => {
+    hide("logoutModal");
+  }
+);
+
+$("logoutModal")?.addEventListener(
+  "click",
+  (event) => {
+    if (
+      event.target.id ===
+      "logoutModal"
+    ) {
+      hide("logoutModal");
+    }
+  }
+);
+
+$("btnConfirmLogout")?.addEventListener(
+  "click",
+  async () => {
+    const button =
+      $("btnConfirmLogout");
+
+    if (button) {
+      button.disabled =
+        true;
+
+      button.textContent =
+        "Saindo...";
     }
 
     try {
       await signOut(auth);
 
       clearLoginFields();
+
+      hide("logoutModal");
 
       message(
         "loginMessage",
@@ -1773,17 +2031,27 @@ $("btnLogout")?.addEventListener(
         error
       );
 
+      hide("logoutModal");
+
       message(
         "loginMessage",
         "Não foi possível sair do sistema."
       );
+    } finally {
+      if (button) {
+        button.disabled =
+          false;
+
+        button.textContent =
+          "Sair do sistema";
+      }
     }
   }
 );
 
 
 // =====================================================
-// PAGINAÇÃO E AÇÕES DOS REGISTROS
+// AÇÕES DOS REGISTROS E PAGINAÇÃO
 // =====================================================
 
 document.addEventListener(
@@ -1798,6 +2066,7 @@ document.addEventListener(
       openDetails(
         detailButton.dataset.id
       );
+
       return;
     }
 
@@ -1810,6 +2079,7 @@ document.addEventListener(
       openTimeline(
         timelineButton.dataset.id
       );
+
       return;
     }
 
@@ -1819,13 +2089,12 @@ document.addEventListener(
       );
 
     if (editButton) {
-      if (editButton.disabled) {
-        return;
+      if (!editButton.disabled) {
+        openEditModal(
+          editButton.dataset.id
+        );
       }
 
-      openEditModal(
-        editButton.dataset.id
-      );
       return;
     }
 
@@ -1838,6 +2107,7 @@ document.addEventListener(
       sendReportByWhatsApp(
         whatsappButton.dataset.id
       );
+
       return;
     }
 
@@ -1847,13 +2117,12 @@ document.addEventListener(
       );
 
     if (emailButton) {
-      if (emailButton.disabled) {
-        return;
+      if (!emailButton.disabled) {
+        sendReportByEmail(
+          emailButton.dataset.id
+        );
       }
 
-      sendReportByEmail(
-        emailButton.dataset.id
-      );
       return;
     }
 
@@ -1863,13 +2132,12 @@ document.addEventListener(
       );
 
     if (deleteButton) {
-      if (deleteButton.disabled) {
-        return;
+      if (!deleteButton.disabled) {
+        deleteReport(
+          deleteButton.dataset.id
+        );
       }
 
-      deleteReport(
-        deleteButton.dataset.id
-      );
       return;
     }
 
@@ -1894,11 +2162,14 @@ document.addEventListener(
           1,
           Math.ceil(
             getFilteredReports().length /
-              pageSize
+            pageSize
           )
         );
 
-      if (currentPage < totalPages) {
+      if (
+        currentPage <
+        totalPages
+      ) {
         currentPage++;
         renderReports();
       }
@@ -1908,7 +2179,7 @@ document.addEventListener(
 
 
 // =====================================================
-// ESQUECI MINHA SENHA
+// RECUPERAÇÃO DE SENHA
 // =====================================================
 
 $("btnForgotPassword")?.addEventListener(
@@ -1952,6 +2223,7 @@ $("forgotPasswordForm")?.addEventListener(
         "forgotPasswordMessage",
         "Informe seu e-mail."
       );
+
       return;
     }
 
@@ -2006,11 +2278,12 @@ $("registerForm")?.addEventListener(
       $("registerEmail")?.value.trim();
 
     const password =
-      $("registerPassword")?.value || "";
+      $("registerPassword")?.value ||
+      "";
 
     const passwordConfirm =
-      $("registerPasswordConfirm")
-        ?.value || "";
+      $("registerPasswordConfirm")?.value ||
+      "";
 
     const acceptedTerms =
       $("acceptTerms")?.checked ||
@@ -2027,14 +2300,20 @@ $("registerForm")?.addEventListener(
         "registerMessage",
         "Preencha todos os campos obrigatórios."
       );
+
       return;
     }
 
-    if (!isStrongPassword(password)) {
+    if (
+      !isStrongPassword(
+        password
+      )
+    ) {
       message(
         "registerMessage",
         "A senha deve ter pelo menos 8 caracteres, uma letra maiúscula, uma letra minúscula, um número e um caractere especial."
       );
+
       return;
     }
 
@@ -2046,6 +2325,7 @@ $("registerForm")?.addEventListener(
         "registerMessage",
         "As senhas não são iguais."
       );
+
       return;
     }
 
@@ -2054,6 +2334,7 @@ $("registerForm")?.addEventListener(
         "registerMessage",
         "Aceite os termos de uso e a política de privacidade."
       );
+
       return;
     }
 
@@ -2073,7 +2354,8 @@ $("registerForm")?.addEventListener(
       await updateProfile(
         credential.user,
         {
-          displayName: name
+          displayName:
+            name
         }
       );
 
@@ -2084,24 +2366,41 @@ $("registerForm")?.addEventListener(
           credential.user.uid
         ),
         {
-          uid: credential.user.uid,
-          nome: name,
-          unidade: unit,
-          bloco: block || "",
-          telefone: phone || "",
-          email,
+          uid:
+            credential.user.uid,
 
-          status: "Pendente",
+          nome:
+            name,
 
-          termosAceitos: true,
+          unidade:
+            unit,
+
+          bloco:
+            block || "",
+
+          telefone:
+            phone || "",
+
+          email:
+            email,
+
+          status:
+            "Pendente",
+
+          termosAceitos:
+            true,
+
           termosAceitosEm:
             serverTimestamp(),
 
           criadoEm:
             serverTimestamp(),
 
-          aprovadoEm: null,
-          rejeitadoEm: null,
+          aprovadoEm:
+            null,
+
+          rejeitadoEm:
+            null,
 
           atualizadoEm:
             serverTimestamp()
@@ -2129,7 +2428,7 @@ $("registerForm")?.addEventListener(
 
 
 // =====================================================
-// LOGIN E APROVAÇÃO
+// LOGIN
 // =====================================================
 
 $("loginForm")?.addEventListener(
@@ -2141,13 +2440,15 @@ $("loginForm")?.addEventListener(
       $("loginEmail")?.value.trim();
 
     const password =
-      $("loginPassword")?.value;
+      $("loginPassword")?.value ||
+      "";
 
     if (!email || !password) {
       message(
         "loginMessage",
         "Informe o e-mail e a senha."
       );
+
       return;
     }
 
@@ -2172,7 +2473,11 @@ $("loginForm")?.addEventListener(
       ) {
         const snapshot =
           await getDoc(
-            doc(db, "users", user.uid)
+            doc(
+              db,
+              "users",
+              user.uid
+            )
           );
 
         const data =
@@ -2181,13 +2486,18 @@ $("loginForm")?.addEventListener(
             : {};
 
         const status =
-          data.status || "Pendente";
+          data.status ||
+          "Pendente";
 
-        if (status !== "Aprovado") {
+        if (
+          status !==
+          "Aprovado"
+        ) {
           await signOut(auth);
 
           throw new Error(
-            status === "Pendente"
+            status ===
+              "Pendente"
               ? "Seu cadastro ainda aguarda aprovação do administrador."
               : "Seu cadastro não está autorizado a acessar o sistema."
           );
@@ -2219,29 +2529,34 @@ onAuthStateChanged(
   auth,
   async (user) => {
     if (!user) {
-  hide("appView");
-  hide("registerView");
-  hide("forgotPasswordView");
-  show("loginView");
+      hide("appView");
+      hide("registerView");
+      hide("forgotPasswordView");
 
-  $("btnLogout")?.classList.add(
-    "hidden"
-  );
+      show("loginView");
 
-  clearLoginFields();
+      $("btnLogout")?.classList.add(
+        "hidden"
+      );
 
-  if (unsubscribeReports) {
-    unsubscribeReports();
-    unsubscribeReports = null;
-  }
+      clearLoginFields();
 
-  allReports = [];
-  return;
-}
+      if (unsubscribeReports) {
+        unsubscribeReports();
+        unsubscribeReports =
+          null;
+      }
+
+      allReports =
+        [];
+
+      return;
+    }
 
     hide("loginView");
     hide("registerView");
     hide("forgotPasswordView");
+
     show("appView");
 
     $("btnLogout")?.classList.remove(
@@ -2249,13 +2564,16 @@ onAuthStateChanged(
     );
 
     addCategoryOptions();
-    removeUpdatesField();
     updateLocationFields();
 
     try {
       const userSnapshot =
         await getDoc(
-          doc(db, "users", user.uid)
+          doc(
+            db,
+            "users",
+            user.uid
+          )
         );
 
       const userData =
@@ -2273,19 +2591,30 @@ onAuthStateChanged(
       let reportsQuery;
 
       if (isAdmin(user)) {
-        reportsQuery = query(
-          collection(db, "reports"),
-          orderBy("criadoEm", "desc")
-        );
+        reportsQuery =
+          query(
+            collection(
+              db,
+              "reports"
+            ),
+            orderBy(
+              "criadoEm",
+              "desc"
+            )
+          );
       } else {
-        reportsQuery = query(
-          collection(db, "reports"),
-          where(
-            "moradorId",
-            "==",
-            user.uid
-          )
-        );
+        reportsQuery =
+          query(
+            collection(
+              db,
+              "reports"
+            ),
+            where(
+              "moradorId",
+              "==",
+              user.uid
+            )
+          );
       }
 
       if (unsubscribeReports) {
@@ -2298,23 +2627,29 @@ onAuthStateChanged(
           (snapshot) => {
             allReports =
               snapshot.docs
-                .map((item) => ({
-                  id: item.id,
-                  ...item.data()
-                }))
-                .sort((a, b) => {
-                  const dateA =
-                    a.criadoEm?.toMillis?.() ||
-                    0;
+                .map(
+                  (item) => ({
+                    id: item.id,
+                    ...item.data()
+                  })
+                )
+                .sort(
+                  (a, b) => {
+                    const dateA =
+                      a.criadoEm?.toMillis?.() ||
+                      0;
 
-                  const dateB =
-                    b.criadoEm?.toMillis?.() ||
-                    0;
+                    const dateB =
+                      b.criadoEm?.toMillis?.() ||
+                      0;
 
-                  return dateB - dateA;
-                });
+                    return dateB - dateA;
+                  }
+                );
 
-            currentPage = 1;
+            currentPage =
+              1;
+
             renderReports();
           },
           (error) => {
