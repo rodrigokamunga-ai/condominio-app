@@ -11,38 +11,52 @@
     Amigos do Maui - Mural de Ocorrências
   </title>
 
-  <link rel="stylesheet" href="./styles.css?v=5" />
+  <link rel="stylesheet" href="./styles.css?v=6" />
 </head>
 
 <body class="public-page">
 
   <!-- CABEÇALHO -->
-<header class="topbar public-topbar">
-  <div class="brand">
-    <span class="brand-icon">📋</span>
+  <header class="topbar public-topbar">
+    <div class="brand">
+      <span class="brand-icon">📋</span>
 
-    <div>
-      <strong>Amigos do Maui</strong>
-      <small>Mural de ocorrências</small>
+      <div>
+        <strong>Amigos do Maui</strong>
+        <small>Mural de ocorrências</small>
+      </div>
     </div>
-  </div>
 
-  <div class="top-menu-wrapper">
-    <button id="btnMenu" class="menu-toggle" type="button" aria-expanded="false" aria-controls="mainMenu" >
-      ☰ Menu
+    <div class="top-menu-wrapper">
+  <button id="btnMenu" class="menu-toggle" type="button" aria-expanded="false" aria-controls="mainMenu" >
+    ☰ Menu
+  </button>
+
+  <nav id="mainMenu" class="top-menu hidden" aria-label="Menu principal" >
+    <a href="./index.html" class="menu-link" >
+      <span class="menu-icon">🏠</span>
+      <span>Área do morador</span>
+    </a>
+
+    
+
+    <a href="./perfil.html" class="menu-link" >
+      <span class="menu-icon">👤</span>
+      <span>Meu perfil</span>
+    </a>
+
+    <a href="./manual-portal-morador.pdf" class="menu-link" download="manual-portal-morador.pdf" >
+      <span class="menu-icon">📖</span>
+      <span>Manual do usuário</span>
+    </a>
+
+    <button id="btnLogout" class="menu-link hidden" type="button" >
+      <span class="menu-icon">🚪</span>
+      <span>Sair</span>
     </button>
-
-    <nav id="mainMenu" class="top-menu hidden" aria-label="Menu principal" >
-      <a href="./index.html" class="menu-link" >
-        Área do morador
-      </a>
-
-      <button id="btnLogout" class="menu-link hidden" type="button" >
-        Sair
-      </button>
-    </nav>
-  </div>
-</header>
+  </nav>
+</div>
+  </header>
 
 
   <main class="container">
@@ -50,7 +64,9 @@
     <!-- CARREGAMENTO -->
     <section id="loadingView" class="card public-hero" >
       <div>
-        <h1>Carregando mural...</h1>
+        <h1>
+          Carregando mural...
+        </h1>
 
         <p class="muted">
           Verificando sua sessão.
@@ -61,10 +77,13 @@
 
     <!-- LOGIN NECESSÁRIO -->
     <section id="loginRequired" class="card auth-card hidden" >
-      <h1>Acesso necessário</h1>
+      <h1>
+        Acesso necessário
+      </h1>
 
       <p class="muted">
-        Você precisa estar autenticado para consultar as ocorrências do condomínio.
+        Você precisa estar autenticado para consultar
+        as ocorrências do condomínio.
       </p>
 
       <a href="./index.html" class="primary-button button-link" >
@@ -133,31 +152,46 @@
             Quantidade de registros por situação.
           </p>
 
-          <div class="public-stats-grid">
+          <div class="public-stats-grid public-four-stats">
 
             <div class="public-stat-card">
-              <span id="publicTotal">0</span>
-              <small>Total de registros</small>
+              <span id="publicOpen">
+                0
+              </span>
+
+              <small>
+                Abertos
+              </small>
             </div>
 
             <div class="public-stat-card">
-              <span id="publicOpen">0</span>
-              <small>Abertos</small>
+              <span id="publicAnalysis">
+                0
+              </span>
+
+              <small>
+                Em análise
+              </small>
             </div>
 
             <div class="public-stat-card">
-              <span id="publicAnalysis">0</span>
-              <small>Em análise</small>
+              <span id="publicExecution">
+                0
+              </span>
+
+              <small>
+                Em execução
+              </small>
             </div>
 
             <div class="public-stat-card">
-              <span id="publicExecution">0</span>
-              <small>Em execução</small>
-            </div>
+              <span id="publicResolved">
+                0
+              </span>
 
-            <div class="public-stat-card">
-              <span id="publicResolved">0</span>
-              <small>Resolvidos</small>
+              <small>
+                Resolvidos
+              </small>
             </div>
 
           </div>
@@ -176,14 +210,15 @@
             </h2>
 
             <p class="muted">
-              Para preservar a privacidade, os dados pessoais dos moradores não são exibidos.
+              Para preservar a privacidade, os dados pessoais
+              dos moradores não são exibidos.
             </p>
           </div>
         </div>
 
 
         <!-- FILTRO POR BOTÕES -->
-        <div id="publicStatusFilter" class="status-filter-buttons" role="group" aria-label="Filtrar ocorrências por situação" >
+        <div id="publicStatusFilter" class="status-filter-buttons public-status-filter-no-scroll" role="group" aria-label="Filtrar ocorrências por situação" >
           <button type="button" class="status-filter-button active" data-status="Todos" >
             Todos
           </button>
@@ -250,6 +285,37 @@
   </div>
 
 
+  <!-- MODAL DE CONFIRMAÇÃO DE SAÍDA -->
+  <div id="logoutModal" class="modal hidden" >
+    <div class="modal-card public-logout-modal-card">
+
+      <button id="btnCloseLogout" class="modal-close" type="button" aria-label="Fechar confirmação" >
+        ×
+      </button>
+
+      <h2>
+        Confirmar saída
+      </h2>
+
+      <p class="muted">
+        Deseja realmente sair do sistema?
+      </p>
+
+      <div class="public-logout-actions">
+
+        <button id="btnCancelLogout" class="secondary-button" type="button" >
+          Cancelar
+        </button>
+
+        <button id="btnConfirmLogout" class="danger-button" type="button" >
+          Sair do sistema
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+
   <!-- NOTIFICAÇÃO -->
   <div id="toast" class="toast" ></div>
 
@@ -259,7 +325,7 @@
 
 
   <!-- JAVASCRIPT DA PÁGINA -->
-  <script type="module" src="./public.js?v=3" ></script>
+  <script type="module" src="./public.js?v=4" ></script>
 
 </body>
 </html>
