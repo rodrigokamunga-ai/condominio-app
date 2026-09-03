@@ -73,6 +73,8 @@ function show(id) {
   }
 }
 
+
+
 function hide(id) {
   const element = $(id);
 
@@ -80,6 +82,72 @@ function hide(id) {
     element.classList.add("hidden");
   }
 }
+
+// =====================================================
+// MENU SUSPENSO ADMINISTRATIVO
+// =====================================================
+
+const adminMenuButton =
+  $("btnAdminMenu");
+
+const adminPageMenu =
+  $("adminPageMenu");
+
+
+adminMenuButton?.addEventListener(
+  "click",
+  (event) => {
+    event.stopPropagation();
+
+    const menuIsHidden =
+      adminPageMenu?.classList.contains(
+        "hidden"
+      );
+
+    if (menuIsHidden) {
+      adminPageMenu?.classList.remove(
+        "hidden"
+      );
+
+      adminMenuButton.setAttribute(
+        "aria-expanded",
+        "true"
+      );
+    } else {
+      adminPageMenu?.classList.add(
+        "hidden"
+      );
+
+      adminMenuButton.setAttribute(
+        "aria-expanded",
+        "false"
+      );
+    }
+  }
+);
+
+
+adminPageMenu?.addEventListener(
+  "click",
+  (event) => {
+    event.stopPropagation();
+  }
+);
+
+
+document.addEventListener(
+  "click",
+  () => {
+    adminPageMenu?.classList.add(
+      "hidden"
+    );
+
+    adminMenuButton?.setAttribute(
+      "aria-expanded",
+      "false"
+    );
+  }
+);
 
 function escapeHtml(value = "") {
   return String(value).replace(
@@ -365,9 +433,6 @@ function updateFilterSummary() {
 // =====================================================
 
 function updateCounters() {
-  const total =
-    $("adminTotal");
-
   const open =
     $("adminOpen");
 
@@ -379,11 +444,6 @@ function updateCounters() {
 
   const resolved =
     $("adminResolved");
-
-  if (total) {
-    total.textContent =
-      reports.length;
-  }
 
   if (open) {
     open.textContent =
@@ -1385,21 +1445,77 @@ $("btnRefreshAdmin")?.addEventListener(
 // LOGOUT
 // =====================================================
 
+// =====================================================
+// LOGOUT COM CONFIRMAÇÃO
+// =====================================================
+
 $("btnAdminLogout")?.addEventListener(
   "click",
-  async () => {
-    const confirmed = confirm(
-      "Deseja realmente sair da área administrativa?"
+  () => {
+    adminPageMenu?.classList.add(
+      "hidden"
     );
 
-    if (!confirmed) {
-      return;
+    adminMenuButton?.setAttribute(
+      "aria-expanded",
+      "false"
+    );
+
+    show("adminLogoutModal");
+  }
+);
+
+
+$("btnCloseAdminLogout")?.addEventListener(
+  "click",
+  () => {
+    hide("adminLogoutModal");
+  }
+);
+
+
+$("btnCancelAdminLogout")?.addEventListener(
+  "click",
+  () => {
+    hide("adminLogoutModal");
+  }
+);
+
+
+$("adminLogoutModal")?.addEventListener(
+  "click",
+  (event) => {
+    if (
+      event.target.id ===
+      "adminLogoutModal"
+    ) {
+      hide("adminLogoutModal");
+    }
+  }
+);
+
+
+$("btnConfirmAdminLogout")?.addEventListener(
+  "click",
+  async () => {
+    const button =
+      $("btnConfirmAdminLogout");
+
+    if (button) {
+      button.disabled =
+        true;
+
+      button.textContent =
+        "Saindo...";
     }
 
     try {
       await signOut(auth);
+
+      hide("adminLogoutModal");
+
       window.location.href =
-        "./admin-home.html";
+        "./index.html";
     } catch (error) {
       console.error(
         "Erro ao sair:",
@@ -1409,10 +1525,17 @@ $("btnAdminLogout")?.addEventListener(
       alert(
         "Não foi possível sair do sistema."
       );
+
+      if (button) {
+        button.disabled =
+          false;
+
+        button.textContent =
+          "Sair do sistema";
+      }
     }
   }
 );
-
 
 // =====================================================
 // AUTENTICAÇÃO E CARREGAMENTO
@@ -1426,6 +1549,16 @@ onAuthStateChanged(
     if (!user) {
       show("adminDeniedView");
       hide("adminView");
+
+      hide("adminPageMenu");
+
+      adminMenuButton?.setAttribute(
+        "aria-expanded",
+        "false"
+      );
+
+      hide("btnAdminMenu");
+
       return;
     }
 
@@ -1435,11 +1568,22 @@ onAuthStateChanged(
     ) {
       show("adminDeniedView");
       hide("adminView");
+
+      hide("adminPageMenu");
+
+      adminMenuButton?.setAttribute(
+        "aria-expanded",
+        "false"
+      );
+
+      hide("btnAdminMenu");
+
       return;
     }
 
     hide("adminDeniedView");
     show("adminView");
+    show("btnAdminMenu");
 
     const adminName =
       $("adminUserName");
@@ -1478,8 +1622,10 @@ onAuthStateChanged(
               })
             );
 
-          currentPage = 1;
+          currentPage =
+            1;
 
+          updateCounters();
           updateFilterSummary();
           renderReports();
         },
