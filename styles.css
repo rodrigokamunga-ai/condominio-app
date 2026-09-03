@@ -2589,3 +2589,957 @@ button:disabled {
     font-size: 12px;
   }
 }
+
+/* ===================================================== AJUSTES FINAIS DO INDEX ===================================================== */
+
+
+/* ===================================================== FONTE DO CABEÇALHO ===================================================== */
+
+.brand strong {
+  display: block;
+
+  color: var(--text);
+  font-size: 21px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.brand small {
+  display: block;
+  margin-top: 5px;
+
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+
+/* ===================================================== MENU SUSPENSO ===================================================== */
+
+.topbar {
+  position: relative;
+  z-index: 1000;
+  overflow: visible !important;
+}
+
+.top-menu-wrapper {
+  position: relative;
+  z-index: 3000;
+
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+.menu-toggle {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 42px;
+  padding: 9px 14px;
+
+  border: 0;
+  border-radius: 10px;
+
+  background: var(--primary);
+  color: #ffffff;
+
+  font: inherit;
+  font-size: 15px;
+  font-weight: 800;
+
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.menu-toggle:hover {
+  background: var(--primary-dark);
+}
+
+.menu-toggle.hidden {
+  display: none !important;
+}
+
+.top-menu {
+  position: absolute;
+  z-index: 9999;
+
+  top: calc(100% + 8px);
+  right: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  width: max-content;
+  min-width: 215px;
+  padding: 8px;
+
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  box-shadow:
+    0 12px 30px rgba(15, 23, 42, 0.22);
+}
+
+.top-menu.hidden {
+  display: none !important;
+}
+
+.menu-link {
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 13px;
+
+  border: 0;
+  border-radius: 8px;
+
+  background: transparent;
+  color: var(--text);
+
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+
+  text-align: left;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.menu-link:hover {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+}
+
+
+/* ===================================================== ÁREA DE BOAS-VINDAS DO INDEX ===================================================== */
+
+.index-page .welcome-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+
+  margin-bottom: 22px;
+}
+
+.index-page .welcome-row .button-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+
+/* ===================================================== QUATRO INDICADORES DE STATUS ===================================================== */
+
+.index-page .stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+
+  width: 100%;
+  margin: 20px 0 24px;
+}
+
+.index-page .stat-card {
+  min-width: 0;
+  min-height: 108px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  padding: 18px;
+
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+
+  text-align: center;
+  box-shadow:
+    0 5px 16px rgba(15, 23, 42, 0.04);
+}
+
+.index-page .stat-card span {
+  display: block;
+  overflow: hidden;
+
+  color: var(--primary);
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.index-page .stat-card small {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+
+/* ===================================================== TÍTULO DA SEÇÃO DE REGISTROS ===================================================== */
+
+.index-page .index-section-heading {
+  display: block;
+  margin-bottom: 14px;
+}
+
+
+/* ===================================================== FILTRO DOS REGISTROS DO INDEX SEM SELECT E SEM SCROLL ===================================================== */
+
+.index-page .index-status-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  width: 100%;
+  margin: 14px 0 4px;
+
+  overflow: hidden;
+  padding: 4px 0 8px;
+}
+
+.index-page .index-status-filter .status-filter-button {
+  flex: 1 1 0;
+  min-width: 0;
+
+  min-height: 42px;
+  padding: 9px 6px;
+
+  overflow: hidden;
+
+  border: 1px solid var(--border);
+  border-radius: 10px;
+
+  background: #ffffff;
+  color: var(--muted);
+
+  font-size: 13px;
+  font-weight: 800;
+
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.index-page .index-status-filter .status-filter-button:hover {
+  background: var(--blue-light);
+  color: #164e63;
+}
+
+.index-page .index-status-filter .status-filter-button.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #ffffff;
+
+  box-shadow:
+    0 4px 10px rgba(17, 127, 117, 0.18);
+}
+
+
+/* ===================================================== BOTÕES DAS OCORRÊNCIAS EM UMA ÚNICA LINHA ===================================================== */
+
+.index-page .report-actions {
+  display: flex !important;
+  align-items: center;
+  justify-content: flex-start !important;
+
+  flex-wrap: nowrap !important;
+  gap: 6px;
+
+  min-width: 0;
+  overflow: hidden !important;
+}
+
+.index-page .report-actions > button {
+  flex: 0 0 auto !important;
+}
+
+
+/* ===================================================== CELULAR ===================================================== */
+
+@media (max-width: 760px) {
+  .topbar {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+
+    min-height: 62px;
+    padding: 9px 10px;
+
+    overflow: visible !important;
+  }
+
+  .brand {
+    min-width: 0;
+    flex: 1 1 auto;
+    gap: 8px;
+  }
+
+  .brand-icon {
+    width: 38px;
+    height: 38px;
+
+    flex: 0 0 auto;
+
+    font-size: 21px;
+  }
+
+  .brand strong {
+    font-size: 16px;
+    white-space: nowrap;
+  }
+
+  .brand small {
+    margin-top: 3px;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .top-menu-wrapper {
+    position: relative;
+    z-index: 3000;
+
+    margin-left: 8px;
+  }
+
+  .menu-toggle {
+    display: inline-flex !important;
+
+    min-height: 38px;
+    padding: 8px 11px;
+
+    font-size: 13px;
+  }
+
+  .top-menu {
+    top: calc(100% + 8px);
+    right: 0;
+
+    min-width: 205px;
+    max-width: calc(100vw - 20px);
+  }
+
+  .menu-link {
+    min-height: 40px;
+    font-size: 14px;
+  }
+
+
+  /* Quatro indicadores sempre lado a lado */
+  .index-page .stats-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .index-page .stat-card {
+    min-height: 84px;
+    padding: 10px 3px;
+  }
+
+  .index-page .stat-card span {
+    font-size: 22px;
+  }
+
+  .index-page .stat-card small {
+    font-size: 10px;
+    line-height: 1.1;
+    white-space: normal;
+  }
+
+
+  /* Botões Ver registros e Novo registro */
+  .index-page .welcome-row {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .index-page .welcome-row .button-row {
+    display: flex;
+    flex-direction: row;
+
+    width: 100%;
+    gap: 6px;
+  }
+
+  .index-page .welcome-row .button-row > * {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+
+    padding-left: 7px;
+    padding-right: 7px;
+
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+
+  /* Filtro com cinco botões na mesma linha */
+  .index-page .index-status-filter {
+    display: flex;
+    gap: 4px;
+
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .index-page .index-status-filter .status-filter-button {
+    flex: 1 1 0;
+    min-width: 0;
+
+    min-height: 38px;
+    padding: 7px 3px;
+
+    font-size: 10px;
+  }
+
+
+  /* Ações da ocorrência sem quebra de linha */
+  .index-page .report-actions {
+    display: flex !important;
+    align-items: center;
+    justify-content: flex-start !important;
+
+    flex-wrap: nowrap !important;
+    gap: 4px;
+
+    width: 100%;
+    overflow: hidden !important;
+  }
+
+  .index-page .report-actions .action-icon-button {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    min-height: 38px;
+
+    flex: 0 0 38px !important;
+
+    font-size: 16px;
+  }
+}
+
+
+/* ===================================================== TELAS MUITO PEQUENAS ===================================================== */
+
+@media (max-width: 430px) {
+  .brand-icon {
+    width: 34px;
+    height: 34px;
+
+    font-size: 19px;
+  }
+
+  .brand strong {
+    font-size: 14px;
+  }
+
+  .brand small {
+    font-size: 10px;
+  }
+
+  .menu-toggle {
+    min-height: 36px;
+    padding: 7px 9px;
+
+    font-size: 12px;
+  }
+
+  .top-menu {
+    min-width: 195px;
+  }
+
+
+  /* Quatro cards em uma linha */
+  .index-page .stats-grid {
+    gap: 3px;
+  }
+
+  .index-page .stat-card {
+    min-height: 78px;
+    padding: 8px 2px;
+  }
+
+  .index-page .stat-card span {
+    font-size: 20px;
+  }
+
+  .index-page .stat-card small {
+    font-size: 9px;
+  }
+
+
+  /* Cinco filtros em uma linha */
+  .index-page .index-status-filter {
+    gap: 3px;
+  }
+
+  .index-page .index-status-filter .status-filter-button {
+    min-height: 36px;
+    padding: 6px 2px;
+
+    font-size: 9px;
+  }
+
+
+  /* Botões das ocorrências */
+  .index-page .report-actions {
+    gap: 3px;
+  }
+
+  .index-page .report-actions .action-icon-button {
+    width: 35px;
+    height: 35px;
+    min-width: 35px;
+    min-height: 35px;
+    flex-basis: 35px !important;
+
+    font-size: 15px;
+  }
+}
+
+/* ===================================================== PÁGINA PÚBLICA - INDICADORES ===================================================== */
+
+.public-four-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+
+  margin-bottom: 20px;
+}
+
+.public-four-stats .public-stat-card {
+  min-width: 0;
+}
+
+.public-four-stats .public-stat-card:first-child {
+  grid-column: auto;
+}
+
+
+/* ===================================================== PÁGINA PÚBLICA - FILTRO SEM SCROLL ===================================================== */
+
+.public-status-filter-no-scroll {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  width: 100%;
+  overflow: hidden !important;
+
+  padding: 4px 0 8px;
+}
+
+.public-status-filter-no-scroll .status-filter-button {
+  flex: 1 1 0;
+  min-width: 0;
+
+  overflow: hidden;
+
+  padding: 9px 6px;
+
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+/* ===================================================== MODAL DE CONFIRMAÇÃO DE SAÍDA ===================================================== */
+
+.public-logout-modal-card {
+  width: min(440px, 100%);
+  padding: 32px;
+}
+
+.public-logout-modal-card h2 {
+  margin-bottom: 10px;
+  padding-right: 30px;
+}
+
+.public-logout-modal-card .muted {
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.public-logout-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.public-logout-actions button {
+  min-width: 130px;
+}
+
+
+/* ===================================================== CELULAR ===================================================== */
+
+@media (max-width: 760px) {
+  .public-four-stats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .public-four-stats .public-stat-card {
+    min-height: 88px;
+    padding: 10px 3px;
+  }
+
+  .public-four-stats .public-stat-card span {
+    font-size: 22px;
+  }
+
+  .public-four-stats .public-stat-card small {
+    font-size: 10px;
+    line-height: 1.1;
+    white-space: normal;
+  }
+
+  .public-status-filter-no-scroll {
+    gap: 4px;
+    overflow: hidden !important;
+  }
+
+  .public-status-filter-no-scroll .status-filter-button {
+    min-height: 38px;
+    padding: 7px 3px;
+
+    font-size: 10px;
+  }
+
+  .public-logout-actions {
+    flex-direction: column-reverse;
+  }
+
+  .public-logout-actions button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 430px) {
+  .public-four-stats {
+    gap: 3px;
+  }
+
+  .public-four-stats .public-stat-card {
+    min-height: 80px;
+    padding: 8px 2px;
+  }
+
+  .public-four-stats .public-stat-card span {
+    font-size: 20px;
+  }
+
+  .public-four-stats .public-stat-card small {
+    font-size: 9px;
+  }
+
+  .public-status-filter-no-scroll {
+    gap: 2px;
+  }
+
+  .public-status-filter-no-scroll .status-filter-button {
+    min-height: 36px;
+    padding: 6px 2px;
+
+    font-size: 9px;
+  }
+}
+
+/* ===================================================== ÍCONES DO MENU SUSPENSO ===================================================== */
+
+.menu-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.menu-icon {
+  width: 22px;
+  min-width: 22px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 18px;
+  line-height: 1;
+}
+
+.menu-link > span:last-child {
+  flex: 1;
+}
+
+
+/* Ícone de saída em vermelho */
+.menu-link:has(.menu-icon:first-child) {
+  text-decoration: none;
+}
+
+
+/* Ajuste específico do botão sair */
+#btnLogout.menu-link:hover,
+#btnAdminHomeLogout.menu-link:hover {
+  background: var(--danger-light);
+  color: var(--danger-dark);
+}
+
+
+/* ===================================================== CELULAR ===================================================== */
+
+@media (max-width: 760px) {
+  .menu-icon {
+    width: 20px;
+    min-width: 20px;
+    font-size: 16px;
+  }
+
+  .menu-link {
+    gap: 8px;
+  }
+}
+
+/* ===================================================== MENU DO ADMIN ===================================================== */
+
+.admin-page-topbar {
+  position: relative;
+  z-index: 1000;
+  overflow: visible !important;
+}
+
+.admin-page-menu-wrapper {
+  position: relative;
+  z-index: 3000;
+  margin-left: auto;
+}
+
+.admin-page-menu-toggle {
+  min-height: 42px;
+  padding: 9px 14px;
+
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 10px;
+
+  font-size: 15px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.admin-page-menu-toggle:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.admin-page-topbar .top-menu {
+  position: absolute;
+  z-index: 9999;
+
+  top: calc(100% + 8px);
+  right: 0;
+
+  min-width: 220px;
+
+  background: #ffffff;
+  border: 1px solid #bfdbfe;
+  border-radius: 12px;
+
+  box-shadow:
+    0 14px 32px rgba(15, 23, 42, 0.28);
+}
+
+.admin-page-topbar .menu-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 13px;
+
+  color: #172554;
+  font-size: 14px;
+  text-align: left;
+}
+
+.admin-page-topbar .menu-icon {
+  width: 22px;
+  min-width: 22px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 18px;
+}
+
+.admin-page-topbar .menu-link:hover {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.admin-page-topbar .admin-page-logout-link {
+  color: #b91c1c;
+}
+
+.admin-page-topbar .admin-page-logout-link:hover {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+
+/* ===================================================== QUATRO INDICADORES ===================================================== */
+
+.admin-four-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.admin-four-stats .admin-stat-card {
+  min-width: 0;
+}
+
+.admin-four-stats .admin-stat-card:first-child {
+  grid-column: auto;
+}
+
+
+/* ===================================================== MODAL DE SAÍDA ===================================================== */
+
+.admin-logout-modal-card {
+  width: min(440px, 100%);
+  padding: 32px;
+}
+
+.admin-logout-modal-card h2 {
+  margin-bottom: 10px;
+  padding-right: 30px;
+}
+
+.admin-logout-modal-card .muted {
+  margin-bottom: 24px;
+}
+
+.admin-logout-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.admin-logout-actions button {
+  min-width: 130px;
+}
+
+
+/* ===================================================== CELULAR ===================================================== */
+
+@media (max-width: 760px) {
+  .admin-page-topbar {
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    padding: 9px 10px;
+
+    overflow: visible !important;
+  }
+
+  .admin-page-topbar .brand {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .admin-page-topbar .brand strong {
+    font-size: 16px;
+    white-space: nowrap;
+  }
+
+  .admin-page-topbar .brand small {
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .admin-page-menu-toggle {
+    min-height: 38px;
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .admin-page-topbar .top-menu {
+    min-width: 205px;
+    max-width: calc(100vw - 20px);
+  }
+
+  .admin-four-stats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .admin-four-stats .admin-stat-card {
+    min-height: 84px;
+    padding: 10px 3px;
+    text-align: center;
+  }
+
+  .admin-four-stats .admin-stat-card span {
+    font-size: 22px;
+  }
+
+  .admin-four-stats .admin-stat-card small {
+    font-size: 10px;
+    line-height: 1.1;
+    white-space: normal;
+  }
+
+  .admin-logout-actions {
+    flex-direction: column-reverse;
+  }
+
+  .admin-logout-actions button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 430px) {
+  .admin-page-topbar {
+    padding: 8px 7px;
+  }
+
+  .admin-four-stats {
+    gap: 3px;
+  }
+
+  .admin-four-stats .admin-stat-card {
+    min-height: 78px;
+    padding: 8px 2px;
+  }
+
+  .admin-four-stats .admin-stat-card span {
+    font-size: 20px;
+  }
+
+  .admin-four-stats .admin-stat-card small {
+    font-size: 9px;
+  }
+
+  .admin-page-menu-toggle {
+    padding: 7px 8px;
+    font-size: 11px;
+  }
+}
