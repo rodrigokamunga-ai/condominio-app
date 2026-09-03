@@ -225,10 +225,20 @@ function calculateDays( startValue, endValue = null ) {
 // FILTRO
 // =====================================================
 
+function getSelectedPublicStatus() {
+  const activeButton =
+    document.querySelector(
+      ".status-filter-button.active"
+    );
+
+  return activeButton?.dataset.status ||
+    "Todos";
+}
+
+
 function getFilteredReports() {
   const filter =
-    $("publicStatusFilter")?.value ||
-    "Todos";
+    getSelectedPublicStatus();
 
   if (filter === "Todos") {
     return reports;
@@ -240,7 +250,6 @@ function getFilteredReports() {
       filter
   );
 }
-
 
 // =====================================================
 // INDICADORES
@@ -569,17 +578,40 @@ function openTimeline(reportId) {
 
 
 // =====================================================
-// EVENTOS DE FILTRO E PAGINAÇÃO
+// EVENTOS DO FILTRO
 // =====================================================
 
 $("publicStatusFilter")?.addEventListener(
-  "change",
-  () => {
+  "click",
+  (event) => {
+    const button =
+      event.target.closest(
+        ".status-filter-button"
+      );
+
+    if (!button) {
+      return;
+    }
+
+    document
+      .querySelectorAll(
+        ".status-filter-button"
+      )
+      .forEach((item) => {
+        item.classList.remove(
+          "active"
+        );
+      });
+
+    button.classList.add(
+      "active"
+    );
+
     currentPage = 1;
+
     renderReports();
   }
 );
-
 
 $("publicPagination")?.addEventListener(
   "click",
