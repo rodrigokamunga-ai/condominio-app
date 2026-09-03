@@ -17,26 +17,32 @@
 <body class="public-page">
 
   <!-- CABEÇALHO -->
-  <header class="topbar public-topbar">
-    <div class="brand">
-      <span class="brand-icon">📋</span>
+<header class="topbar public-topbar">
+  <div class="brand">
+    <span class="brand-icon">📋</span>
 
-      <div>
-        <strong>Amigos do Maui</strong>
-        <small>Mural de ocorrências</small>
-      </div>
+    <div>
+      <strong>Amigos do Maui</strong>
+      <small>Mural de ocorrências</small>
     </div>
+  </div>
 
-    <div class="top-actions">
-      <a href="./index.html" class="link-button" >
+  <div class="top-menu-wrapper">
+    <button id="btnMenu" class="menu-toggle" type="button" aria-expanded="false" aria-controls="mainMenu" >
+      ☰ Menu
+    </button>
+
+    <nav id="mainMenu" class="top-menu hidden" aria-label="Menu principal" >
+      <a href="./index.html" class="menu-link" >
         Área do morador
       </a>
 
-      <button id="btnLogout" class="link-button hidden" type="button" >
+      <button id="btnLogout" class="menu-link hidden" type="button" >
         Sair
       </button>
-    </div>
-  </header>
+    </nav>
+  </div>
+</header>
 
 
   <main class="container">
