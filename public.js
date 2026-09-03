@@ -263,8 +263,7 @@ function updatePublicCounters() {
         status
     ).length;
 
-  const total =
-    $("publicTotal");
+  
 
   const open =
     $("publicOpen");
@@ -278,10 +277,7 @@ function updatePublicCounters() {
   const resolved =
     $("publicResolved");
 
-  if (total) {
-    total.textContent =
-      reports.length;
-  }
+  
 
   if (open) {
     open.textContent =
@@ -742,20 +738,65 @@ $("publicTimelineModal")?.addEventListener(
 // LOGOUT
 // =====================================================
 
+// =====================================================
+// MODAL DE CONFIRMAÇÃO DE LOGOUT
+// =====================================================
+
 $("btnLogout")?.addEventListener(
   "click",
-  async () => {
-    const confirmed =
-      confirm(
-        "Deseja realmente sair do sistema?"
-      );
+  () => {
+    show("logoutModal");
+  }
+);
 
-    if (!confirmed) {
-      return;
+
+$("btnCloseLogout")?.addEventListener(
+  "click",
+  () => {
+    hide("logoutModal");
+  }
+);
+
+
+$("btnCancelLogout")?.addEventListener(
+  "click",
+  () => {
+    hide("logoutModal");
+  }
+);
+
+
+$("logoutModal")?.addEventListener(
+  "click",
+  (event) => {
+    if (
+      event.target.id ===
+      "logoutModal"
+    ) {
+      hide("logoutModal");
+    }
+  }
+);
+
+
+$("btnConfirmLogout")?.addEventListener(
+  "click",
+  async () => {
+    const button =
+      $("btnConfirmLogout");
+
+    if (button) {
+      button.disabled =
+        true;
+
+      button.textContent =
+        "Saindo...";
     }
 
     try {
       await signOut(auth);
+
+      hide("logoutModal");
 
       window.location.href =
         "./index.html";
@@ -764,6 +805,14 @@ $("btnLogout")?.addEventListener(
         "Erro ao sair:",
         error
       );
+
+      if (button) {
+        button.disabled =
+          false;
+
+        button.textContent =
+          "Sair do sistema";
+      }
     }
   }
 );
