@@ -13,7 +13,9 @@ import {
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 
 // =====================================================
@@ -34,9 +36,14 @@ const firebaseConfig = {
 // INICIALIZAÇÃO
 // =====================================================
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+const app =
+  initializeApp(firebaseConfig);
+
+const auth =
+  getAuth(app);
+
+const db =
+  getFirestore(app);
 
 
 // =====================================================
@@ -46,38 +53,57 @@ const db = getFirestore(app);
 const $ = (id) =>
   document.getElementById(id);
 
+
 function message( id, text, success = false ) {
-  const element = $(id);
+  const element =
+    $(id);
 
   if (!element) {
     return;
   }
 
-  element.textContent = text;
+  element.textContent =
+    text;
 
-  element.className = success
-    ? "message success"
-    : "message";
+  element.className =
+    success
+      ? "message success"
+      : "message";
 }
 
+
 function toast(text) {
-  const element = $("toast");
+  const element =
+    $("toast");
 
   if (!element) {
     alert(text);
     return;
   }
 
-  element.textContent = text;
-  element.classList.add("show");
+  element.textContent =
+    text;
 
-  setTimeout(() => {
-    element.classList.remove("show");
-  }, 3500);
+  element.classList.add(
+    "show"
+  );
+
+  setTimeout(
+    () => {
+      element.classList.remove(
+        "show"
+      );
+    },
+    3500
+  );
 }
 
+
 function friendlyError(error) {
-  console.error("Erro completo:", error);
+  console.error(
+    "Erro completo:",
+    error
+  );
 
   const errors = {
     "permission-denied":
@@ -90,13 +116,87 @@ function friendlyError(error) {
       "Por segurança, faça login novamente para continuar."
   };
 
-  if (errors[error?.code]) {
-    return errors[error.code];
+  if (
+    errors[error?.code]
+  ) {
+    return errors[
+      error.code
+    ];
   }
 
   return error?.message ||
     "Não foi possível concluir a operação.";
 }
+
+
+// =====================================================
+// MENU SUSPENSO
+// =====================================================
+
+const menuButton =
+  $("btnMenu");
+
+const mainMenu =
+  $("mainMenu");
+
+
+menuButton?.addEventListener(
+  "click",
+  (event) => {
+    event.stopPropagation();
+
+    const menuIsOpen =
+      !mainMenu?.classList.contains(
+        "hidden"
+      );
+
+    if (menuIsOpen) {
+      mainMenu?.classList.add(
+        "hidden"
+      );
+
+      menuButton.setAttribute(
+        "aria-expanded",
+        "false"
+      );
+    } else {
+      mainMenu?.classList.remove(
+        "hidden"
+      );
+
+      menuButton.setAttribute(
+        "aria-expanded",
+        "true"
+      );
+    }
+  }
+);
+
+
+document.addEventListener(
+  "click",
+  (event) => {
+    if (
+      mainMenu &&
+      menuButton &&
+      !mainMenu.contains(
+        event.target
+      ) &&
+      !menuButton.contains(
+        event.target
+      )
+    ) {
+      mainMenu.classList.add(
+        "hidden"
+      );
+
+      menuButton.setAttribute(
+        "aria-expanded",
+        "false"
+      );
+    }
+  }
+);
 
 
 // =====================================================
@@ -106,7 +206,11 @@ function friendlyError(error) {
 async function loadProfile(user) {
   const snapshot =
     await getDoc(
-      doc(db, "users", user.uid)
+      doc(
+        db,
+        "users",
+        user.uid
+      )
     );
 
   const profile =
@@ -114,27 +218,52 @@ async function loadProfile(user) {
       ? snapshot.data()
       : {};
 
-  $("profileName").value =
-    profile.nome ||
-    user.displayName ||
-    "";
+  const profileName =
+    $("profileName");
 
-  $("profileUnit").value =
-    profile.unidade ||
-    "";
+  const profileUnit =
+    $("profileUnit");
 
-  $("profileBlock").value =
-    profile.bloco ||
-    "";
+  const profileBlock =
+    $("profileBlock");
 
-  $("profilePhone").value =
-    profile.telefone ||
-    "";
+  const profilePhone =
+    $("profilePhone");
 
-  $("profileEmail").value =
-    user.email ||
-    profile.email ||
-    "";
+  const profileEmail =
+    $("profileEmail");
+
+  if (profileName) {
+    profileName.value =
+      profile.nome ||
+      user.displayName ||
+      "";
+  }
+
+  if (profileUnit) {
+    profileUnit.value =
+      profile.unidade ||
+      "";
+  }
+
+  if (profileBlock) {
+    profileBlock.value =
+      profile.bloco ||
+      "";
+  }
+
+  if (profilePhone) {
+    profilePhone.value =
+      profile.telefone ||
+      "";
+  }
+
+  if (profileEmail) {
+    profileEmail.value =
+      user.email ||
+      profile.email ||
+      "";
+  }
 }
 
 
@@ -155,6 +284,7 @@ $("profileForm")?.addEventListener(
         "profileMessage",
         "Você precisa estar logado para editar seu perfil."
       );
+
       return;
     }
 
@@ -174,11 +304,15 @@ $("profileForm")?.addEventListener(
       $("profilePhone")?.value.trim() ||
       "";
 
-    if (!name || name.length < 3) {
+    if (
+      !name ||
+      name.length < 3
+    ) {
       message(
         "profileMessage",
         "Informe um nome válido."
       );
+
       return;
     }
 
@@ -187,6 +321,7 @@ $("profileForm")?.addEventListener(
         "profileMessage",
         "Informe a unidade ou apartamento."
       );
+
       return;
     }
 
@@ -194,7 +329,11 @@ $("profileForm")?.addEventListener(
       $("btnSaveProfile");
 
     if (button) {
-      button.disabled = true;
+      button.disabled =
+        true;
+
+      button.textContent =
+        "Salvando...";
     }
 
     message(
@@ -206,17 +345,30 @@ $("profileForm")?.addEventListener(
       await updateProfile(
         user,
         {
-          displayName: name
+          displayName:
+            name
         }
       );
 
       await updateDoc(
-        doc(db, "users", user.uid),
+        doc(
+          db,
+          "users",
+          user.uid
+        ),
         {
-          nome: name,
-          unidade: unit,
-          bloco: block,
-          telefone: phone,
+          nome:
+            name,
+
+          unidade:
+            unit,
+
+          bloco:
+            block,
+
+          telefone:
+            phone,
+
           atualizadoEm:
             serverTimestamp()
         }
@@ -238,7 +390,11 @@ $("profileForm")?.addEventListener(
       );
     } finally {
       if (button) {
-        button.disabled = false;
+        button.disabled =
+          false;
+
+        button.textContent =
+          "Salvar alterações";
       }
     }
   }
@@ -261,12 +417,31 @@ $("btnLogout")?.addEventListener(
       return;
     }
 
+    const button =
+      $("btnLogout");
+
+    if (button) {
+      button.disabled =
+        true;
+
+      button.textContent =
+        "Saindo...";
+    }
+
     try {
       await signOut(auth);
 
       window.location.href =
         "./index.html";
     } catch (error) {
+      if (button) {
+        button.disabled =
+          false;
+
+        button.textContent =
+          "Sair";
+      }
+
       message(
         "profileMessage",
         friendlyError(error)
@@ -291,7 +466,9 @@ onAuthStateChanged(
     }
 
     try {
-      await loadProfile(user);
+      await loadProfile(
+        user
+      );
     } catch (error) {
       message(
         "profileMessage",
