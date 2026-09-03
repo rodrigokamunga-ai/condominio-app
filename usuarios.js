@@ -37,9 +37,14 @@ const firebaseConfig = {
 const ADMIN_EMAIL =
   "rodrigokamunga@gmail.com";
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+const app =
+  initializeApp(firebaseConfig);
+
+const auth =
+  getAuth(app);
+
+const db =
+  getFirestore(app);
 
 
 // =====================================================
@@ -68,6 +73,7 @@ function show(id) {
   }
 }
 
+
 function hide(id) {
   const element = $(id);
 
@@ -75,6 +81,7 @@ function hide(id) {
     element.classList.add("hidden");
   }
 }
+
 
 function escapeHtml(value = "") {
   return String(value).replace(
@@ -88,6 +95,7 @@ function escapeHtml(value = "") {
     }[character])
   );
 }
+
 
 function formatDate(value) {
   if (!value) {
@@ -110,16 +118,18 @@ function formatDate(value) {
   return "Não informada";
 }
 
+
 function normalizeWhatsAppPhone(phone) {
   if (!phone) {
     return "";
   }
 
-  // Remove tudo que não for número
   let normalizedPhone =
-    String(phone).replace(/\D/g, "");
+    String(phone).replace(
+      /\D/g,
+      ""
+    );
 
-  // Adiciona o código do Brasil caso não exista
   if (
     normalizedPhone &&
     !normalizedPhone.startsWith("55")
@@ -130,6 +140,7 @@ function normalizeWhatsAppPhone(phone) {
 
   return normalizedPhone;
 }
+
 
 function userStatusClass(status) {
   if (status === "Aprovado") {
@@ -143,6 +154,7 @@ function userStatusClass(status) {
   return "pending";
 }
 
+
 function toast(text) {
   const element =
     $("usersToast");
@@ -152,13 +164,23 @@ function toast(text) {
     return;
   }
 
-  element.textContent = text;
-  element.classList.add("show");
+  element.textContent =
+    text;
 
-  setTimeout(() => {
-    element.classList.remove("show");
-  }, 3500);
+  element.classList.add(
+    "show"
+  );
+
+  setTimeout(
+    () => {
+      element.classList.remove(
+        "show"
+      );
+    },
+    3500
+  );
 }
+
 
 function showEditMessage( text, success = false ) {
   const element =
@@ -168,11 +190,15 @@ function showEditMessage( text, success = false ) {
     return;
   }
 
-  element.textContent = text;
-  element.className = success
-    ? "message success"
-    : "message";
+  element.textContent =
+    text;
+
+  element.className =
+    success
+      ? "message success"
+      : "message";
 }
+
 
 function friendlyError(error) {
   console.error(
@@ -200,13 +226,90 @@ function friendlyError(error) {
 
 
 // =====================================================
+// MENU SUSPENSO
+// =====================================================
+
+const usersMenuButton =
+  $("btnUsersMenu");
+
+const usersMainMenu =
+  $("usersMainMenu");
+
+
+usersMenuButton?.addEventListener(
+  "click",
+  (event) => {
+    event.stopPropagation();
+
+    const menuIsHidden =
+      usersMainMenu?.classList.contains(
+        "hidden"
+      );
+
+    if (menuIsHidden) {
+      usersMainMenu?.classList.remove(
+        "hidden"
+      );
+
+      usersMenuButton.setAttribute(
+        "aria-expanded",
+        "true"
+      );
+    } else {
+      usersMainMenu?.classList.add(
+        "hidden"
+      );
+
+      usersMenuButton.setAttribute(
+        "aria-expanded",
+        "false"
+      );
+    }
+  }
+);
+
+
+usersMainMenu?.addEventListener(
+  "click",
+  (event) => {
+    event.stopPropagation();
+  }
+);
+
+
+document.addEventListener(
+  "click",
+  () => {
+    usersMainMenu?.classList.add(
+      "hidden"
+    );
+
+    usersMenuButton?.setAttribute(
+      "aria-expanded",
+      "false"
+    );
+  }
+);
+
+
+// =====================================================
 // FILTRO
 // =====================================================
 
+function getSelectedUserStatus() {
+  const activeButton =
+    document.querySelector(
+      "#userStatusFilter .status-filter-button.active"
+    );
+
+  return activeButton?.dataset.status ||
+    "Todos";
+}
+
+
 function getFilteredUsers() {
   const selectedStatus =
-    $("userStatusFilter")?.value ||
-    "Todos";
+    getSelectedUserStatus();
 
   const search =
     $("userSearch")?.value
@@ -214,31 +317,36 @@ function getFilteredUsers() {
       .toLowerCase() ||
     "";
 
-  return users.filter((user) => {
-    const status =
-      user.status || "Pendente";
+  return users.filter(
+    (user) => {
+      const status =
+        user.status ||
+        "Pendente";
 
-    const statusMatches =
-      selectedStatus === "Todos" ||
-      status === selectedStatus;
+      const statusMatches =
+        selectedStatus === "Todos" ||
+        status === selectedStatus;
 
-    const searchText = [
-      user.nome,
-      user.email,
-      user.unidade,
-      user.bloco,
-      user.telefone
-    ]
-      .join(" ")
-      .toLowerCase();
+      const searchText = [
+        user.nome,
+        user.email,
+        user.unidade,
+        user.bloco,
+        user.telefone
+      ]
+        .join(" ")
+        .toLowerCase();
 
-    const searchMatches =
-      !search ||
-      searchText.includes(search);
+      const searchMatches =
+        !search ||
+        searchText.includes(search);
 
-    return statusMatches &&
-      searchMatches;
-  });
+      return (
+        statusMatches &&
+        searchMatches
+      );
+    }
+  );
 }
 
 
@@ -253,20 +361,23 @@ function renderCounters() {
   const pending =
     users.filter(
       (user) =>
-        (user.status || "Pendente") ===
+        (user.status ||
+          "Pendente") ===
         "Pendente"
     ).length;
 
   const approved =
     users.filter(
       (user) =>
-        user.status === "Aprovado"
+        user.status ===
+        "Aprovado"
     ).length;
 
   const rejected =
     users.filter(
       (user) =>
-        user.status === "Rejeitado"
+        user.status ===
+        "Rejeitado"
     ).length;
 
   const totalElement =
@@ -342,7 +453,8 @@ function renderUsers() {
     );
 
   if (currentPage > totalPages) {
-    currentPage = totalPages;
+    currentPage =
+      totalPages;
   }
 
   const start =
@@ -356,32 +468,39 @@ function renderUsers() {
     );
 
   if (visibleUsers.length === 0) {
-    list.innerHTML = ` <div class="empty-state"> Nenhum usuário encontrado. </div> `;
+    list.innerHTML =
+      ` <div class="empty-state"> Nenhum usuário encontrado. </div> `;
   } else {
     list.innerHTML =
       visibleUsers
-        .map((user) => {
-          const status =
-            user.status || "Pendente";
+        .map(
+          (user) => {
+            const status =
+              user.status ||
+              "Pendente";
 
-          const isPending =
-            status === "Pendente";
+            const isPending =
+              status ===
+              "Pendente";
 
-          const whatsappEnviado =
-            user.whatsappEnviado === true;
+            const whatsappEnviado =
+              user.whatsappEnviado ===
+              true;
 
-          const whatsappButton =
-            status === "Aprovado"
-              ? ` <button class="user-icon-button whatsapp-user-button" data-user-id="${user.id}" type="button" title="${ whatsappEnviado ? "Morador já informado" : "Enviar WhatsApp" }" aria-label="${ whatsappEnviado ? "Morador já informado" : "Enviar WhatsApp" }" ${whatsappEnviado ? "disabled" : ""} > <span>💬</span> </button> `
-              : "";
+            const whatsappButton =
+              status ===
+              "Aprovado"
+                ? ` <button class="user-icon-button whatsapp-user-button" data-user-id="${user.id}" type="button" title="${ whatsappEnviado ? "Morador já informado" : "Enviar WhatsApp" }" aria-label="${ whatsappEnviado ? "Morador já informado" : "Enviar WhatsApp" }" ${ whatsappEnviado ? "disabled" : "" } > <span>💬</span> </button> `
+                : "";
 
-          const informedMessage =
-            whatsappEnviado
-              ? ` <div class="whatsapp-informed-message"> Morador já informado sobre a situação. </div> `
-              : "";
+            const informedMessage =
+              whatsappEnviado
+                ? ` <div class="whatsapp-informed-message"> Morador já informado sobre a situação. </div> `
+                : "";
 
-          return ` <article class="user-item"> <div class="user-card-header"> <div class="user-name"> ${escapeHtml( user.nome || "Nome não informado" )} </div> </div> <div class="user-main"> <div class="user-meta"> E-mail: ${escapeHtml( user.email || "Não informado" )} </div> <div class="user-meta"> Unidade: ${escapeHtml( user.unidade || "Não informada" )} </div> ${ user.bloco ? ` <div class="user-meta"> Bloco: ${escapeHtml(user.bloco)} </div> ` : "" } ${ user.telefone ? ` <div class="user-meta"> Telefone: ${escapeHtml(user.telefone)} </div> ` : "" } <div class="user-meta"> Cadastro: ${formatDate(user.criadoEm)} </div> ${ user.aprovadoEm ? ` <div class="user-meta"> Aprovação: ${formatDate(user.aprovadoEm)} </div> ` : "" } ${ user.rejeitadoEm ? ` <div class="user-meta"> Rejeição: ${formatDate(user.rejeitadoEm)} </div> ` : "" } </div> <div class="user-card-status"> <span class="user-status ${userStatusClass(status)}" > ${escapeHtml(status)} </span> </div> <div class="user-actions"> <button class="user-icon-button detail-user-button" data-user-id="${user.id}" type="button" title="Visualizar usuário" aria-label="Visualizar usuário" > <span>🔍</span> </button> <button class="user-icon-button edit-user-button" data-user-id="${user.id}" type="button" title="Editar usuário" aria-label="Editar usuário" > <span>✏️</span> </button> ${whatsappButton} ${ isPending ? ` <button class="user-icon-button approve-button" data-user-id="${user.id}" type="button" title="Aprovar usuário" aria-label="Aprovar usuário" > <span>✓</span> </button> <button class="user-icon-button reject-button" data-user-id="${user.id}" type="button" title="Rejeitar usuário" aria-label="Rejeitar usuário" > <span>✕</span> </button> ` : "" } <button class="user-icon-button delete-user-button" data-user-id="${user.id}" type="button" title="Excluir usuário" aria-label="Excluir usuário" > <span>🗑️</span> </button> </div> ${informedMessage} </article> `;
-        })
+            return ` <article class="user-item"> <div class="user-card-header"> <div class="user-name"> ${ escapeHtml( user.nome || "Nome não informado" ) } </div> </div> <div class="user-main"> <div class="user-meta"> E-mail: ${ escapeHtml( user.email || "Não informado" ) } </div> <div class="user-meta"> Unidade: ${ escapeHtml( user.unidade || "Não informada" ) } </div> ${ user.bloco ? ` <div class="user-meta"> Bloco: ${escapeHtml(user.bloco)} </div> ` : "" } ${ user.telefone ? ` <div class="user-meta"> Telefone: ${escapeHtml(user.telefone)} </div> ` : "" } <div class="user-meta"> Cadastro: ${formatDate(user.criadoEm)} </div> ${ user.aprovadoEm ? ` <div class="user-meta"> Aprovação: ${formatDate(user.aprovadoEm)} </div> ` : "" } ${ user.rejeitadoEm ? ` <div class="user-meta"> Rejeição: ${formatDate(user.rejeitadoEm)} </div> ` : "" } </div> <div class="user-card-status"> <span class="user-status ${userStatusClass(status)}" > ${escapeHtml(status)} </span> </div> <div class="user-actions"> <button class="user-icon-button detail-user-button" data-user-id="${user.id}" type="button" title="Visualizar usuário" aria-label="Visualizar usuário" > <span>🔍</span> </button> <button class="user-icon-button edit-user-button" data-user-id="${user.id}" type="button" title="Editar usuário" aria-label="Editar usuário" > <span>✏️</span> </button> ${whatsappButton} ${ isPending ? ` <button class="user-icon-button approve-button" data-user-id="${user.id}" type="button" title="Aprovar usuário" aria-label="Aprovar usuário" > <span>✓</span> </button> <button class="user-icon-button reject-button" data-user-id="${user.id}" type="button" title="Rejeitar usuário" aria-label="Rejeitar usuário" > <span>✕</span> </button> ` : "" } <button class="user-icon-button delete-user-button" data-user-id="${user.id}" type="button" title="Excluir usuário" aria-label="Excluir usuário" > <span>🗑️</span> </button> </div> ${informedMessage} </article> `;
+          }
+        )
         .join("");
   }
 
@@ -393,6 +512,7 @@ function renderUsers() {
   renderCounters();
 }
 
+
 function renderPagination( totalItems, totalPages ) {
   const pagination =
     $("usersPagination");
@@ -402,11 +522,14 @@ function renderPagination( totalItems, totalPages ) {
   }
 
   if (totalItems === 0) {
-    pagination.innerHTML = "";
+    pagination.innerHTML =
+      "";
+
     return;
   }
 
-  pagination.innerHTML = ` <button id="usersPrevPage" class="secondary-button" type="button" ${currentPage <= 1 ? "disabled" : ""} > Anterior </button> <span> Página ${currentPage} de ${totalPages} </span> <button id="usersNextPage" class="secondary-button" type="button" ${currentPage >= totalPages ? "disabled" : ""} > Próxima </button> `;
+  pagination.innerHTML =
+    ` <button id="usersPrevPage" class="secondary-button" type="button" ${ currentPage <= 1 ? "disabled" : "" } > Anterior </button> <span> Página ${currentPage} de ${totalPages} </span> <button id="usersNextPage" class="secondary-button" type="button" ${ currentPage >= totalPages ? "disabled" : "" } > Próxima </button> `;
 }
 
 
@@ -417,7 +540,8 @@ function renderPagination( totalItems, totalPages ) {
 function openUserDetails(userId) {
   const user =
     users.find(
-      (item) => item.id === userId
+      (item) =>
+        item.id === userId
     );
 
   if (!user) {
@@ -425,7 +549,8 @@ function openUserDetails(userId) {
   }
 
   const status =
-    user.status || "Pendente";
+    user.status ||
+    "Pendente";
 
   const content =
     $("userDetailContent");
@@ -434,20 +559,22 @@ function openUserDetails(userId) {
     return;
   }
 
-  content.innerHTML = ` <span class="eyebrow"> DETALHAMENTO DO MORADOR </span> <h2> ${escapeHtml( user.nome || "Nome não informado" )} </h2> <div class="admin-detail-grid"> <div class="admin-detail-field"> <strong>E-mail</strong> <span> ${escapeHtml( user.email || "Não informado" )} </span> </div> <div class="admin-detail-field"> <strong>Telefone</strong> <span> ${escapeHtml( user.telefone || "Não informado" )} </span> </div> <div class="admin-detail-field"> <strong>Unidade</strong> <span> ${escapeHtml( user.unidade || "Não informada" )} </span> </div> <div class="admin-detail-field"> <strong>Bloco</strong> <span> ${escapeHtml( user.bloco || "Não informado" )} </span> </div> <div class="admin-detail-field"> <strong>Situação</strong> <span> <span class="user-status ${userStatusClass(status)}" > ${escapeHtml(status)} </span> </span> </div> <div class="admin-detail-field"> <strong>Data do cadastro</strong> <span> ${formatDate(user.criadoEm)} </span> </div> ${ user.aprovadoEm ? ` <div class="admin-detail-field"> <strong>Data da aprovação</strong> <span> ${formatDate(user.aprovadoEm)} </span> </div> ` : "" } ${ user.rejeitadoEm ? ` <div class="admin-detail-field"> <strong>Data da rejeição</strong> <span> ${formatDate(user.rejeitadoEm)} </span> </div> ` : "" } ${ user.whatsappEnviado ? ` <div class="admin-detail-field"> <strong>WhatsApp</strong> <span> Morador já informado </span> </div> ` : "" } </div> `;
+  content.innerHTML =
+    ` <span class="eyebrow"> DETALHAMENTO DO MORADOR </span> <h2> ${ escapeHtml( user.nome || "Nome não informado" ) } </h2> <div class="admin-detail-grid"> <div class="admin-detail-field"> <strong>E-mail</strong> <span> ${ escapeHtml( user.email || "Não informado" ) } </span> </div> <div class="admin-detail-field"> <strong>Telefone</strong> <span> ${ escapeHtml( user.telefone || "Não informado" ) } </span> </div> <div class="admin-detail-field"> <strong>Unidade</strong> <span> ${ escapeHtml( user.unidade || "Não informada" ) } </span> </div> <div class="admin-detail-field"> <strong>Bloco</strong> <span> ${ escapeHtml( user.bloco || "Não informado" ) } </span> </div> <div class="admin-detail-field"> <strong>Situação</strong> <span> <span class="user-status ${userStatusClass(status)}" > ${escapeHtml(status)} </span> </span> </div> <div class="admin-detail-field"> <strong>Data do cadastro</strong> <span> ${formatDate(user.criadoEm)} </span> </div> ${ user.aprovadoEm ? ` <div class="admin-detail-field"> <strong>Data da aprovação</strong> <span> ${formatDate(user.aprovadoEm)} </span> </div> ` : "" } ${ user.rejeitadoEm ? ` <div class="admin-detail-field"> <strong>Data da rejeição</strong> <span> ${formatDate(user.rejeitadoEm)} </span> </div> ` : "" } ${ user.whatsappEnviado ? ` <div class="admin-detail-field"> <strong>WhatsApp</strong> <span> Morador já informado </span> </div> ` : "" } </div> `;
 
   show("userDetailModal");
 }
 
 
 // =====================================================
-// EDIÇÃO DO USUÁRIO
+// EDIÇÃO
 // =====================================================
 
 function openUserEdit(userId) {
   const user =
     users.find(
-      (item) => item.id === userId
+      (item) =>
+        item.id === userId
     );
 
   if (!user) {
@@ -476,6 +603,7 @@ function openUserEdit(userId) {
     alert(
       "Os campos de edição não foram encontrados."
     );
+
     return;
   }
 
@@ -483,26 +611,34 @@ function openUserEdit(userId) {
     user.id;
 
   fields.name.value =
-    user.nome || "";
+    user.nome ||
+    "";
 
   fields.email.value =
-    user.email || "";
+    user.email ||
+    "";
 
   fields.unit.value =
-    user.unidade || "";
+    user.unidade ||
+    "";
 
   fields.block.value =
-    user.bloco || "";
+    user.bloco ||
+    "";
 
   fields.phone.value =
-    user.telefone || "";
+    user.telefone ||
+    "";
 
   fields.status.value =
-    user.status || "Pendente";
+    user.status ||
+    "Pendente";
 
   showEditMessage("");
+
   show("userEditModal");
 }
+
 
 $("userEditForm")?.addEventListener(
   "submit",
@@ -529,20 +665,26 @@ $("userEditForm")?.addEventListener(
 
     const currentUser =
       users.find(
-        (item) => item.id === userId
+        (item) =>
+          item.id === userId
       );
 
     if (!userId) {
       showEditMessage(
         "Usuário não identificado."
       );
+
       return;
     }
 
-    if (!name || name.length < 3) {
+    if (
+      !name ||
+      name.length < 3
+    ) {
       showEditMessage(
         "Informe um nome válido."
       );
+
       return;
     }
 
@@ -550,6 +692,7 @@ $("userEditForm")?.addEventListener(
       showEditMessage(
         "Informe a unidade do usuário."
       );
+
       return;
     }
 
@@ -557,6 +700,7 @@ $("userEditForm")?.addEventListener(
       showEditMessage(
         "Selecione uma situação."
       );
+
       return;
     }
 
@@ -564,64 +708,88 @@ $("userEditForm")?.addEventListener(
       $("btnSaveUserEdit");
 
     if (saveButton) {
-      saveButton.disabled = true;
+      saveButton.disabled =
+        true;
     }
 
     try {
-      const statusAnterior =
-        currentUser?.status || "Pendente";
+      const previousStatus =
+        currentUser?.status ||
+        "Pendente";
 
-      const statusFoiAlterado =
-        statusAnterior !== status;
+      const statusChanged =
+        previousStatus !==
+        status;
 
       const data = {
-        nome: name,
-        unidade: unit,
-        bloco: block || "",
-        telefone: phone || "",
-        status,
+        nome:
+          name,
+
+        unidade:
+          unit,
+
+        bloco:
+          block || "",
+
+        telefone:
+          phone || "",
+
+        status:
+          status,
+
         atualizadoEm:
           serverTimestamp()
       };
 
-      if (status === "Aprovado") {
+      if (
+        status ===
+        "Aprovado"
+      ) {
         data.aprovadoEm =
           serverTimestamp();
 
-        data.rejeitadoEm = null;
+        data.rejeitadoEm =
+          null;
       }
 
-      if (status === "Rejeitado") {
+      if (
+        status ===
+        "Rejeitado"
+      ) {
         data.rejeitadoEm =
           serverTimestamp();
 
-        data.aprovadoEm = null;
-      }
-
-      if (status === "Pendente") {
-        data.aprovadoEm = null;
-        data.rejeitadoEm = null;
-      }
-
-      /* * Se o status foi alterado, permite * um novo aviso pelo WhatsApp. */
-      if (
-        statusFoiAlterado &&
-        status === "Aprovado"
-      ) {
-        data.whatsappEnviado = false;
-        data.whatsappEnviadoEm = null;
+        data.aprovadoEm =
+          null;
       }
 
       if (
-        statusFoiAlterado &&
-        status !== "Aprovado"
+        status ===
+        "Pendente"
       ) {
-        data.whatsappEnviado = false;
-        data.whatsappEnviadoEm = null;
+        data.aprovadoEm =
+          null;
+
+        data.rejeitadoEm =
+          null;
+      }
+
+      if (
+        statusChanged
+      ) {
+        data.whatsappEnviado =
+          false;
+
+        data.whatsappEnviadoEm =
+          null;
       }
 
       await updateDoc(
-        doc(db, "users", userId),
+        doc(
+          db,
+          "users",
+          userId
+        ),
         data
       );
 
@@ -636,7 +804,8 @@ $("userEditForm")?.addEventListener(
       );
     } finally {
       if (saveButton) {
-        saveButton.disabled = false;
+        saveButton.disabled =
+          false;
       }
     }
   }
@@ -644,22 +813,24 @@ $("userEditForm")?.addEventListener(
 
 
 // =====================================================
-// APROVAÇÃO
+// APROVAÇÃO E REJEIÇÃO
 // =====================================================
 
 async function approveUser(userId) {
   const user =
     users.find(
-      (item) => item.id === userId
+      (item) =>
+        item.id === userId
     );
 
   if (!user) {
     return;
   }
 
-  const confirmed = confirm(
-    `Deseja aprovar o cadastro de ${ user.nome || user.email }?`
-  );
+  const confirmed =
+    confirm(
+      `Deseja aprovar o cadastro de ${ user.nome || user.email }?`
+    );
 
   if (!confirmed) {
     return;
@@ -667,22 +838,29 @@ async function approveUser(userId) {
 
   try {
     await updateDoc(
-      doc(db, "users", userId),
+      doc(
+        db,
+        "users",
+        userId
+      ),
       {
-        status: "Aprovado",
+        status:
+          "Aprovado",
 
         aprovadoEm:
           serverTimestamp(),
 
-        rejeitadoEm: null,
+        rejeitadoEm:
+          null,
 
         atualizadoEm:
           serverTimestamp(),
 
-        /* * Libera o botão WhatsApp * para o novo status aprovado. */
-        whatsappEnviado: false,
+        whatsappEnviado:
+          false,
 
-        whatsappEnviadoEm: null
+        whatsappEnviadoEm:
+          null
       }
     );
 
@@ -696,19 +874,22 @@ async function approveUser(userId) {
   }
 }
 
+
 async function rejectUser(userId) {
   const user =
     users.find(
-      (item) => item.id === userId
+      (item) =>
+        item.id === userId
     );
 
   if (!user) {
     return;
   }
 
-  const confirmed = confirm(
-    `Deseja rejeitar o cadastro de ${ user.nome || user.email }?`
-  );
+  const confirmed =
+    confirm(
+      `Deseja rejeitar o cadastro de ${ user.nome || user.email }?`
+    );
 
   if (!confirmed) {
     return;
@@ -716,21 +897,29 @@ async function rejectUser(userId) {
 
   try {
     await updateDoc(
-      doc(db, "users", userId),
+      doc(
+        db,
+        "users",
+        userId
+      ),
       {
-        status: "Rejeitado",
+        status:
+          "Rejeitado",
 
         rejeitadoEm:
           serverTimestamp(),
 
-        aprovadoEm: null,
+        aprovadoEm:
+          null,
 
         atualizadoEm:
           serverTimestamp(),
 
-        whatsappEnviado: false,
+        whatsappEnviado:
+          false,
 
-        whatsappEnviadoEm: null
+        whatsappEnviadoEm:
+          null
       }
     );
 
@@ -752,24 +941,33 @@ async function rejectUser(userId) {
 async function sendWhatsAppUser(userId) {
   const user =
     users.find(
-      (item) => item.id === userId
+      (item) =>
+        item.id === userId
     );
 
   if (!user) {
     return;
   }
 
-  if (user.status !== "Aprovado") {
+  if (
+    user.status !==
+    "Aprovado"
+  ) {
     alert(
       "O WhatsApp só pode ser enviado para moradores aprovados."
     );
+
     return;
   }
 
-  if (user.whatsappEnviado === true) {
+  if (
+    user.whatsappEnviado ===
+    true
+  ) {
     alert(
       "Este morador já foi informado sobre a situação."
     );
+
     return;
   }
 
@@ -777,51 +975,59 @@ async function sendWhatsAppUser(userId) {
     alert(
       "Este morador não possui telefone cadastrado."
     );
+
     return;
   }
 
-  const telefone =
+  const phone =
     normalizeWhatsAppPhone(
       user.telefone
     );
 
-  if (!telefone) {
+  if (!phone) {
     alert(
       "O telefone cadastrado é inválido."
     );
+
     return;
   }
 
-  /* * Depois de adicionar o código 55, * um celular brasileiro deverá ter: * * 55 + DDD + número * * Exemplo: * 5521988386027 */
-
   if (
-    telefone.length !== 12 &&
-    telefone.length !== 13
+    phone.length !== 12 &&
+    phone.length !== 13
   ) {
     alert(
       "O telefone deve conter DDD e número válido."
     );
+
     return;
   }
 
-  const mensagem = [
-    `Olá, ${user.nome || "morador"}!`,
+  const messageText = [
+    `Olá, ${ user.nome || "morador" }!`,
+
     "",
+
     "Seu cadastro no Portal Amigos do Maui foi aprovado.",
+
     "",
+
     `Unidade: ${ user.unidade || "Não informada" }`,
+
     user.bloco
       ? `Bloco: ${user.bloco}`
       : "",
+
     "",
+
     "Sua situação está regularizada."
   ]
     .filter(Boolean)
     .join("\n");
 
   const whatsappUrl =
-    `https://wa.me/${telefone}` +
-    `?text=${encodeURIComponent(mensagem)}`;
+    `https://wa.me/${phone}` +
+    `?text=${encodeURIComponent( messageText )}`;
 
   const whatsappWindow =
     window.open(
@@ -834,14 +1040,20 @@ async function sendWhatsAppUser(userId) {
     alert(
       "O navegador bloqueou a abertura do WhatsApp. Autorize pop-ups para este site."
     );
+
     return;
   }
 
   try {
     await updateDoc(
-      doc(db, "users", userId),
+      doc(
+        db,
+        "users",
+        userId
+      ),
       {
-        whatsappEnviado: true,
+        whatsappEnviado:
+          true,
 
         whatsappEnviadoEm:
           serverTimestamp(),
@@ -866,6 +1078,7 @@ async function sendWhatsAppUser(userId) {
   }
 }
 
+
 // =====================================================
 // EXCLUSÃO
 // =====================================================
@@ -873,16 +1086,18 @@ async function sendWhatsAppUser(userId) {
 async function deleteUserProfile(userId) {
   const user =
     users.find(
-      (item) => item.id === userId
+      (item) =>
+        item.id === userId
     );
 
   if (!user) {
     return;
   }
 
-  const confirmed = confirm(
-    `Deseja excluir o cadastro de ${ user.nome || user.email }?`
-  );
+  const confirmed =
+    confirm(
+      `Deseja excluir o cadastro de ${ user.nome || user.email }?`
+    );
 
   if (!confirmed) {
     return;
@@ -890,7 +1105,11 @@ async function deleteUserProfile(userId) {
 
   try {
     await deleteDoc(
-      doc(db, "users", userId)
+      doc(
+        db,
+        "users",
+        userId
+      )
     );
 
     toast(
@@ -905,7 +1124,7 @@ async function deleteUserProfile(userId) {
 
 
 // =====================================================
-// EVENTOS
+// EVENTOS DOS BOTÕES
 // =====================================================
 
 document.addEventListener(
@@ -920,6 +1139,7 @@ document.addEventListener(
       openUserDetails(
         detailButton.dataset.userId
       );
+
       return;
     }
 
@@ -932,6 +1152,7 @@ document.addEventListener(
       openUserEdit(
         editButton.dataset.userId
       );
+
       return;
     }
 
@@ -963,6 +1184,7 @@ document.addEventListener(
       approveUser(
         approveButton.dataset.userId
       );
+
       return;
     }
 
@@ -975,6 +1197,7 @@ document.addEventListener(
       rejectUser(
         rejectButton.dataset.userId
       );
+
       return;
     }
 
@@ -987,6 +1210,7 @@ document.addEventListener(
       deleteUserProfile(
         deleteButton.dataset.userId
       );
+
       return;
     }
 
@@ -996,6 +1220,7 @@ document.addEventListener(
     ) {
       if (currentPage > 1) {
         currentPage--;
+
         renderUsers();
       }
 
@@ -1015,8 +1240,12 @@ document.addEventListener(
           )
         );
 
-      if (currentPage < totalPages) {
+      if (
+        currentPage <
+        totalPages
+      ) {
         currentPage++;
+
         renderUsers();
       }
     }
@@ -1031,15 +1260,45 @@ document.addEventListener(
 $("userSearch")?.addEventListener(
   "input",
   () => {
-    currentPage = 1;
+    currentPage =
+      1;
+
     renderUsers();
   }
 );
 
+
 $("userStatusFilter")?.addEventListener(
-  "change",
-  () => {
-    currentPage = 1;
+  "click",
+  (event) => {
+    const button =
+      event.target.closest(
+        ".status-filter-button"
+      );
+
+    if (!button) {
+      return;
+    }
+
+    document
+      .querySelectorAll(
+        "#userStatusFilter .status-filter-button"
+      )
+      .forEach(
+        (item) => {
+          item.classList.remove(
+            "active"
+          );
+        }
+      );
+
+    button.classList.add(
+      "active"
+    );
+
+    currentPage =
+      1;
+
     renderUsers();
   }
 );
@@ -1051,8 +1310,11 @@ $("userStatusFilter")?.addEventListener(
 
 $("btnCloseUserDetail")?.addEventListener(
   "click",
-  () => hide("userDetailModal")
+  () => {
+    hide("userDetailModal");
+  }
 );
+
 
 $("userDetailModal")?.addEventListener(
   "click",
@@ -1066,10 +1328,14 @@ $("userDetailModal")?.addEventListener(
   }
 );
 
+
 $("btnCloseUserEdit")?.addEventListener(
   "click",
-  () => hide("userEditModal")
+  () => {
+    hide("userEditModal");
+  }
 );
+
 
 $("userEditModal")?.addEventListener(
   "click",
@@ -1085,22 +1351,71 @@ $("userEditModal")?.addEventListener(
 
 
 // =====================================================
-// LOGOUT
+// LOGOUT COM MODAL
 // =====================================================
 
 $("btnUsersLogout")?.addEventListener(
   "click",
-  async () => {
-    const confirmed = confirm(
-      "Deseja realmente sair do controle de usuários?"
+  () => {
+    hide("usersMainMenu");
+
+    usersMenuButton?.setAttribute(
+      "aria-expanded",
+      "false"
     );
 
-    if (!confirmed) {
-      return;
+    show("usersLogoutModal");
+  }
+);
+
+
+$("btnCloseUsersLogout")?.addEventListener(
+  "click",
+  () => {
+    hide("usersLogoutModal");
+  }
+);
+
+
+$("btnCancelUsersLogout")?.addEventListener(
+  "click",
+  () => {
+    hide("usersLogoutModal");
+  }
+);
+
+
+$("usersLogoutModal")?.addEventListener(
+  "click",
+  (event) => {
+    if (
+      event.target.id ===
+      "usersLogoutModal"
+    ) {
+      hide("usersLogoutModal");
+    }
+  }
+);
+
+
+$("btnConfirmUsersLogout")?.addEventListener(
+  "click",
+  async () => {
+    const button =
+      $("btnConfirmUsersLogout");
+
+    if (button) {
+      button.disabled =
+        true;
+
+      button.textContent =
+        "Saindo...";
     }
 
     try {
       await signOut(auth);
+
+      hide("usersLogoutModal");
 
       window.location.href =
         "./admin-home.html";
@@ -1113,13 +1428,21 @@ $("btnUsersLogout")?.addEventListener(
       alert(
         "Não foi possível sair do sistema."
       );
+
+      if (button) {
+        button.disabled =
+          false;
+
+        button.textContent =
+          "Sair do sistema";
+      }
     }
   }
 );
 
 
 // =====================================================
-// AUTENTICAÇÃO
+// AUTENTICAÇÃO E CARREGAMENTO
 // =====================================================
 
 onAuthStateChanged(
@@ -1130,20 +1453,31 @@ onAuthStateChanged(
     if (!user) {
       show("usersDeniedView");
       hide("usersView");
+
+      hide("btnUsersMenu");
+
       return;
     }
 
+    const email =
+      user.email?.toLowerCase() ||
+      "";
+
     if (
-      user.email?.toLowerCase() !==
+      email !==
       ADMIN_EMAIL.toLowerCase()
     ) {
       show("usersDeniedView");
       hide("usersView");
+
+      hide("btnUsersMenu");
+
       return;
     }
 
     hide("usersDeniedView");
     show("usersView");
+    show("btnUsersMenu");
 
     const adminName =
       $("usersAdminName");
@@ -1157,7 +1491,10 @@ onAuthStateChanged(
 
     const usersQuery =
       query(
-        collection(db, "users"),
+        collection(
+          db,
+          "users"
+        ),
         orderBy(
           "criadoEm",
           "desc"
@@ -1180,7 +1517,9 @@ onAuthStateChanged(
               })
             );
 
-          currentPage = 1;
+          currentPage =
+            1;
+
           renderUsers();
         },
         (error) => {
@@ -1193,7 +1532,8 @@ onAuthStateChanged(
             $("usersList");
 
           if (list) {
-            list.innerHTML = ` <div class="empty-state"> ${escapeHtml( friendlyError(error) )} </div> `;
+            list.innerHTML =
+              ` <div class="empty-state"> ${ escapeHtml( friendlyError(error) ) } </div> `;
           }
         }
       );
