@@ -714,25 +714,91 @@
 }
 
 
-/* ===================================================== TELAS MUITO PEQUENAS ===================================================== */
+/* ===================================================== BOTÕES DOS REGISTROS NO INDEX MESMA ALTURA DA TELA PUBLIC SEM CORTAR O BOTÃO EXCLUIR ===================================================== */
 
-@media (max-width: 430px) {
+.index-page .report-actions {
+  display: flex !important;
+  align-items: center;
+  justify-content: flex-start !important;
+
+  flex-wrap: nowrap !important;
+  gap: 6px;
+
+  width: 100%;
+  min-width: 0;
+
+  overflow: visible !important;
+}
+
+.index-page .report-actions .action-icon-button {
+  flex: 1 1 0 !important;
+
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+
+  height: 42px;
+  min-height: 42px;
+
+  padding: 0 !important;
+
+  border-radius: 10px;
+
+  font-size: 19px;
+  line-height: 1;
+
+  box-sizing: border-box;
+}
+
+
+/* ===================================================== CELULAR ===================================================== */
+
+@media (max-width: 760px) {
   .index-page .report-actions {
-    gap: 8px;
+    display: flex !important;
+    align-items: center;
+    justify-content: stretch !important;
+
+    flex-wrap: nowrap !important;
+    gap: 4px;
+
+    width: 100%;
+    overflow: visible !important;
   }
 
   .index-page .report-actions .action-icon-button {
-    flex: 0 0 42px !important;
+    flex: 1 1 0 !important;
 
-    width: 42px !important;
-    height: 42px !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
 
-    min-width: 42px !important;
-    min-height: 42px !important;
+    height: 42px;
+    min-height: 42px;
 
-    max-width: 42px !important;
-    max-height: 42px !important;
+    padding: 0 !important;
 
-    font-size: 19px;
+    font-size: 18px;
+  }
+}
+
+
+/* ===================================================== CELULARES PEQUENOS ===================================================== */
+
+@media (max-width: 430px) {
+  .index-page .report-actions {
+    gap: 3px;
+  }
+
+  .index-page .report-actions .action-icon-button {
+    flex: 1 1 0 !important;
+
+    width: auto !important;
+    min-width: 0 !important;
+
+    height: 42px;
+    min-height: 42px;
+
+    font-size: 17px;
   }
 }
