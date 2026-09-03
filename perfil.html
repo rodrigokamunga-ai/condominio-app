@@ -11,7 +11,7 @@
     Meu perfil - Amigos do Maui
   </title>
 
-  <link rel="stylesheet" href="./styles.css?v=5" />
+  <link rel="stylesheet" href="./styles.css?v=7" />
 </head>
 
 <body>
@@ -22,11 +22,18 @@
       <span class="brand-icon">🏢</span>
 
       <div>
-        <strong>Amigos do Maui</strong>
-        <small>Meu perfil</small>
+        <strong>
+          Amigos do Maui
+        </strong>
+
+        <small>
+          Meu perfil
+        </small>
       </div>
     </div>
 
+
+    <!-- MENU SUSPENSO -->
     <div class="top-menu-wrapper">
       <button id="btnMenu" class="menu-toggle" type="button" aria-expanded="false" aria-controls="mainMenu" >
         ☰ Menu
@@ -34,27 +41,34 @@
 
       <nav id="mainMenu" class="top-menu hidden" aria-label="Menu principal" >
         <a href="./index.html" class="menu-link" >
-          Área do morador
+          <span class="menu-icon">🏠</span>
+          <span>Área do morador</span>
         </a>
 
         <a href="./public.html" class="menu-link" >
-          Registros públicos
+          <span class="menu-icon">📋</span>
+          <span>Registros públicos</span>
         </a>
 
+        
+
         <a href="./manual-portal-morador.pdf" class="menu-link" download="manual-portal-morador.pdf" >
-          Manual do usuário
+          <span class="menu-icon">📖</span>
+          <span>Manual do usuário</span>
         </a>
 
         <button id="btnLogout" class="menu-link" type="button" >
-          Sair
+          <span class="menu-icon">🚪</span>
+          <span>Sair</span>
         </button>
       </nav>
     </div>
   </header>
 
 
-  <!-- CONTEÚDO -->
+  <!-- CONTEÚDO PRINCIPAL -->
   <main class="container profile-container">
+
     <section class="card profile-card">
 
       <div class="section-heading">
@@ -126,6 +140,7 @@
           </button>
         </div>
 
+
         <p id="profileMessage" class="message" ></p>
 
       </form>
@@ -134,12 +149,43 @@
   </main>
 
 
+  <!-- MODAL DE CONFIRMAÇÃO DE SAÍDA -->
+  <div id="logoutModal" class="modal hidden" >
+    <div class="modal-card logout-modal-card">
+
+      <button id="btnCloseLogout" class="modal-close" type="button" aria-label="Fechar confirmação" >
+        ×
+      </button>
+
+      <h2>
+        Confirmar saída
+      </h2>
+
+      <p class="muted">
+        Deseja realmente sair do sistema?
+      </p>
+
+      <div class="logout-actions">
+
+        <button id="btnCancelLogout" class="secondary-button" type="button" >
+          Cancelar
+        </button>
+
+        <button id="btnConfirmLogout" class="danger-button" type="button" >
+          Sair do sistema
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+
   <!-- NOTIFICAÇÃO -->
   <div id="toast" class="toast" ></div>
 
 
   <!-- JAVASCRIPT -->
-  <script type="module" src="./perfil.js?v=2" ></script>
+  <script type="module" src="./perfil.js?v=3" ></script>
 
 </body>
 </html>
