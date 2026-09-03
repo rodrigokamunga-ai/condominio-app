@@ -856,3 +856,37 @@ onAuthStateChanged(
       );
   }
 );
+
+// =====================================================
+// MENU SUSPENSO
+// =====================================================
+
+const menuButton = $("btnMenu");
+const mainMenu = $("mainMenu");
+
+menuButton?.addEventListener("click", (event) => {
+  event.stopPropagation();
+
+  const isOpen =
+    !mainMenu?.classList.contains("hidden");
+
+  if (isOpen) {
+    mainMenu.classList.add("hidden");
+    menuButton.setAttribute("aria-expanded", "false");
+  } else {
+    mainMenu?.classList.remove("hidden");
+    menuButton.setAttribute("aria-expanded", "true");
+  }
+});
+
+document.addEventListener("click", (event) => {
+  if (
+    mainMenu &&
+    menuButton &&
+    !mainMenu.contains(event.target) &&
+    !menuButton.contains(event.target)
+  ) {
+    mainMenu.classList.add("hidden");
+    menuButton.setAttribute("aria-expanded", "false");
+  }
+});
