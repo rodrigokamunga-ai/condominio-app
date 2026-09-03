@@ -36,9 +36,14 @@ const ADMIN_EMAIL =
 // INICIALIZAÇÃO
 // =====================================================
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+const app =
+  initializeApp(firebaseConfig);
+
+const auth =
+  getAuth(app);
+
+const db =
+  getFirestore(app);
 
 
 // =====================================================
@@ -48,40 +53,164 @@ const db = getFirestore(app);
 const $ = (id) =>
   document.getElementById(id);
 
+
 function show(id) {
-  const element = $(id);
+  const element =
+    $(id);
 
   if (element) {
-    element.classList.remove("hidden");
+    element.classList.remove(
+      "hidden"
+    );
   }
 }
 
+
 function hide(id) {
-  const element = $(id);
+  const element =
+    $(id);
 
   if (element) {
-    element.classList.add("hidden");
+    element.classList.add(
+      "hidden"
+    );
   }
 }
 
 
 // =====================================================
-// BOTÃO SAIR
+// MENU SUSPENSO
+// =====================================================
+
+const adminMenuButton =
+  $("btnAdminMenu");
+
+const adminMainMenu =
+  $("adminMainMenu");
+
+
+adminMenuButton?.addEventListener(
+  "click",
+  (event) => {
+    event.stopPropagation();
+
+    const menuIsHidden =
+      adminMainMenu?.classList.contains(
+        "hidden"
+      );
+
+    if (menuIsHidden) {
+      adminMainMenu?.classList.remove(
+        "hidden"
+      );
+
+      adminMenuButton.setAttribute(
+        "aria-expanded",
+        "true"
+      );
+    } else {
+      adminMainMenu?.classList.add(
+        "hidden"
+      );
+
+      adminMenuButton.setAttribute(
+        "aria-expanded",
+        "false"
+      );
+    }
+  }
+);
+
+
+adminMainMenu?.addEventListener(
+  "click",
+  (event) => {
+    event.stopPropagation();
+  }
+);
+
+
+document.addEventListener(
+  "click",
+  () => {
+    adminMainMenu?.classList.add(
+      "hidden"
+    );
+
+    adminMenuButton?.setAttribute(
+      "aria-expanded",
+      "false"
+    );
+  }
+);
+
+
+// =====================================================
+// MODAL DE CONFIRMAÇÃO DE SAÍDA
 // =====================================================
 
 $("btnAdminHomeLogout")?.addEventListener(
   "click",
-  async () => {
-    const confirmed = confirm(
-      "Deseja realmente sair da área administrativa?"
+  () => {
+    hide("adminMainMenu");
+
+    adminMenuButton?.setAttribute(
+      "aria-expanded",
+      "false"
     );
 
-    if (!confirmed) {
-      return;
+    show("adminLogoutModal");
+  }
+);
+
+
+$("btnCloseAdminLogout")?.addEventListener(
+  "click",
+  () => {
+    hide("adminLogoutModal");
+  }
+);
+
+
+$("btnCancelAdminLogout")?.addEventListener(
+  "click",
+  () => {
+    hide("adminLogoutModal");
+  }
+);
+
+
+$("adminLogoutModal")?.addEventListener(
+  "click",
+  (event) => {
+    if (
+      event.target.id ===
+      "adminLogoutModal"
+    ) {
+      hide("adminLogoutModal");
+    }
+  }
+);
+
+
+$("btnConfirmAdminLogout")?.addEventListener(
+  "click",
+  async () => {
+    const button =
+      $("btnConfirmAdminLogout");
+
+    if (button) {
+      button.disabled =
+        true;
+
+      button.textContent =
+        "Saindo...";
     }
 
     try {
       await signOut(auth);
+
+      hide("adminLogoutModal");
 
       window.location.href =
         "./index.html";
@@ -94,6 +223,14 @@ $("btnAdminHomeLogout")?.addEventListener(
       alert(
         "Não foi possível sair do sistema."
       );
+
+      if (button) {
+        button.disabled =
+          false;
+
+        button.textContent =
+          "Sair do sistema";
+      }
     }
   }
 );
@@ -111,11 +248,15 @@ onAuthStateChanged(
     if (!user) {
       show("adminHomeDenied");
       hide("adminHomeContent");
+
+      hide("btnAdminMenu");
+
       return;
     }
 
     const email =
-      user.email?.toLowerCase() || "";
+      user.email?.toLowerCase() ||
+      "";
 
     if (
       email !==
@@ -123,13 +264,22 @@ onAuthStateChanged(
     ) {
       show("adminHomeDenied");
       hide("adminHomeContent");
+
+      hide("btnAdminMenu");
+
       return;
     }
+
+    show("btnAdminMenu");
 
     try {
       const userSnapshot =
         await getDoc(
-          doc(db, "users", user.uid)
+          doc(
+            db,
+            "users",
+            user.uid
+          )
         );
 
       const userData =
@@ -155,7 +305,8 @@ onAuthStateChanged(
 
       if (emailElement) {
         emailElement.textContent =
-          user.email || "";
+          user.email ||
+          "";
       }
 
       hide("adminHomeDenied");
