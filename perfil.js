@@ -54,6 +54,30 @@ const $ = (id) =>
   document.getElementById(id);
 
 
+function show(id) {
+  const element =
+    $(id);
+
+  if (element) {
+    element.classList.remove(
+      "hidden"
+    );
+  }
+}
+
+
+function hide(id) {
+  const element =
+    $(id);
+
+  if (element) {
+    element.classList.add(
+      "hidden"
+    );
+  }
+}
+
+
 function message( id, text, success = false ) {
   const element =
     $(id);
@@ -143,6 +167,7 @@ const mainMenu =
 menuButton?.addEventListener(
   "click",
   (event) => {
+    event.preventDefault();
     event.stopPropagation();
 
     const menuIsOpen =
@@ -173,28 +198,25 @@ menuButton?.addEventListener(
 );
 
 
-document.addEventListener(
+mainMenu?.addEventListener(
   "click",
   (event) => {
-    if (
-      mainMenu &&
-      menuButton &&
-      !mainMenu.contains(
-        event.target
-      ) &&
-      !menuButton.contains(
-        event.target
-      )
-    ) {
-      mainMenu.classList.add(
-        "hidden"
-      );
+    event.stopPropagation();
+  }
+);
 
-      menuButton.setAttribute(
-        "aria-expanded",
-        "false"
-      );
-    }
+
+document.addEventListener(
+  "click",
+  () => {
+    mainMenu?.classList.add(
+      "hidden"
+    );
+
+    menuButton?.setAttribute(
+      "aria-expanded",
+      "false"
+    );
   }
 );
 
@@ -402,23 +424,61 @@ $("profileForm")?.addEventListener(
 
 
 // =====================================================
-// LOGOUT
+// LOGOUT COM MODAL
 // =====================================================
 
 $("btnLogout")?.addEventListener(
   "click",
-  async () => {
-    const confirmed =
-      confirm(
-        "Deseja realmente sair do sistema?"
-      );
+  (event) => {
+    event.preventDefault();
+    event.stopPropagation();
 
-    if (!confirmed) {
-      return;
+    hide("mainMenu");
+
+    menuButton?.setAttribute(
+      "aria-expanded",
+      "false"
+    );
+
+    show("logoutModal");
+  }
+);
+
+
+$("btnCloseLogout")?.addEventListener(
+  "click",
+  () => {
+    hide("logoutModal");
+  }
+);
+
+
+$("btnCancelLogout")?.addEventListener(
+  "click",
+  () => {
+    hide("logoutModal");
+  }
+);
+
+
+$("logoutModal")?.addEventListener(
+  "click",
+  (event) => {
+    if (
+      event.target ===
+      $("logoutModal")
+    ) {
+      hide("logoutModal");
     }
+  }
+);
 
+
+$("btnConfirmLogout")?.addEventListener(
+  "click",
+  async () => {
     const button =
-      $("btnLogout");
+      $("btnConfirmLogout");
 
     if (button) {
       button.disabled =
@@ -431,21 +491,28 @@ $("btnLogout")?.addEventListener(
     try {
       await signOut(auth);
 
+      hide("logoutModal");
+
       window.location.href =
         "./index.html";
     } catch (error) {
-      if (button) {
-        button.disabled =
-          false;
-
-        button.textContent =
-          "Sair";
-      }
+      console.error(
+        "Erro ao sair:",
+        error
+      );
 
       message(
         "profileMessage",
         friendlyError(error)
       );
+
+      if (button) {
+        button.disabled =
+          false;
+
+        button.textContent =
+          "Sair do sistema";
+      }
     }
   }
 );
