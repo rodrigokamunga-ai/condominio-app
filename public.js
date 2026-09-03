@@ -31,9 +31,18 @@ const firebaseConfig = {
 };
 
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+// =====================================================
+// INICIALIZAÇÃO
+// =====================================================
+
+const app =
+  initializeApp(firebaseConfig);
+
+const auth =
+  getAuth(app);
+
+const db =
+  getFirestore(app);
 
 
 // =====================================================
@@ -63,6 +72,7 @@ function show(id) {
   }
 }
 
+
 function hide(id) {
   const element = $(id);
 
@@ -70,6 +80,7 @@ function hide(id) {
     element.classList.add("hidden");
   }
 }
+
 
 function escapeHtml(value = "") {
   return String(value).replace(
@@ -83,6 +94,7 @@ function escapeHtml(value = "") {
     }[character])
   );
 }
+
 
 function formatDate(value) {
   if (!value) {
@@ -105,6 +117,7 @@ function formatDate(value) {
   return "Não informada";
 }
 
+
 function getDateObject(value) {
   if (!value) {
     return null;
@@ -124,6 +137,7 @@ function getDateObject(value) {
   return null;
 }
 
+
 function statusClass(status) {
   if (status === "Resolvido") {
     return "done";
@@ -138,6 +152,7 @@ function statusClass(status) {
 
   return "open";
 }
+
 
 function friendlyError(error) {
   console.error(
@@ -163,16 +178,19 @@ function friendlyError(error) {
     "Não foi possível carregar as ocorrências.";
 }
 
+
 function getOpeningDate(report) {
   return report.dataAbertura ||
     report.inicioEm ||
     report.criadoEm;
 }
 
+
 function getResolvedDate(report) {
   return report.dataResolvido ||
     report.fimEm;
 }
+
 
 function calculateDays( startValue, endValue = null ) {
   const start =
@@ -236,14 +254,24 @@ function updatePublicCounters() {
         status
     ).length;
 
-  const total = $("publicTotal");
-  const open = $("publicOpen");
-  const analysis = $("publicAnalysis");
-  const execution = $("publicExecution");
-  const resolved = $("publicResolved");
+  const total =
+    $("publicTotal");
+
+  const open =
+    $("publicOpen");
+
+  const analysis =
+    $("publicAnalysis");
+
+  const execution =
+    $("publicExecution");
+
+  const resolved =
+    $("publicResolved");
 
   if (total) {
-    total.textContent = reports.length;
+    total.textContent =
+      reports.length;
   }
 
   if (open) {
@@ -272,18 +300,8 @@ function updatePublicCounters() {
 // GRÁFICO
 // =====================================================
 
-function updatePublicChart() {
-  const canvas =
-    $("publicStatusChart");
-
-  if (
-    !canvas ||
-    typeof Chart === "undefined"
-  ) {
-    return;
-  }
-
-  const values = [
+function getChartValues() {
+  return [
     reports.filter(
       (report) =>
         (report.status || "Aberto") ===
@@ -308,53 +326,88 @@ function updatePublicChart() {
         "Resolvido"
     ).length
   ];
+}
 
-  if (publicStatusChart) {
-    publicStatusChart.destroy();
+
+function updatePublicChart() {
+  const canvas =
+    $("publicStatusChart");
+
+  if (!canvas) {
+    return;
   }
 
-  publicStatusChart = new Chart(
-    canvas,
-    {
-      type: "pie",
+  if (
+    typeof Chart ===
+    "undefined"
+  ) {
+    setTimeout(
+      updatePublicChart,
+      300
+    );
 
-      data: {
-        labels: [
-          "Aberto",
-          "Em análise",
-          "Em execução",
-          "Resolvido"
-        ],
+    return;
+  }
 
-        datasets: [
-          {
-            data: values,
+  const values =
+    getChartValues();
 
-            backgroundColor: [
-              "#60a5fa",
-              "#fbbf24",
-              "#fb923c",
-              "#4ade80"
-            ],
+  if (publicStatusChart) {
+    publicStatusChart.data.datasets[0].data =
+      values;
 
-            borderColor: "#ffffff",
-            borderWidth: 3
-          }
-        ]
-      },
+    publicStatusChart.update(
+      "none"
+    );
 
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
+    return;
+  }
 
-        plugins: {
-          legend: {
-            position: "bottom"
+  publicStatusChart =
+    new Chart(
+      canvas,
+      {
+        type: "pie",
+
+        data: {
+          labels: [
+            "Aberto",
+            "Em análise",
+            "Em execução",
+            "Resolvido"
+          ],
+
+          datasets: [
+            {
+              data: values,
+
+              backgroundColor: [
+                "#60a5fa",
+                "#fbbf24",
+                "#fb923c",
+                "#4ade80"
+              ],
+
+              borderColor: "#ffffff",
+              borderWidth: 3
+            }
+          ]
+        },
+
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+
+          animation: false,
+
+          plugins: {
+            legend: {
+              position: "bottom"
+            }
           }
         }
       }
-    }
-  );
+    );
 }
 
 
@@ -364,7 +417,6 @@ function updatePublicChart() {
 
 function renderReports() {
   updatePublicCounters();
-  updatePublicChart();
 
   const list =
     $("publicReportsList");
@@ -376,20 +428,22 @@ function renderReports() {
   const filteredReports =
     getFilteredReports();
 
-  const totalPages = Math.max(
-    1,
-    Math.ceil(
-      filteredReports.length /
-      pageSize
-    )
-  );
+  const totalPages =
+    Math.max(
+      1,
+      Math.ceil(
+        filteredReports.length /
+        pageSize
+      )
+    );
 
   if (currentPage > totalPages) {
     currentPage = totalPages;
   }
 
   const start =
-    (currentPage - 1) * pageSize;
+    (currentPage - 1) *
+    pageSize;
 
   const visibleReports =
     filteredReports.slice(
@@ -406,7 +460,7 @@ function renderReports() {
           const status =
             report.status || "Aberto";
 
-          return ` <article class="report-item public-report"> <div> <div class="report-title"> ${escapeHtml( report.titulo || "Sem título" )} </div> <div class="report-meta"> Protocolo: ${escapeHtml( report.protocolo || "Não informado" )} </div> <div class="report-meta"> Início: ${formatDate( getOpeningDate(report) )} </div> ${ getResolvedDate(report) ? ` <div class="report-meta"> Fim: ${formatDate( getResolvedDate(report) )} </div> ` : "" } <span class="badge ${statusClass(status)}"> ${escapeHtml(status)} </span> </div> <div class="public-report-actions"> <button class="public-icon-button public-detail-button" data-id="${report.id}" type="button" title="Detalhar" aria-label="Detalhar ocorrência" > 🔍 </button> <button class="public-icon-button public-timeline-button" data-id="${report.id}" type="button" title="Linha do tempo" aria-label="Ver linha do tempo" > 🕒 </button> </div> </article> `;
+          return ` <article class="report-item public-report"> <div> <div class="report-title"> ${escapeHtml( report.titulo || "Sem título" )} </div> <div class="report-meta"> Protocolo: ${escapeHtml( report.protocolo || "Não informado" )} </div> <div class="report-meta"> Início: ${formatDate( getOpeningDate(report) )} </div> ${ getResolvedDate(report) ? ` <div class="report-meta"> Fim: ${formatDate( getResolvedDate(report) )} </div> ` : "" } <span class="badge ${statusClass(status)}" > ${escapeHtml(status)} </span> </div> <div class="public-report-actions"> <button class="public-icon-button public-detail-button" data-id="${report.id}" type="button" title="Detalhar" aria-label="Detalhar ocorrência" > 🔍 </button> <button class="public-icon-button public-timeline-button" data-id="${report.id}" type="button" title="Linha do tempo" aria-label="Ver linha do tempo" > 🕒 </button> </div> </article> `;
         })
         .join("");
   }
@@ -415,6 +469,10 @@ function renderReports() {
     filteredReports.length,
     totalPages
   );
+
+  requestAnimationFrame(() => {
+    updatePublicChart();
+  });
 }
 
 
@@ -435,7 +493,7 @@ function renderPagination( totalItems, totalPages ) {
     return;
   }
 
-  pagination.innerHTML = ` <button id="publicPrevPage" class="secondary-button" type="button" ${currentPage <= 1 ? "disabled" : ""} > Anterior </button> <span> Página ${currentPage} de ${totalPages} </span> <button id="publicNextPage" class="secondary-button" type="button" ${currentPage >= totalPages ? "disabled" : ""} > Próxima </button> `;
+  pagination.innerHTML = ` <button id="publicPrevPage" class="secondary-button" type="button" ${ currentPage <= 1 ? "disabled" : "" } > Anterior </button> <span> Página ${currentPage} de ${totalPages} </span> <button id="publicNextPage" class="secondary-button" type="button" ${ currentPage >= totalPages ? "disabled" : "" } > Próxima </button> `;
 }
 
 
@@ -444,9 +502,11 @@ function renderPagination( totalItems, totalPages ) {
 // =====================================================
 
 function openDetails(reportId) {
-  const report = reports.find(
-    (item) => item.id === reportId
-  );
+  const report =
+    reports.find(
+      (item) =>
+        item.id === reportId
+    );
 
   if (!report) {
     return;
@@ -462,7 +522,7 @@ function openDetails(reportId) {
   const status =
     report.status || "Aberto";
 
-  content.innerHTML = ` <span class="eyebrow"> DETALHAMENTO DA OCORRÊNCIA </span> <h2> ${escapeHtml( report.titulo || "Sem título" )} </h2> <p> <b>Protocolo:</b> ${escapeHtml( report.protocolo || "Não informado" )} </p> <p> <b>Status:</b> <span class="badge ${statusClass(status)}"> ${escapeHtml(status)} </span> </p> <p> <b>Categoria:</b> ${escapeHtml( report.categoria || "Não informada" )} </p> <p> <b>Prioridade:</b> ${escapeHtml( report.prioridade || "Não informada" )} </p> <p> <b>Local:</b> ${escapeHtml( report.local || "Não informado" )} </p> <p> <b>Referência:</b> ${escapeHtml( report.referenciaLocal || "Não informada" )} </p> <p> <b>Data de abertura:</b> ${formatDate( getOpeningDate(report) )} </p> <p> <b>Data em análise:</b> ${formatDate( report.dataAnalise )} </p> <p> <b>Data em execução:</b> ${formatDate( report.dataExecucao )} </p> <p> <b>Data de resolução:</b> ${formatDate( getResolvedDate(report) )} </p> <p> <b>Descrição:</b><br> ${escapeHtml( report.descricao || "Sem descrição" )} </p>  ${ report.fotoData ? ` <div class="report-photo-container"> <img class="detail-photo" src="${report.fotoData}" alt="Foto da ocorrência" /> </div> ` : "" } `;
+  content.innerHTML = ` <span class="eyebrow"> DETALHAMENTO DA OCORRÊNCIA </span> <h2> ${escapeHtml( report.titulo || "Sem título" )} </h2> <p> <b>Protocolo:</b> ${escapeHtml( report.protocolo || "Não informado" )} </p> <p> <b>Status:</b> <span class="badge ${statusClass(status)}"> ${escapeHtml(status)} </span> </p> <p> <b>Categoria:</b> ${escapeHtml( report.categoria || "Não informada" )} </p> <p> <b>Prioridade:</b> ${escapeHtml( report.prioridade || "Não informada" )} </p> <p> <b>Local:</b> ${escapeHtml( report.local || "Não informado" )} </p> <p> <b>Referência:</b> ${escapeHtml( report.referenciaLocal || "Não informada" )} </p> <p> <b>Data de abertura:</b> ${formatDate( getOpeningDate(report) )} </p> <p> <b>Data em análise:</b> ${formatDate( report.dataAnalise )} </p> <p> <b>Data em execução:</b> ${formatDate( report.dataExecucao )} </p> <p> <b>Data de resolução:</b> ${formatDate( getResolvedDate(report) )} </p> <p> <b>Descrição:</b><br> ${escapeHtml( report.descricao || "Sem descrição" )} </p> ${ report.fotoData ? ` <div class="report-photo-container"> <img class="detail-photo" src="${report.fotoData}" alt="Foto da ocorrência" loading="lazy" /> </div> ` : "" } `;
 
   show("publicDetailModal");
 }
@@ -473,9 +533,11 @@ function openDetails(reportId) {
 // =====================================================
 
 function openTimeline(reportId) {
-  const report = reports.find(
-    (item) => item.id === reportId
-  );
+  const report =
+    reports.find(
+      (item) =>
+        item.id === reportId
+    );
 
   if (!report) {
     return;
@@ -500,14 +562,14 @@ function openTimeline(reportId) {
   const resolved =
     getResolvedDate(report);
 
-  content.innerHTML = ` <span class="eyebrow"> LINHA DO TEMPO </span> <h2> ${escapeHtml( report.titulo || "Ocorrência" )} </h2> <p> <b>Protocolo:</b> ${escapeHtml( report.protocolo || "Não informado" )} </p> <div class="timeline"> <div class="timeline-item completed"> <div class="timeline-dot"> 1 </div> <div class="timeline-content"> <strong> Abertura da ocorrência </strong> <span> ${formatDate(opening)} </span> <small> ${ analysis ? `Aberta por ${calculateDays( opening, analysis )}` : `Aberta há ${calculateDays( opening )}` } </small> </div> </div> <div class="timeline-item ${analysis ? "completed" : "pending"}"> <div class="timeline-dot"> 2 </div> <div class="timeline-content"> <strong> Em análise </strong> <span> ${formatDate(analysis)} </span> <small> ${ analysis ? execution ? `Em análise por ${calculateDays( analysis, execution )}` : resolved ? `Em análise por ${calculateDays( analysis, resolved )}` : `Em análise há ${calculateDays( analysis )}` : "Ainda não entrou em análise" } </small> </div> </div> <div class="timeline-item ${execution ? "completed" : "pending"}"> <div class="timeline-dot"> 3 </div> <div class="timeline-content"> <strong> Em execução </strong> <span> ${formatDate(execution)} </span> <small> ${ execution ? resolved ? `Em execução por ${calculateDays( execution, resolved )}` : `Em execução há ${calculateDays( execution )}` : "Ainda não entrou em execução" } </small> </div> </div> <div class="timeline-item ${resolved ? "completed" : "pending"}"> <div class="timeline-dot"> 4 </div> <div class="timeline-content"> <strong> Resolvido </strong> <span> ${formatDate(resolved)} </span> <small> ${ resolved ? "Ocorrência finalizada" : "Ainda não resolvido" } </small> </div> </div> </div> `;
+  content.innerHTML = ` <span class="eyebrow"> LINHA DO TEMPO </span> <h2> ${escapeHtml( report.titulo || "Ocorrência" )} </h2> <p> <b>Protocolo:</b> ${escapeHtml( report.protocolo || "Não informado" )} </p> <div class="timeline"> <div class="timeline-item completed"> <div class="timeline-dot"> 1 </div> <div class="timeline-content"> <strong> Abertura da ocorrência </strong> <span> ${formatDate(opening)} </span> <small> ${ analysis ? `Aberta por ${calculateDays( opening, analysis )}` : `Aberta há ${calculateDays( opening )}` } </small> </div> </div> <div class="timeline-item ${ analysis ? "completed" : "pending" }" > <div class="timeline-dot"> 2 </div> <div class="timeline-content"> <strong> Em análise </strong> <span> ${formatDate(analysis)} </span> <small> ${ analysis ? execution ? `Em análise por ${calculateDays( analysis, execution )}` : resolved ? `Em análise por ${calculateDays( analysis, resolved )}` : `Em análise há ${calculateDays( analysis )}` : "Ainda não entrou em análise" } </small> </div> </div> <div class="timeline-item ${ execution ? "completed" : "pending" }" > <div class="timeline-dot"> 3 </div> <div class="timeline-content"> <strong> Em execução </strong> <span> ${formatDate(execution)} </span> <small> ${ execution ? resolved ? `Em execução por ${calculateDays( execution, resolved )}` : `Em execução há ${calculateDays( execution )}` : "Ainda não entrou em execução" } </small> </div> </div> <div class="timeline-item ${ resolved ? "completed" : "pending" }" > <div class="timeline-dot"> 4 </div> <div class="timeline-content"> <strong> Resolvido </strong> <span> ${formatDate(resolved)} </span> <small> ${ resolved ? "Ocorrência finalizada" : "Ainda não resolvido" } </small> </div> </div> </div> `;
 
   show("publicTimelineModal");
 }
 
 
 // =====================================================
-// EVENTOS
+// EVENTOS DE FILTRO E PAGINAÇÃO
 // =====================================================
 
 $("publicStatusFilter")?.addEventListener(
@@ -518,11 +580,15 @@ $("publicStatusFilter")?.addEventListener(
   }
 );
 
+
 $("publicPagination")?.addEventListener(
   "click",
   (event) => {
+    const target =
+      event.target;
+
     if (
-      event.target.id ===
+      target.id ===
         "publicPrevPage" &&
       currentPage > 1
     ) {
@@ -532,24 +598,33 @@ $("publicPagination")?.addEventListener(
     }
 
     if (
-      event.target.id ===
+      target.id ===
       "publicNextPage"
     ) {
-      const totalPages = Math.max(
-        1,
-        Math.ceil(
-          getFilteredReports().length /
-          pageSize
-        )
-      );
+      const totalPages =
+        Math.max(
+          1,
+          Math.ceil(
+            getFilteredReports().length /
+            pageSize
+          )
+        );
 
-      if (currentPage < totalPages) {
+      if (
+        currentPage <
+        totalPages
+      ) {
         currentPage++;
         renderReports();
       }
     }
   }
 );
+
+
+// =====================================================
+// EVENTOS DOS BOTÕES DOS REGISTROS
+// =====================================================
 
 document.addEventListener(
   "click",
@@ -563,6 +638,7 @@ document.addEventListener(
       openDetails(
         detailButton.dataset.id
       );
+
       return;
     }
 
@@ -581,13 +657,16 @@ document.addEventListener(
 
 
 // =====================================================
-// MODAIS
+// MODAL DE DETALHAMENTO
 // =====================================================
 
 $("btnClosePublicDetail")?.addEventListener(
   "click",
-  () => hide("publicDetailModal")
+  () => {
+    hide("publicDetailModal");
+  }
 );
+
 
 $("publicDetailModal")?.addEventListener(
   "click",
@@ -601,10 +680,18 @@ $("publicDetailModal")?.addEventListener(
   }
 );
 
+
+// =====================================================
+// MODAL DA LINHA DO TEMPO
+// =====================================================
+
 $("btnClosePublicTimeline")?.addEventListener(
   "click",
-  () => hide("publicTimelineModal")
+  () => {
+    hide("publicTimelineModal");
+  }
 );
+
 
 $("publicTimelineModal")?.addEventListener(
   "click",
@@ -626,9 +713,10 @@ $("publicTimelineModal")?.addEventListener(
 $("btnLogout")?.addEventListener(
   "click",
   async () => {
-    const confirmed = confirm(
-      "Deseja realmente sair do sistema?"
-    );
+    const confirmed =
+      confirm(
+        "Deseja realmente sair do sistema?"
+      );
 
     if (!confirmed) {
       return;
@@ -636,6 +724,7 @@ $("btnLogout")?.addEventListener(
 
     try {
       await signOut(auth);
+
       window.location.href =
         "./index.html";
     } catch (error) {
@@ -649,7 +738,7 @@ $("btnLogout")?.addEventListener(
 
 
 // =====================================================
-// AUTENTICAÇÃO
+// AUTENTICAÇÃO E CARREGAMENTO
 // =====================================================
 
 onAuthStateChanged(
@@ -667,6 +756,14 @@ onAuthStateChanged(
         unsubscribeReports = null;
       }
 
+      if (publicStatusChart) {
+        publicStatusChart.destroy();
+        publicStatusChart = null;
+      }
+
+      reports = [];
+      currentPage = 1;
+
       return;
     }
 
@@ -683,10 +780,14 @@ onAuthStateChanged(
         "Morador";
     }
 
-    const reportsQuery = query(
-      collection(db, "reports"),
-      orderBy("criadoEm", "desc")
-    );
+    const reportsQuery =
+      query(
+        collection(db, "reports"),
+        orderBy(
+          "criadoEm",
+          "desc"
+        )
+      );
 
     if (unsubscribeReports) {
       unsubscribeReports();
