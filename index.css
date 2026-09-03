@@ -1,0 +1,279 @@
+/* ===================================================== ESTILOS ESPECÍFICOS DO INDEX ===================================================== */
+
+
+/* ===================================================== CABEÇALHO DA ÁREA DO MORADOR ===================================================== */
+
+.index-page .topbar {
+  position: relative;
+  z-index: 1000;
+}
+
+
+/* ===================================================== ÁREA DE BOAS-VINDAS ===================================================== */
+
+.welcome-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+
+  margin-bottom: 22px;
+}
+
+.welcome-row .button-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+
+/* ===================================================== INDICADORES DE STATUS ===================================================== */
+
+.index-status-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+
+  width: 100%;
+  margin: 20px 0 24px;
+}
+
+.index-status-grid .stat-card {
+  min-width: 0;
+  min-height: 108px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  padding: 18px;
+
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+
+  text-align: center;
+  box-shadow:
+    0 5px 16px rgba(15, 23, 42, 0.04);
+}
+
+.index-status-grid .stat-card span {
+  display: block;
+
+  color: var(--primary);
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.index-status-grid .stat-card small {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+
+/* ===================================================== FILTRO DO INDEX ===================================================== */
+
+.index-section-heading {
+  display: block;
+  margin-bottom: 14px;
+}
+
+.index-status-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  width: 100%;
+  margin: 14px 0 4px;
+
+  overflow: hidden;
+  padding: 4px 0 8px;
+}
+
+.index-status-filter .status-filter-button {
+  flex: 1 1 0;
+  min-width: 0;
+
+  min-height: 42px;
+  padding: 9px 8px;
+
+  overflow: hidden;
+
+  border: 1px solid var(--border);
+  border-radius: 10px;
+
+  background: #ffffff;
+  color: var(--muted);
+
+  font-size: 13px;
+  font-weight: 800;
+
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.index-status-filter .status-filter-button:hover {
+  background: var(--blue-light);
+  color: #164e63;
+}
+
+.index-status-filter .status-filter-button.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #ffffff;
+
+  box-shadow:
+    0 4px 10px rgba(17, 127, 117, 0.18);
+}
+
+
+/* ===================================================== AÇÕES DOS REGISTROS ===================================================== */
+
+.report-actions {
+  display: flex !important;
+  align-items: center;
+  justify-content: flex-end;
+
+  flex-wrap: nowrap !important;
+  gap: 8px;
+
+  min-width: 0;
+  overflow: hidden;
+}
+
+.report-actions > button {
+  flex: 0 0 auto;
+}
+
+
+/* ===================================================== CELULAR ===================================================== */
+
+@media (max-width: 760px) {
+  .welcome-row {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .welcome-row .button-row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: 6px;
+  }
+
+  .welcome-row .button-row > * {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+
+    padding-left: 7px;
+    padding-right: 7px;
+
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .index-status-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .index-status-grid .stat-card {
+    min-height: 84px;
+    padding: 10px 3px;
+  }
+
+  .index-status-grid .stat-card span {
+    font-size: 22px;
+  }
+
+  .index-status-grid .stat-card small {
+    font-size: 10px;
+    line-height: 1.1;
+    white-space: normal;
+  }
+
+  .index-status-filter {
+    gap: 4px;
+    overflow: hidden;
+  }
+
+  .index-status-filter .status-filter-button {
+    min-height: 38px;
+    padding: 7px 3px;
+
+    font-size: 10px;
+  }
+
+  .report-actions {
+    justify-content: flex-start !important;
+    flex-wrap: nowrap !important;
+    overflow: hidden !important;
+    gap: 4px;
+  }
+
+  .report-actions .action-icon-button {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    min-height: 38px;
+
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 430px) {
+  .welcome-row .button-row > * {
+    padding-left: 4px;
+    padding-right: 4px;
+    font-size: 10px;
+  }
+
+  .index-status-grid {
+    gap: 3px;
+  }
+
+  .index-status-grid .stat-card {
+    min-height: 78px;
+    padding: 8px 2px;
+  }
+
+  .index-status-grid .stat-card span {
+    font-size: 20px;
+  }
+
+  .index-status-grid .stat-card small {
+    font-size: 9px;
+  }
+
+  .index-status-filter {
+    gap: 3px;
+  }
+
+  .index-status-filter .status-filter-button {
+    min-height: 36px;
+    padding: 6px 2px;
+
+    font-size: 9px;
+  }
+
+  .report-actions {
+    gap: 3px;
+  }
+
+  .report-actions .action-icon-button {
+    width: 35px;
+    height: 35px;
+    min-width: 35px;
+    min-height: 35px;
+
+    font-size: 15px;
+  }
+}
