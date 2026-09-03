@@ -7,33 +7,69 @@
 
   <meta name="theme-color" content="#172554" />
 
-  <title>Área Administrativa - Amigos do Maui</title>
+  <title>
+    Área Administrativa - Amigos do Maui
+  </title>
 
-  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./styles.css?v=6" />
 
-  <link rel="stylesheet" href="./admin-home.css" />
+  <link rel="stylesheet" href="./admin-home.css?v=2" />
 </head>
 
 <body class="admin-home-page">
 
+  <!-- CABEÇALHO -->
   <header class="topbar admin-home-topbar">
     <div class="brand">
       <span class="brand-icon">🏢</span>
 
       <div>
-        <strong>Amigos do Maui</strong>
-        <small>Área administrativa</small>
+        <strong>
+          Amigos do Maui
+        </strong>
+
+        <small>
+          Área administrativa
+        </small>
       </div>
     </div>
 
-    <button id="btnAdminHomeLogout" class="admin-home-logout" type="button" >
-      Sair
-    </button>
+
+    <!-- MENU SUSPENSO -->
+    <div class="top-menu-wrapper admin-home-menu-wrapper">
+      <button id="btnAdminMenu" class="menu-toggle admin-menu-toggle" type="button" aria-expanded="false" aria-controls="adminMainMenu" >
+        ☰ Menu
+      </button>
+
+      <nav id="adminMainMenu" class="top-menu hidden" aria-label="Menu administrativo" >
+        <a href="./index.html" class="menu-link" >
+          📋 Registros
+        </a>
+
+        <a href="./admin.html" class="menu-link" >
+          📊 Relatórios
+        </a>
+
+        <a href="./usuarios.html" class="menu-link" >
+          👥 Usuários
+        </a>
+
+        <a href="./public.html" class="menu-link" >
+          🌐 Tela pública
+        </a>
+
+        <button id="btnAdminHomeLogout" class="menu-link admin-menu-logout-link" type="button" >
+    <span class="menu-icon">🚪</span>
+    <span>Sair</span>
+  </button>
+      </nav>
+    </div>
   </header>
 
 
   <main class="admin-home-container">
 
+    <!-- CABEÇALHO DO PAINEL -->
     <section class="admin-home-header">
       <div>
         <span class="admin-home-eyebrow">
@@ -53,7 +89,9 @@
       </div>
 
       <div class="admin-home-user">
-        <span>Administrador conectado</span>
+        <span>
+          Administrador conectado
+        </span>
 
         <strong id="adminHomeEmail">
           —
@@ -62,17 +100,23 @@
     </section>
 
 
+    <!-- CARREGAMENTO -->
     <section id="adminHomeLoading" class="admin-home-loading" >
       Verificando acesso...
     </section>
 
 
+    <!-- OPÇÕES ADMINISTRATIVAS -->
     <section id="adminHomeContent" class="admin-home-content hidden" >
 
       <a href="./index.html" class="admin-menu-card records-card" >
-        <span class="admin-menu-icon">📋</span>
+        <span class="admin-menu-icon">
+          📋
+        </span>
 
-        <strong>Registros</strong>
+        <strong>
+          Registros
+        </strong>
 
         <small>
           Consultar e gerenciar ocorrências
@@ -81,9 +125,13 @@
 
 
       <a href="./admin.html" class="admin-menu-card dashboard-card" >
-        <span class="admin-menu-icon">📊</span>
+        <span class="admin-menu-icon">
+          📊
+        </span>
 
-        <strong>Relatórios</strong>
+        <strong>
+          Relatórios
+        </strong>
 
         <small>
           Dashboard, indicadores e relatórios
@@ -92,9 +140,13 @@
 
 
       <a href="./usuarios.html" class="admin-menu-card users-card" >
-        <span class="admin-menu-icon">👥</span>
+        <span class="admin-menu-icon">
+          👥
+        </span>
 
-        <strong>Usuários</strong>
+        <strong>
+          Usuários
+        </strong>
 
         <small>
           Aprovar e gerenciar moradores
@@ -103,9 +155,13 @@
 
 
       <a href="./public.html" class="admin-menu-card public-card" >
-        <span class="admin-menu-icon">🌐</span>
+        <span class="admin-menu-icon">
+          🌐
+        </span>
 
-        <strong>Tela Pública</strong>
+        <strong>
+          Tela Pública
+        </strong>
 
         <small>
           Consultar mural de ocorrências
@@ -115,8 +171,11 @@
     </section>
 
 
+    <!-- ACESSO NEGADO -->
     <section id="adminHomeDenied" class="admin-home-denied hidden" >
-      <h2>Acesso restrito</h2>
+      <h2>
+        Acesso restrito
+      </h2>
 
       <p>
         Esta área está disponível somente para o administrador.
@@ -130,6 +189,38 @@
   </main>
 
 
-  <script type="module" src="./admin-home.js" ></script>
+  <!-- MODAL DE CONFIRMAÇÃO DE SAÍDA -->
+  <div id="adminLogoutModal" class="modal hidden" >
+    <div class="modal-card admin-logout-modal-card">
+
+      <button id="btnCloseAdminLogout" class="modal-close" type="button" aria-label="Fechar confirmação" >
+        ×
+      </button>
+
+      <h2>
+        Confirmar saída
+      </h2>
+
+      <p class="muted">
+        Deseja realmente sair do sistema?
+      </p>
+
+      <div class="admin-logout-actions">
+        <button id="btnCancelAdminLogout" class="secondary-button" type="button" >
+          Cancelar
+        </button>
+
+        <button id="btnConfirmAdminLogout" class="danger-button" type="button" >
+          Sair do sistema
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- JAVASCRIPT -->
+  <script type="module" src="./admin-home.js?v=3" ></script>
+
 </body>
 </html>
