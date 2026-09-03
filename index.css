@@ -1,17 +1,19 @@
 /* ===================================================== ESTILOS ESPECÍFICOS DO INDEX ===================================================== */
 
 
-/* ===================================================== CABEÇALHO DA ÁREA DO MORADOR ===================================================== */
+/* ===================================================== CABEÇALHO ===================================================== */
 
 .index-page .topbar {
   position: relative;
   z-index: 1000;
+
+  overflow: visible !important;
 }
 
 
 /* ===================================================== ÁREA DE BOAS-VINDAS ===================================================== */
 
-.welcome-row {
+.index-page .welcome-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -20,16 +22,16 @@
   margin-bottom: 22px;
 }
 
-.welcome-row .button-row {
+.index-page .welcome-row .button-row {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 
-/* ===================================================== INDICADORES DE STATUS ===================================================== */
+/* ===================================================== QUATRO INDICADORES DE STATUS ===================================================== */
 
-.index-status-grid {
+.index-page .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 14px;
@@ -38,7 +40,7 @@
   margin: 20px 0 24px;
 }
 
-.index-status-grid .stat-card {
+.index-page .stat-card {
   min-width: 0;
   min-height: 108px;
 
@@ -55,20 +57,25 @@
   border-radius: 16px;
 
   text-align: center;
+
   box-shadow:
     0 5px 16px rgba(15, 23, 42, 0.04);
 }
 
-.index-status-grid .stat-card span {
+.index-page .stat-card span {
   display: block;
+  overflow: hidden;
 
   color: var(--primary);
   font-size: 30px;
   font-weight: 800;
   line-height: 1;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.index-status-grid .stat-card small {
+.index-page .stat-card small {
   color: var(--muted);
   font-size: 13px;
   font-weight: 700;
@@ -76,14 +83,17 @@
 }
 
 
-/* ===================================================== FILTRO DO INDEX ===================================================== */
+/* ===================================================== TÍTULO DA SEÇÃO DE REGISTROS ===================================================== */
 
-.index-section-heading {
+.index-page .index-section-heading {
   display: block;
   margin-bottom: 14px;
 }
 
-.index-status-filter {
+
+/* ===================================================== FILTRO DOS REGISTROS SEM SELECT E SEM SCROLL ===================================================== */
+
+.index-page .index-status-filter {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -91,16 +101,16 @@
   width: 100%;
   margin: 14px 0 4px;
 
-  overflow: hidden;
+  overflow: hidden !important;
   padding: 4px 0 8px;
 }
 
-.index-status-filter .status-filter-button {
+.index-page .index-status-filter .status-filter-button {
   flex: 1 1 0;
   min-width: 0;
 
   min-height: 42px;
-  padding: 9px 8px;
+  padding: 9px 6px;
 
   overflow: hidden;
 
@@ -116,14 +126,22 @@
   text-align: center;
   text-overflow: ellipsis;
   white-space: nowrap;
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
 }
 
-.index-status-filter .status-filter-button:hover {
+.index-page .index-status-filter .status-filter-button:hover {
   background: var(--blue-light);
   color: #164e63;
 }
 
-.index-status-filter .status-filter-button.active {
+.index-page .index-status-filter .status-filter-button.active {
   background: var(--primary);
   border-color: var(--primary);
   color: #ffffff;
@@ -133,43 +151,301 @@
 }
 
 
-/* ===================================================== AÇÕES DOS REGISTROS ===================================================== */
+/* ===================================================== CARDS DOS REGISTROS ===================================================== */
 
-.report-actions {
+.index-page .report-item {
+  min-width: 0;
+}
+
+.index-page .report-item > div:first-child {
+  min-width: 0;
+}
+
+
+/* ===================================================== BOTÕES DOS REGISTROS MESMO TAMANHO VISUAL DA PÁGINA PUBLIC SEM SCROLL E SEM QUEBRA DE LINHA ===================================================== */
+
+.index-page .report-actions {
+  grid-column: 2;
+  grid-row: 1;
+
   display: flex !important;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: stretch !important;
 
   flex-wrap: nowrap !important;
   gap: 8px;
 
+  width: 100%;
   min-width: 0;
-  overflow: hidden;
+
+  overflow: hidden !important;
 }
 
-.report-actions > button {
+.index-page .report-actions .action-icon-button {
+  flex: 1 1 0 !important;
+
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+
+  height: 42px;
+  min-height: 42px;
+
+  padding: 0 !important;
+
+  border-radius: 10px;
+
+  font-size: 19px;
+  line-height: 1;
+
+  white-space: nowrap;
+}
+
+
+/* ===================================================== CORES DOS BOTÕES ===================================================== */
+
+.index-page .report-actions .detail-button {
+  background: var(--blue-light);
+  color: #0369a1;
+}
+
+.index-page .report-actions .timeline-button {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+
+.index-page .report-actions .edit-button {
+  background: var(--warning-light);
+  color: var(--warning);
+}
+
+.index-page .report-actions .whatsapp-button {
+  background: var(--success-light);
+  color: var(--success);
+}
+
+.index-page .report-actions .email-button {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+}
+
+.index-page .report-actions .delete-button {
+  background: var(--danger-light);
+  color: var(--danger);
+}
+
+.index-page .report-actions .action-icon-button:hover {
+  filter: brightness(0.96);
+}
+
+.index-page .report-actions .action-icon-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+  filter: grayscale(0.75);
+  box-shadow: none;
+  transform: none;
+}
+
+
+/* ===================================================== MENU SUSPENSO ===================================================== */
+
+.index-page .top-menu-wrapper {
+  position: relative;
+  z-index: 3000;
+
   flex: 0 0 auto;
+  margin-left: auto;
+}
+
+.index-page .menu-toggle {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 42px;
+  padding: 9px 14px;
+
+  border: 0;
+  border-radius: 10px;
+
+  background: var(--primary);
+  color: #ffffff;
+
+  font: inherit;
+  font-size: 15px;
+  font-weight: 800;
+
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.index-page .menu-toggle:hover {
+  background: var(--primary-dark);
+}
+
+.index-page .menu-toggle.hidden {
+  display: none !important;
+}
+
+.index-page .top-menu {
+  position: absolute;
+  z-index: 9999;
+
+  top: calc(100% + 8px);
+  right: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  width: max-content;
+  min-width: 215px;
+  padding: 8px;
+
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  box-shadow:
+    0 12px 30px rgba(15, 23, 42, 0.22);
+}
+
+.index-page .top-menu.hidden {
+  display: none !important;
+}
+
+.index-page .top-menu .menu-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 13px;
+
+  border: 0;
+  border-radius: 8px;
+
+  background: transparent;
+  color: var(--text);
+
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+
+  text-align: left;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.index-page .top-menu .menu-link:hover {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+}
+
+.index-page .menu-icon {
+  width: 22px;
+  min-width: 22px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 18px;
+  line-height: 1;
+}
+
+.index-page .top-menu .menu-link:last-child:hover {
+  background: var(--danger-light);
+  color: var(--danger-dark);
 }
 
 
 /* ===================================================== CELULAR ===================================================== */
 
 @media (max-width: 760px) {
-  .welcome-row {
+  .index-page .topbar {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+
+    min-height: 62px;
+    padding: 9px 10px;
+
+    overflow: visible !important;
+  }
+
+  .index-page .brand {
+    min-width: 0;
+    flex: 1 1 auto;
+    gap: 8px;
+  }
+
+  .index-page .brand strong {
+    font-size: 16px;
+    white-space: nowrap;
+  }
+
+  .index-page .brand small {
+    margin-top: 3px;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .index-page .brand-icon {
+    width: 38px;
+    height: 38px;
+    font-size: 21px;
+  }
+
+  .index-page .top-menu-wrapper {
+    position: relative;
+    z-index: 3000;
+
+    margin-left: 8px;
+  }
+
+  .index-page .menu-toggle {
+    min-height: 38px;
+    padding: 8px 11px;
+    font-size: 13px;
+  }
+
+  .index-page .top-menu {
+    min-width: 205px;
+    max-width: calc(100vw - 20px);
+  }
+
+  .index-page .top-menu .menu-link {
+    min-height: 40px;
+    font-size: 14px;
+  }
+
+  .index-page .menu-icon {
+    font-size: 16px;
+  }
+
+
+  /* Área de boas-vindas */
+  .index-page .welcome-row {
     align-items: stretch;
     flex-direction: column;
     gap: 16px;
   }
 
-  .welcome-row .button-row {
+  .index-page .welcome-row .button-row {
     display: flex;
     flex-direction: row;
+
     width: 100%;
     gap: 6px;
   }
 
-  .welcome-row .button-row > * {
+  .index-page .welcome-row .button-row > * {
     flex: 1 1 0;
+
     width: auto;
     min-width: 0;
 
@@ -180,100 +456,283 @@
     white-space: nowrap;
   }
 
-  .index-status-grid {
+
+  /* Quatro indicadores em uma linha */
+  .index-page .stats-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 6px;
   }
 
-  .index-status-grid .stat-card {
+  .index-page .stat-card {
     min-height: 84px;
     padding: 10px 3px;
   }
 
-  .index-status-grid .stat-card span {
+  .index-page .stat-card span {
     font-size: 22px;
   }
 
-  .index-status-grid .stat-card small {
+  .index-page .stat-card small {
     font-size: 10px;
     line-height: 1.1;
     white-space: normal;
   }
 
-  .index-status-filter {
+
+  /* Cinco filtros em uma linha */
+  .index-page .index-status-filter {
     gap: 4px;
-    overflow: hidden;
+    overflow: hidden !important;
   }
 
-  .index-status-filter .status-filter-button {
+  .index-page .index-status-filter .status-filter-button {
+    flex: 1 1 0;
+
+    min-width: 0;
     min-height: 38px;
+
     padding: 7px 3px;
 
     font-size: 10px;
   }
 
-  .report-actions {
-    justify-content: flex-start !important;
-    flex-wrap: nowrap !important;
-    overflow: hidden !important;
-    gap: 4px;
+
+  /* Card de registro em uma coluna */
+  .index-page .report-item {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
   }
 
-  .report-actions .action-icon-button {
-    width: 38px;
-    height: 38px;
-    min-width: 38px;
-    min-height: 38px;
+  .index-page .report-item > div:first-child {
+    grid-column: 1;
+    grid-row: 1;
+  }
 
-    font-size: 16px;
+
+  /* Botões com o mesmo tamanho visual da página pública. A largura é dividida igualmente para ocupar todo o card. */
+  .index-page .report-actions {
+    grid-column: 1;
+    grid-row: 2;
+
+    display: flex !important;
+    align-items: center;
+    justify-content: stretch !important;
+
+    flex-wrap: nowrap !important;
+    gap: 5px;
+
+    width: 100%;
+    min-width: 0;
+
+    overflow: hidden !important;
+  }
+
+  .index-page .report-actions .action-icon-button {
+    flex: 1 1 0 !important;
+
+    width: auto !important;
+    min-width: 0 !important;
+
+    height: 42px;
+    min-height: 42px;
+
+    padding: 0 !important;
+
+    font-size: 19px;
+  }
+
+  .index-page .email-sent-message {
+    grid-column: 1;
+    grid-row: 3;
   }
 }
 
+
+/* ===================================================== TELAS MUITO PEQUENAS ===================================================== */
+
 @media (max-width: 430px) {
-  .welcome-row .button-row > * {
-    padding-left: 4px;
-    padding-right: 4px;
+  .index-page .topbar {
+    padding: 8px 7px;
+  }
+
+  .index-page .brand-icon {
+    width: 34px;
+    height: 34px;
+    font-size: 19px;
+  }
+
+  .index-page .brand strong {
+    font-size: 14px;
+  }
+
+  .index-page .brand small {
     font-size: 10px;
   }
 
-  .index-status-grid {
+  .index-page .menu-toggle {
+    min-height: 36px;
+    padding: 7px 9px;
+    font-size: 12px;
+  }
+
+  .index-page .top-menu {
+    min-width: 195px;
+  }
+
+
+  /* Indicadores */
+  .index-page .stats-grid {
     gap: 3px;
   }
 
-  .index-status-grid .stat-card {
+  .index-page .stat-card {
     min-height: 78px;
     padding: 8px 2px;
   }
 
-  .index-status-grid .stat-card span {
+  .index-page .stat-card span {
     font-size: 20px;
   }
 
-  .index-status-grid .stat-card small {
+  .index-page .stat-card small {
     font-size: 9px;
   }
 
-  .index-status-filter {
+
+  /* Filtros */
+  .index-page .index-status-filter {
     gap: 3px;
   }
 
-  .index-status-filter .status-filter-button {
+  .index-page .index-status-filter .status-filter-button {
     min-height: 36px;
     padding: 6px 2px;
 
     font-size: 9px;
   }
 
-  .report-actions {
+
+  /* Botões dos registros */
+  .index-page .report-actions {
     gap: 3px;
   }
 
-  .report-actions .action-icon-button {
-    width: 35px;
-    height: 35px;
-    min-width: 35px;
-    min-height: 35px;
+  .index-page .report-actions .action-icon-button {
+    flex: 1 1 0 !important;
 
-    font-size: 15px;
+    width: auto !important;
+    min-width: 0 !important;
+
+    height: 42px;
+    min-height: 42px;
+
+    font-size: 18px;
+  }
+}
+
+
+/* ===================================================== GARANTIA FINAL ===================================================== */
+
+.index-page .report-actions {
+  flex-wrap: nowrap !important;
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
+}
+
+.index-page .report-actions .action-icon-button {
+  flex: 1 1 0 !important;
+  width: auto !important;
+  min-width: 0 !important;
+}
+
+/* ===================================================== BOTÕES DO INDEX IGUAIS AOS BOTÕES DA TELA PUBLIC ===================================================== */
+
+.index-page .report-actions {
+  display: flex !important;
+  align-items: center;
+  justify-content: flex-start !important;
+
+  flex-wrap: nowrap !important;
+  gap: 8px;
+
+  width: 100%;
+  min-width: 0;
+
+  overflow: hidden !important;
+}
+
+.index-page .report-actions .action-icon-button {
+  flex: 0 0 42px !important;
+
+  width: 42px !important;
+  height: 42px !important;
+
+  min-width: 42px !important;
+  min-height: 42px !important;
+
+  max-width: 42px !important;
+  max-height: 42px !important;
+
+  padding: 0 !important;
+
+  border-radius: 10px;
+
+  font-size: 19px;
+  line-height: 1;
+}
+
+
+/* ===================================================== CELULAR ===================================================== */
+
+@media (max-width: 760px) {
+  .index-page .report-actions {
+    display: flex !important;
+    align-items: center;
+    justify-content: flex-start !important;
+
+    flex-wrap: nowrap !important;
+    gap: 8px;
+
+    width: 100%;
+    overflow: hidden !important;
+  }
+
+  .index-page .report-actions .action-icon-button {
+    flex: 0 0 42px !important;
+
+    width: 42px !important;
+    height: 42px !important;
+
+    min-width: 42px !important;
+    min-height: 42px !important;
+
+    max-width: 42px !important;
+    max-height: 42px !important;
+
+    font-size: 19px;
+  }
+}
+
+
+/* ===================================================== TELAS MUITO PEQUENAS ===================================================== */
+
+@media (max-width: 430px) {
+  .index-page .report-actions {
+    gap: 8px;
+  }
+
+  .index-page .report-actions .action-icon-button {
+    flex: 0 0 42px !important;
+
+    width: 42px !important;
+    height: 42px !important;
+
+    min-width: 42px !important;
+    min-height: 42px !important;
+
+    max-width: 42px !important;
+    max-height: 42px !important;
+
+    font-size: 19px;
   }
 }
