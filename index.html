@@ -17,34 +17,40 @@
 <body>
 
   <!-- CABEÇALHO -->
-  <header class="topbar">
-    <div class="brand">
-      <span class="brand-icon">🏢</span>
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-icon">🏢</span>
 
-      <div>
-        <strong>Amigos do Maui</strong>
-        <small>Portal do morador</small>
-      </div>
+    <div>
+      <strong>Amigos do Maui</strong>
+      <small>Portal do morador</small>
     </div>
+  </div>
 
-    <div class="top-actions">
-      <a href="./public.html" class="link-button" >
+  <div class="top-menu-wrapper">
+    <button id="btnMenu" class="menu-toggle hidden" type="button" aria-expanded="false" aria-controls="mainMenu" >
+  ☰ Menu
+</button>
+
+    <nav id="mainMenu" class="top-menu hidden" aria-label="Menu principal" >
+      <a href="./public.html" class="menu-link" >
         Registros públicos
       </a>
 
-      <a href="./perfil.html" id="btnEditProfile" class="link-button" >
+      <a href="./perfil.html" id="btnEditProfile" class="menu-link" >
         Meu perfil
       </a>
 
-      <a href="./manual-portal-morador.pdf" class="link-button" download="manual-portal-morador.pdf" >
+      <a href="./manual-portal-morador.pdf" class="menu-link" download="manual-portal-morador.pdf" >
         Manual do usuário
       </a>
 
-      <button id="btnLogout" class="link-button hidden" type="button" >
+      <button id="btnLogout" class="menu-link hidden" type="button" >
         Sair
       </button>
-    </div>
-  </header>
+    </nav>
+  </div>
+</header>
 
 
   <main class="container">
