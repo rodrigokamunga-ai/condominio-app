@@ -11,40 +11,62 @@
     Controle de Usuários - Amigos do Maui
   </title>
 
-  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./styles.css?v=6" />
 
-  <link rel="stylesheet" href="./users.css" />
+  <link rel="stylesheet" href="./users.css?v=3" />
 </head>
 
 <body class="admin-page">
 
   <!-- CABEÇALHO -->
-  <header class="topbar admin-topbar">
+  <header class="topbar admin-topbar users-topbar">
     <div class="brand">
       <span class="brand-icon">👥</span>
 
       <div>
-        <strong>Amigos do Maui</strong>
-        <small>Controle de usuários</small>
+        <strong>
+          Amigos do Maui
+        </strong>
+
+        <small>
+          Controle de usuários
+        </small>
       </div>
     </div>
 
-    <div class="top-actions admin-navigation">
-      <a href="./admin.html" class="link-button" >
-        Painel administrativo
-      </a>
 
-      <a href="./index.html" class="link-button" >
-        Portal do morador
-      </a>
-
-      <a href="./admin-home.html" class="link-button" >
-         Menu administrativo
-      </a>
-
-      <button id="btnUsersLogout" class="link-button" type="button" >
-        Sair
+    <!-- MENU SUSPENSO ADMINISTRATIVO -->
+    <div class="top-menu-wrapper users-menu-wrapper">
+      <button id="btnUsersMenu" class="menu-toggle users-menu-toggle" type="button" aria-expanded="false" aria-controls="usersMainMenu" >
+        ☰ Menu
       </button>
+
+      <nav id="usersMainMenu" class="top-menu hidden" aria-label="Menu administrativo" >
+        <a href="./admin-home.html" class="menu-link" >
+          <span class="menu-icon">🏠</span>
+          <span>Menu administrativo</span>
+        </a>
+
+        <a href="./admin.html" class="menu-link" >
+          <span class="menu-icon">📊</span>
+          <span>Painel administrativo</span>
+        </a>
+
+        <a href="./index.html" class="menu-link" >
+          <span class="menu-icon">📋</span>
+          <span>Portal do morador</span>
+        </a>
+
+        <a href="./public.html" class="menu-link" >
+          <span class="menu-icon">🌐</span>
+          <span>Tela pública</span>
+        </a>
+
+        <button id="btnUsersLogout" class="menu-link users-menu-logout" type="button" >
+          <span class="menu-icon">🚪</span>
+          <span>Sair</span>
+        </button>
+      </nav>
     </div>
   </header>
 
@@ -53,7 +75,9 @@
 
     <!-- CARREGAMENTO -->
     <section id="usersLoadingView" class="card auth-card" >
-      <h1>Carregando...</h1>
+      <h1>
+        Carregando...
+      </h1>
 
       <p class="muted">
         Verificando as permissões de acesso.
@@ -63,10 +87,13 @@
 
     <!-- ACESSO NEGADO -->
     <section id="usersDeniedView" class="card auth-card hidden" >
-      <h1>Acesso restrito</h1>
+      <h1>
+        Acesso restrito
+      </h1>
 
       <p class="muted">
-        Somente o administrador pode acessar o controle de usuários.
+        Somente o administrador pode acessar
+        o controle de usuários.
       </p>
 
       <a href="./index.html" class="primary-button button-link" >
@@ -122,23 +149,43 @@
       <section class="users-stats-grid">
 
         <div class="users-stat-card">
-          <span id="usersTotal">0</span>
-          <small>Total de usuários</small>
+          <span id="usersTotal">
+            0
+          </span>
+
+          <small>
+            Total de usuários
+          </small>
         </div>
 
         <div class="users-stat-card">
-          <span id="usersPending">0</span>
-          <small>Aguardando aprovação</small>
+          <span id="usersPending">
+            0
+          </span>
+
+          <small>
+            Aguardando aprovação
+          </small>
         </div>
 
         <div class="users-stat-card">
-          <span id="usersApproved">0</span>
-          <small>Aprovados</small>
+          <span id="usersApproved">
+            0
+          </span>
+
+          <small>
+            Aprovados
+          </small>
         </div>
 
         <div class="users-stat-card">
-          <span id="usersRejected">0</span>
-          <small>Rejeitados</small>
+          <span id="usersRejected">
+            0
+          </span>
+
+          <small>
+            Rejeitados
+          </small>
         </div>
 
       </section>
@@ -154,39 +201,46 @@
             </h2>
 
             <p class="muted">
-              Novos moradores precisam ser aprovados antes de utilizar o sistema.
+              Novos moradores precisam ser aprovados
+              antes de utilizar o sistema.
             </p>
           </div>
 
           <div class="users-filters">
-            <input id="userSearch" type="search" placeholder="Pesquisar por nome ou e-mail" />
-
-            <select id="userStatusFilter" class="compact-select" >
-              <option value="Todos">
-                Todos
-              </option>
-
-              <option value="Pendente">
-                Pendentes
-              </option>
-
-              <option value="Aprovado">
-                Aprovados
-              </option>
-
-              <option value="Rejeitado">
-                Rejeitados
-              </option>
-            </select>
+            <input id="userSearch" type="search" placeholder="Pesquisar por nome ou e-mail" autocomplete="off" aria-label="Pesquisar moradores" />
           </div>
         </div>
 
+
+        <!-- FILTRO POR BOTÕES -->
+        <div id="userStatusFilter" class="status-filter-buttons users-status-filter" role="group" aria-label="Filtrar moradores por situação" >
+          <button type="button" class="status-filter-button active" data-status="Todos" >
+            Todos
+          </button>
+
+          <button type="button" class="status-filter-button" data-status="Pendente" >
+            Pendentes
+          </button>
+
+          <button type="button" class="status-filter-button" data-status="Aprovado" >
+            Aprovados
+          </button>
+
+          <button type="button" class="status-filter-button" data-status="Rejeitado" >
+            Rejeitados
+          </button>
+        </div>
+
+
+        <!-- LISTA DE USUÁRIOS -->
         <div id="usersList" class="users-list" >
           <div class="empty-state">
             Carregando usuários...
           </div>
         </div>
 
+
+        <!-- PAGINAÇÃO -->
         <div id="usersPagination" class="pagination" ></div>
 
       </section>
@@ -225,13 +279,13 @@
         Altere os dados cadastrais e a situação do morador.
       </p>
 
-      <form id="userEditForm" class="form" >
+      <form id="userEditForm" class="form" autocomplete="off" >
         <input id="editUserId" type="hidden" />
 
         <label>
           Nome completo
 
-          <input id="editUserName" type="text" required minlength="3" />
+          <input id="editUserName" type="text" required minlength="3" autocomplete="name" />
         </label>
 
         <label>
@@ -291,10 +345,43 @@
   </div>
 
 
+  <!-- MODAL DE CONFIRMAÇÃO DE SAÍDA -->
+  <div id="usersLogoutModal" class="modal hidden" >
+    <div class="modal-card users-logout-modal-card">
+
+      <button id="btnCloseUsersLogout" class="modal-close" type="button" aria-label="Fechar confirmação" >
+        ×
+      </button>
+
+      <h2>
+        Confirmar saída
+      </h2>
+
+      <p class="muted">
+        Deseja realmente sair do sistema?
+      </p>
+
+      <div class="users-logout-actions">
+
+        <button id="btnCancelUsersLogout" class="secondary-button" type="button" >
+          Cancelar
+        </button>
+
+        <button id="btnConfirmUsersLogout" class="danger-button" type="button" >
+          Sair do sistema
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+
   <!-- NOTIFICAÇÃO -->
   <div id="usersToast" class="toast" ></div>
 
 
-  <script type="module" src="./usuarios.js" ></script>
+  <!-- JAVASCRIPT -->
+  <script type="module" src="./usuarios.js?v=3" ></script>
+
 </body>
 </html>
