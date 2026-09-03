@@ -485,3 +485,169 @@
     font-size: 10px;
   }
 }
+
+/* ===================================================== MENU SUSPENSO ADMINISTRATIVO ===================================================== */
+
+.admin-home-topbar {
+  position: relative;
+  z-index: 1000;
+  overflow: visible !important;
+}
+
+.admin-home-menu-wrapper {
+  position: relative;
+  z-index: 3000;
+  margin-left: auto;
+}
+
+.admin-menu-toggle {
+  min-height: 42px;
+  padding: 9px 14px;
+
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 10px;
+
+  font-size: 15px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.admin-menu-toggle:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.admin-home-topbar .top-menu {
+  top: calc(100% + 8px);
+  right: 0;
+
+  min-width: 220px;
+
+  background: #ffffff;
+  border: 1px solid #bfdbfe;
+
+  box-shadow:
+    0 14px 32px rgba(15, 23, 42, 0.28);
+}
+
+.admin-home-topbar .menu-link {
+  min-height: 42px;
+
+  color: #172554;
+  font-size: 14px;
+}
+
+.admin-home-topbar .menu-link:hover {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.admin-home-topbar .admin-menu-logout-link {
+  color: #b91c1c;
+}
+
+.admin-home-topbar .admin-menu-logout-link:hover {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+
+/* ===================================================== MODAL DE LOGOUT ADMINISTRATIVO ===================================================== */
+
+.admin-logout-modal-card {
+  width: min(440px, 100%);
+  padding: 32px;
+}
+
+.admin-logout-modal-card h2 {
+  margin-bottom: 10px;
+  padding-right: 30px;
+}
+
+.admin-logout-modal-card .muted {
+  margin-bottom: 24px;
+}
+
+.admin-logout-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.admin-logout-actions button {
+  min-width: 130px;
+}
+
+
+/* ===================================================== CELULAR ===================================================== */
+
+@media (max-width: 650px) {
+  .admin-home-topbar {
+    align-items: center;
+    flex-wrap: nowrap;
+
+    padding: 9px 10px;
+    overflow: visible !important;
+  }
+
+  .admin-home-topbar .brand {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .admin-home-topbar .brand strong {
+    font-size: 16px;
+    white-space: nowrap;
+  }
+
+  .admin-home-topbar .brand small {
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .admin-menu-toggle {
+    min-height: 38px;
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .admin-home-topbar .top-menu {
+    min-width: 205px;
+    max-width: calc(100vw - 20px);
+  }
+
+  .admin-home-topbar .menu-link {
+    min-height: 40px;
+    font-size: 13px;
+  }
+
+  .admin-logout-actions {
+    flex-direction: column-reverse;
+  }
+
+  .admin-logout-actions button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 400px) {
+  .admin-home-topbar {
+    padding: 8px 7px;
+  }
+
+  .admin-home-topbar .brand strong {
+    font-size: 14px;
+  }
+
+  .admin-home-topbar .brand small {
+    font-size: 10px;
+  }
+
+  .admin-menu-toggle {
+    padding: 7px 8px;
+    font-size: 11px;
+  }
+}
