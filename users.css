@@ -54,6 +54,120 @@
 }
 
 
+/* ===================================================== MENU SUSPENSO ===================================================== */
+
+.users-topbar {
+  position: relative;
+  z-index: 1000;
+
+  overflow: visible !important;
+}
+
+.users-menu-wrapper {
+  position: relative;
+  z-index: 3000;
+
+  margin-left: auto;
+}
+
+.users-menu-toggle {
+  min-height: 42px;
+  padding: 9px 14px;
+
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 10px;
+
+  font-size: 15px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.users-menu-toggle:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.users-topbar .top-menu {
+  position: absolute;
+  z-index: 9999;
+
+  top: calc(100% + 8px);
+  right: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  width: max-content;
+  min-width: 225px;
+  padding: 8px;
+
+  background: #ffffff;
+  border: 1px solid #bfdbfe;
+  border-radius: 12px;
+
+  box-shadow:
+    0 14px 32px rgba(15, 23, 42, 0.28);
+}
+
+.users-topbar .top-menu.hidden {
+  display: none !important;
+}
+
+.users-topbar .menu-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 13px;
+
+  border: 0;
+  border-radius: 8px;
+
+  background: transparent;
+  color: #172554;
+
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+
+  text-align: left;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.users-topbar .menu-link:hover {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.users-topbar .menu-icon {
+  width: 22px;
+  min-width: 22px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 18px;
+  line-height: 1;
+}
+
+.users-topbar .users-menu-logout {
+  color: #b91c1c;
+}
+
+.users-topbar .users-menu-logout:hover {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+
 /* ===================================================== AVISO DE NOVOS CADASTROS ===================================================== */
 
 .pending-notice {
@@ -81,7 +195,7 @@
 }
 
 
-/* ===================================================== INDICADORES Primeira linha: Total de usuários | Aguardando aprovação Segunda linha: Aprovados | Rejeitados ===================================================== */
+/* ===================================================== INDICADORES ===================================================== */
 
 .users-stats-grid {
   display: grid;
@@ -124,7 +238,7 @@
 }
 
 
-/* ===================================================== ÁREA DA LISTA E FILTROS ===================================================== */
+/* ===================================================== ÁREA DE FILTROS ===================================================== */
 
 .users-filter-area {
   display: flex;
@@ -193,20 +307,22 @@
 }
 
 .user-item {
-  position: relative;
-
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
-  justify-content: space-between;
-  gap: 18px;
+  justify-content: flex-start;
 
-  min-height: 150px;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
 
-  padding: 24px 18px 18px;
+  padding: 18px;
 
   background: #ffffff;
   border: 1px solid var(--border);
   border-radius: 14px;
+
+  overflow: hidden;
 
   transition:
     border-color 0.2s ease,
@@ -220,13 +336,13 @@
     0 5px 15px rgba(15, 23, 42, 0.05);
 }
 
-.user-main {
-  min-width: 0;
-  padding-right: 135px;
+.user-card-header {
+  width: 100%;
+  margin-bottom: 8px;
 }
 
-.user-name {
-  margin-bottom: 6px;
+.user-card-header .user-name {
+  margin: 0;
 
   color: var(--text);
   font-size: 17px;
@@ -234,20 +350,54 @@
   line-height: 1.3;
 }
 
+.user-main {
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+}
+
 .user-meta {
+  width: 100%;
+
   color: var(--muted);
   font-size: 13px;
-  line-height: 1.65;
+  line-height: 1.55;
+
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 
-/* ===================================================== SITUAÇÃO NO CANTO SUPERIOR DIREITO DO CARD ===================================================== */
+/* ===================================================== SITUAÇÃO DO USUÁRIO ===================================================== */
+
+.user-card-status {
+  width: 100%;
+  margin-top: 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.user-card-status .user-status {
+  position: static;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 28px;
+  margin: 0;
+  padding: 6px 14px;
+
+  border-radius: 999px;
+
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+}
 
 .user-status {
-  position: absolute;
-  top: 24px;
-  right: 24px;
-
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -278,27 +428,33 @@
 }
 
 
-/* ===================================================== BOTÕES DE AÇÃO COM ÍCONES ===================================================== */
+/* ===================================================== AÇÕES DO USUÁRIO ===================================================== */
 
 .user-actions {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-start;
   gap: 10px;
 
-  padding-top: 72px;
+  width: 100%;
+  margin-top: 10px;
+  padding: 0;
 
-  flex-shrink: 0;
+  flex-wrap: nowrap;
+  overflow: hidden;
 }
 
 .user-icon-button {
   width: 42px;
   height: 42px;
+  min-width: 42px;
   min-height: 42px;
 
   display: inline-flex;
   align-items: center;
   justify-content: center;
+
+  flex: 0 0 auto;
 
   padding: 0;
 
@@ -325,13 +481,19 @@
   transform: translateY(0);
 }
 
+.user-icon-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  filter: grayscale(0.7);
+}
+
 .user-icon-button span {
   display: block;
 }
 
 
-/* DETALHAR */
-
+/* Visualizar */
 .user-icon-button.detail-user-button {
   background: #e0f2fe;
   color: #0369a1;
@@ -342,8 +504,18 @@
 }
 
 
-/* APROVAR */
+/* Editar */
+.user-icon-button.edit-user-button {
+  background: #fef3c7;
+  color: #b45309;
+}
 
+.user-icon-button.edit-user-button:hover {
+  background: #fde68a;
+}
+
+
+/* Aprovar */
 .user-icon-button.approve-button {
   background: #dcfce7;
   color: #166534;
@@ -354,8 +526,7 @@
 }
 
 
-/* REJEITAR */
-
+/* Rejeitar */
 .user-icon-button.reject-button {
   background: #ffedd5;
   color: #c2410c;
@@ -366,8 +537,23 @@
 }
 
 
-/* EXCLUIR */
+/* WhatsApp */
+.user-icon-button.whatsapp-user-button {
+  background: #dcfce7;
+  color: #15803d;
+}
 
+.user-icon-button.whatsapp-user-button:hover {
+  background: #bbf7d0;
+}
+
+.user-icon-button.whatsapp-user-button:disabled {
+  background: #e5e7eb;
+  color: #6b7280;
+}
+
+
+/* Excluir */
 .user-icon-button.delete-user-button {
   background: #fee2e2;
   color: #b91c1c;
@@ -375,6 +561,18 @@
 
 .user-icon-button.delete-user-button:hover {
   background: #fecaca;
+}
+
+
+/* ===================================================== AVISO DE WHATSAPP ===================================================== */
+
+.whatsapp-informed-message {
+  width: 100%;
+  margin-top: 7px;
+
+  color: #15803d;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 
@@ -430,8 +628,41 @@
   font-size: 14px;
 }
 
+.admin-detail-field .user-status {
+  position: static;
+  margin: 0;
+}
 
-/* ===================================================== RESPONSIVIDADE TABLET ===================================================== */
+
+/* ===================================================== MODAL DE CONFIRMAÇÃO DE SAÍDA ===================================================== */
+
+.users-logout-modal-card {
+  width: min(440px, 100%);
+  padding: 32px;
+}
+
+.users-logout-modal-card h2 {
+  margin-bottom: 10px;
+  padding-right: 30px;
+}
+
+.users-logout-modal-card .muted {
+  margin-bottom: 24px;
+}
+
+.users-logout-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.users-logout-actions button {
+  min-width: 130px;
+}
+
+
+/* ===================================================== TABLET ===================================================== */
 
 @media (max-width: 900px) {
   .users-filter-area {
@@ -452,16 +683,62 @@
   .users-filters select {
     width: auto;
   }
-
-  .user-item {
-    min-height: 160px;
-  }
 }
 
 
-/* ===================================================== RESPONSIVIDADE CELULAR ===================================================== */
+/* ===================================================== CELULAR ===================================================== */
 
 @media (max-width: 650px) {
+  .users-topbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+
+    min-height: 62px;
+    padding: 9px 10px;
+
+    overflow: visible !important;
+  }
+
+  .users-topbar .brand {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .users-topbar .brand strong {
+    font-size: 16px;
+    white-space: nowrap;
+  }
+
+  .users-topbar .brand small {
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .users-menu-wrapper {
+    margin-left: 8px;
+  }
+
+  .users-menu-toggle {
+    min-height: 38px;
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .users-topbar .top-menu {
+    min-width: 210px;
+    max-width: calc(100vw - 20px);
+  }
+
+  .users-topbar .menu-link {
+    min-height: 40px;
+    font-size: 13px;
+  }
+
+  .users-topbar .menu-icon {
+    font-size: 16px;
+  }
+
   .users-hero {
     align-items: stretch;
     flex-direction: column;
@@ -473,7 +750,6 @@
     min-width: 0;
   }
 
-  /* Mantém duas colunas no celular: Total | Aguardando Aprovados | Rejeitados */
   .users-stats-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
@@ -482,6 +758,7 @@
   .users-stat-card {
     min-height: 92px;
     padding: 14px 10px;
+    text-align: center;
   }
 
   .users-stat-card span {
@@ -504,25 +781,29 @@
   }
 
   .user-item {
-    align-items: stretch;
-    flex-direction: column;
-
-    min-height: 0;
-    padding: 64px 16px 16px;
+    padding: 16px 14px;
   }
 
-  .user-main {
-    padding-right: 0;
+  .user-card-header .user-name {
+    font-size: 16px;
   }
 
-  .user-status {
-    top: 18px;
-    right: 16px;
+  .user-meta {
+    font-size: 13px;
   }
 
   .user-actions {
-    justify-content: flex-end;
-    padding-top: 0;
+    gap: 8px;
+    overflow: hidden;
+  }
+
+  .user-icon-button {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+
+    font-size: 18px;
   }
 
   .admin-detail-grid {
@@ -533,20 +814,49 @@
     align-items: flex-start;
     flex-direction: column;
   }
+
+  .users-logout-actions {
+    flex-direction: column-reverse;
+  }
+
+  .users-logout-actions button {
+    width: 100%;
+  }
 }
 
 
-/* ===================================================== CELULARES PEQUENOS ===================================================== */
+/* ===================================================== TELAS MUITO PEQUENAS ===================================================== */
 
-@media (max-width: 430px) {
+@media (max-width: 400px) {
+  .users-topbar {
+    padding: 8px 7px;
+  }
+
+  .users-topbar .brand strong {
+    font-size: 14px;
+  }
+
+  .users-topbar .brand small {
+    font-size: 10px;
+  }
+
+  .users-menu-toggle {
+    min-height: 36px;
+    padding: 7px 8px;
+    font-size: 11px;
+  }
+
+  .users-topbar .top-menu {
+    min-width: 195px;
+  }
+
   .users-stats-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
   }
 
   .users-stat-card {
     min-height: 86px;
     padding: 12px 6px;
-    text-align: center;
   }
 
   .users-stat-card span {
@@ -558,15 +868,16 @@
   }
 
   .user-actions {
-    justify-content: center;
+    gap: 5px;
   }
 
   .user-icon-button {
-    width: 40px;
-    height: 40px;
-    min-height: 40px;
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
 
-    font-size: 18px;
+    font-size: 16px;
   }
 
   .pagination {
@@ -574,446 +885,84 @@
   }
 }
 
-.user-item {
-  position: relative;
+/* ===================================================== FILTRO DE MORADORES SEM SELECT ===================================================== */
 
+.users-status-filter {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
+  align-items: center;
+  gap: 8px;
 
-  min-height: 190px;
-  padding: 24px 18px 18px;
-
-  background: #ffffff;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.user-item:hover {
-  border-color: #b8c9dc;
-
-  box-shadow:
-    0 5px 15px rgba(15, 23, 42, 0.05);
-}
-
-.user-main {
   width: 100%;
+  margin-top: 18px;
+
+  overflow: hidden !important;
+  padding: 4px 0 8px;
+}
+
+.users-status-filter .status-filter-button {
+  flex: 1 1 0;
   min-width: 0;
-  padding-right: 145px;
-}
 
-.user-name {
-  margin-bottom: 6px;
-
-  color: var(--text);
-  font-size: 17px;
-  font-weight: 800;
-  line-height: 1.3;
-}
-
-.user-meta {
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.65;
-}
-
-.user-status {
-  position: absolute;
-  top: 24px;
-  right: 24px;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  min-height: 28px;
-  padding: 6px 14px;
-
-  border-radius: 999px;
-
-  font-size: 13px;
-  font-weight: 800;
-  white-space: nowrap;
-}
-
-.user-status.pending {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-.user-status.approved {
-  background: #dcfce7;
-  color: #166534;
-}
-
-.user-status.rejected {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
-.user-actions {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 10px;
-
-  width: 100%;
-  margin-top: 20px;
-  padding-top: 0;
-}
-
-.user-icon-button {
-  width: 42px;
-  height: 42px;
   min-height: 42px;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 0;
-
-  border: 0;
-  border-radius: 10px;
-
-  font-size: 19px;
-  line-height: 1;
-
-  cursor: pointer;
-
-  transition:
-    transform 0.15s ease,
-    filter 0.2s ease;
-}
-
-.user-icon-button:hover {
-  transform: translateY(-1px);
-  filter: brightness(0.96);
-}
-
-.user-icon-button:active {
-  transform: translateY(0);
-}
-
-.user-icon-button.detail-user-button {
-  background: #e0f2fe;
-  color: #0369a1;
-}
-
-.user-icon-button.approve-button {
-  background: #dcfce7;
-  color: #166534;
-}
-
-.user-icon-button.reject-button {
-  background: #ffedd5;
-  color: #c2410c;
-}
-
-.user-icon-button.delete-user-button {
-  background: #fee2e2;
-  color: #b91c1c;
-}
-
-.admin-navigation {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 3px;
-}
-
-.admin-navigation .link-button {
-  width: 100%;
-  text-align: right;
-}
-
-
-
-@media (max-width: 650px) {
-  .admin-navigation {
-    width: 100%;
-    align-items: stretch;
-  }
-
-  .admin-navigation .link-button {
-    width: 100%;
-    text-align: right;
-  }
-}
-
-/* ===================================================== CARD DO MORADOR ===================================================== */
-
-.user-item {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-
-  width: 100%;
-  min-width: 0;
-  min-height: 0;
-
-  padding: 20px 18px 18px;
-
-  background: #ffffff;
-  border: 1px solid var(--border);
-  border-radius: 14px;
+  padding: 9px 8px;
 
   overflow: hidden;
-}
 
-.user-card-header {
-  width: 100%;
-  margin-bottom: 12px;
-}
-
-.user-card-header .user-name {
-  margin: 0;
-
-  color: var(--text);
-  font-size: 17px;
-  font-weight: 800;
-  line-height: 1.3;
-}
-
-.user-main {
-  width: 100%;
-  min-width: 0;
-  padding: 0;
-}
-
-.user-meta {
-  width: 100%;
-
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.65;
-
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
-
-
-/* ===================================================== SITUAÇÃO ACIMA DOS BOTÕES ===================================================== */
-
-.user-card-status {
-  width: 100%;
-  margin-top: 16px;
-
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-
-.user-card-status .user-status {
-  position: static;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  min-height: 28px;
-  margin: 0;
-  padding: 6px 14px;
-
-  border-radius: 999px;
-
-  font-size: 13px;
-  font-weight: 800;
-}
-
-
-/* ===================================================== BOTÕES ===================================================== */
-
-.user-actions {
-  width: 100%;
-  margin-top: 14px;
-  padding: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 10px;
-}
-
-.user-icon-button {
-  width: 42px;
-  height: 42px;
-  min-height: 42px;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  flex: 0 0 auto;
-
-  padding: 0;
-
-  border: 0;
+  border: 1px solid var(--border);
   border-radius: 10px;
 
-  font-size: 19px;
-  line-height: 1;
+  background: #ffffff;
+  color: var(--muted);
+
+  font-size: 13px;
+  font-weight: 800;
+
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.users-status-filter .status-filter-button:hover {
+  background: var(--blue-light);
+  color: #164e63;
+}
+
+.users-status-filter .status-filter-button.active {
+  background: var(--blue-dark);
+  border-color: var(--blue-dark);
+  color: #ffffff;
+
+  box-shadow:
+    0 4px 10px rgba(37, 99, 235, 0.18);
 }
 
 
-/* ===================================================== MODAL DE DETALHAMENTO ===================================================== */
-
-.admin-detail-field .user-status {
-  position: static;
-  margin: 0;
-}
-
-
-/* ===================================================== MOBILE ===================================================== */
+/* ===================================================== CELULAR ===================================================== */
 
 @media (max-width: 650px) {
-  .user-item {
-    width: 100%;
-    min-width: 0;
-    padding: 18px 14px 16px;
+  .users-status-filter {
+    gap: 4px;
+    overflow: hidden !important;
   }
 
-  .user-card-header .user-name {
-    font-size: 16px;
-  }
+  .users-status-filter .status-filter-button {
+    min-height: 38px;
+    padding: 7px 4px;
 
-  .user-main {
-    width: 100%;
-  }
-
-  .user-meta {
-    font-size: 13px;
-  }
-
-  .user-card-status {
-    margin-top: 15px;
-  }
-
-  .user-actions {
-    margin-top: 12px;
-    gap: 8px;
-  }
-
-  .user-icon-button {
-    width: 40px;
-    height: 40px;
-    min-height: 40px;
-    font-size: 18px;
+    font-size: 10px;
   }
 }
 
-/* ===================================================== AJUSTE FINAL DO CARD DO MORADOR ===================================================== */
-
-.user-item {
-  padding-top: 18px !important;
-  padding-bottom: 14px !important;
-}
-
-.user-card-header {
-  width: 100%;
-  margin-bottom: 2px !important;
-  padding: 0 !important;
-}
-
-.user-card-header .user-name {
-  margin: 0 !important;
-  line-height: 1.25 !important;
-}
-
-.user-main {
-  width: 100%;
-  margin-top: 0 !important;
-  padding-top: 0 !important;
-}
-
-.user-meta {
-  line-height: 1.55 !important;
-}
-
-/* Aprovação mais próxima do último campo */
-.user-card-status {
-  width: 100%;
-  margin-top: 8px !important;
-  padding: 0 !important;
-}
-
-/* Botões mais próximos da situação */
-.user-actions {
-  width: 100%;
-  margin-top: 8px !important;
-  padding: 0 !important;
-}
-
-
-/* ===================================================== AJUSTE NO CELULAR ===================================================== */
-
-@media (max-width: 650px) {
-  .user-item {
-    padding-top: 16px !important;
-    padding-bottom: 12px !important;
+@media (max-width: 400px) {
+  .users-status-filter {
+    gap: 3px;
   }
 
-  .user-card-header {
-    margin-bottom: 2px !important;
+  .users-status-filter .status-filter-button {
+    min-height: 36px;
+    padding: 6px 2px;
+
+    font-size: 9px;
   }
-
-  .user-main {
-    margin-top: 0 !important;
-    padding-top: 0 !important;
-  }
-
-  .user-meta {
-    line-height: 1.5 !important;
-  }
-
-  .user-card-status {
-    margin-top: 7px !important;
-  }
-
-  .user-actions {
-    margin-top: 7px !important;
-  }
-}
-
-/* WHATSAPP */
-
-.user-icon-button.whatsapp-user-button {
-  background: #dcfce7;
-  color: #15803d;
-}
-
-.user-icon-button.whatsapp-user-button:hover {
-  background: #bbf7d0;
-}
-
-.user-icon-button.whatsapp-user-button {
-  background: #dcfce7;
-  color: #15803d;
-}
-
-.user-icon-button.whatsapp-user-button:hover {
-  background: #bbf7d0;
-}
-
-.user-icon-button.whatsapp-user-button:disabled {
-  background: #e5e7eb;
-  color: #6b7280;
-  cursor: not-allowed;
-  opacity: 0.65;
-  transform: none;
-  filter: none;
-}
-
-.whatsapp-informed-message {
-  width: 100%;
-  margin-top: 7px;
-  color: #15803d;
-  font-size: 12px;
-  font-weight: 700;
 }
