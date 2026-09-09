@@ -46,10 +46,13 @@ const ADMIN_EMAIL =
   "rodrigokamunga@gmail.com";
 
 const EMAIL_DESTINO =
-  "atendimento@mauiunique.com.br,sindica@mauiunique.com.br";
+  "atendimento@mauiunique.com.br";
 
 const EMAIL_COPIA =
   "gerencia@mauiunique.com.br";
+
+const EMAIL_COPIA_OCULTA =
+  "sindica@mauiunique.com.br";
 
 const WHATSAPP_NUMERO =
   "5521964827826";
@@ -1459,10 +1462,11 @@ async function sendReportByEmail(reportId) {
   ].join("\r\n");
 
   const mailto =
-    `mailto:${EMAIL_DESTINO}` +
-    `?cc=${encodeURIComponent( EMAIL_COPIA )}` +
-    `&subject=${encodeURIComponent( subject )}` +
-    `&body=${encodeURIComponent( body )}`;
+  `mailto:${EMAIL_DESTINO}` +
+  `?cc=${encodeURIComponent(EMAIL_COPIA)}` +
+  `&bcc=${encodeURIComponent(EMAIL_COPIA_OCULTA)}` +
+  `&subject=${encodeURIComponent(subject)}` +
+  `&body=${encodeURIComponent(body)}`;
 
   window.location.href =
     mailto;
