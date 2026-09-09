@@ -46,10 +46,10 @@ const ADMIN_EMAIL =
   "rodrigokamunga@gmail.com";
 
 const EMAIL_DESTINO =
-  "atendimento@mauiunique.com.br";
+  "atendimento@mauiunique.com.br,sindica@mauiunique.com.br";
 
 const EMAIL_COPIA =
-  "gerencia@mauiunique.com.br;sindica@mauiunique.com.br";
+  "gerencia@mauiunique.com.br";
 
 const WHATSAPP_NUMERO =
   "5521964827826";
